@@ -1,24 +1,24 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
 import { defineConfig } from 'eslint/config';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
 import prettier from 'eslint-config-prettier';
-
-const compat = new FlatCompat({
-  baseDirectory: dirname(fileURLToPath(import.meta.url)),
-});
 
 // apps/site-demo/ es una app Next.js real dentro del monorepo hwe-core —
 // usa la variante "repos-app" (eslint-config-next), a diferencia de
 // packages/core-ui/ que usa la variante "repos-librería" (ver
-// docs/estandares/herramientas.md). eslint-config-next 15.4.x todavía
-// exporta configs en formato legado (.eslintrc), así que se traducen a
-// flat config con FlatCompat en vez de spread directo.
+// docs/estandares/herramientas.md).
 export default defineConfig([
   {
-    ignores: ['**/.next/**', '**/node_modules/**'],
+    // payload-types.ts e importMap.js los genera Payload — no se lintan.
+    ignores: [
+      '**/.next/**',
+      '**/node_modules/**',
+      'src/payload-types.ts',
+      'src/app/(payload)/admin/importMap.js',
+    ],
   },
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  ...nextVitals,
+  ...nextTypescript,
   prettier,
   {
     rules: {

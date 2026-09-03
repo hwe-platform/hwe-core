@@ -50,7 +50,7 @@ jobs:
           # Dummy — payload.config.ts necesita estas variables presentes para
           # importarse durante `next build`, pero nunca se usan para conectar
           # de verdad (no hay Postgres en CI). Evita depender de secrets.
-          POSTGRES_URL: 'postgres://dummy:dummy@localhost:5432/dummy'
+          DATABASE_URI: 'postgres://dummy:dummy@localhost:5432/dummy'
           PAYLOAD_SECRET: 'dummy-secret-for-ci-build-only'
 
   publish:

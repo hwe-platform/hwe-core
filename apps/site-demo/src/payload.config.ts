@@ -1,6 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres';
+import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { buildConfig } from 'payload';
 
@@ -29,9 +29,13 @@ export default buildConfig({
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  // vercelPostgresAdapter usa el driver `pg` local automáticamente cuando no
-  // corre en Vercel — funciona igual contra Postgres local o Docker.
-  db: vercelPostgresAdapter({
-    connectionString: process.env.POSTGRES_URL ?? '',
+  // Adapter genérico de Postgres (driver `pg`): sirve igual para Postgres
+  // local, Docker o gestionado. Se descartó @payloadcms/db-vercel-postgres
+  // porque arrastra el SDK de @vercel/postgres, que obliga a llamar la
+  // variable de conexión POSTGRES_URL y falla en bucle silencioso sin ella.
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI ?? '',
+    },
   }),
 });

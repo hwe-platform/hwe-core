@@ -4,5 +4,11 @@ dist
 .turbo
 pnpm-lock.yaml
 
+# Archivos generados: Payload reescribe payload-types.ts e importMap.js en
+# cada `generate:*`, y Next.js reescribe next-env.d.ts en cada build
+apps/*/src/payload-types.ts
+apps/*/src/app/(payload)/admin/importMap.js
+apps/*/next-env.d.ts
+
 # Submodule de hwe-tools — tiene su propio formato, no lo tocamos desde aquí
 docs

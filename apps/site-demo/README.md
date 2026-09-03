@@ -20,11 +20,8 @@ Cuando el Hito 1 esté completo, este código se extrae como el repo `hwe-templa
    cp .env.example .env
    ```
 
-   - `POSTGRES_URL` — cadena de conexión a tu Postgres local. Una base de datos
-     propia para site-demo (no la compartas con otro proyecto — DEC-003). El
-     nombre lo exige `@payloadcms/db-vercel-postgres` (su CLI de introspección
-     de esquema usa el SDK de `@vercel/postgres`, que lee esta variable
-     directamente) — no vale renombrarla a `DATABASE_URI` u otra.
+   - `DATABASE_URI` — cadena de conexión a tu Postgres local. Una base de datos
+     propia para site-demo (no la compartas con otro proyecto — DEC-003).
    - `PAYLOAD_SECRET` — genera una cadena aleatoria propia, por ejemplo:
      `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
    - `NEXT_PUBLIC_SERVER_URL` — `http://localhost:3000` en local.

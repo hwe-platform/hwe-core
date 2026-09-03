@@ -78,6 +78,7 @@ export const accommodationSchema = z.object({
     )
     .optional(),
 
+  /** Alojamientos recomendados. Si vacío, el frontend muestra otros de la misma categoría automáticamente. */
   comparison: z.array(z.union([z.string(), accommodationLiteRefSchema])).optional(),
 
   category: categoryRefSchema,

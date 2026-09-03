@@ -1,5 +1,5 @@
 {
-  "name": "@hwe/core-ui",
+  "name": "@hwe-platform/core-ui",
   "version": "0.1.0",
   "description": "Componentes, bloques y utilidades de UI compartidos por los sites HWE",
   "license": "UNLICENSED",

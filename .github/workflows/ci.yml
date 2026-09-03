@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
           registry-url: https://npm.pkg.github.com
-          scope: '@hwe'
+          scope: '@hwe-platform'
 
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
@@ -66,7 +66,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
           registry-url: https://npm.pkg.github.com
-          scope: '@hwe'
+          scope: '@hwe-platform'
 
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
@@ -76,7 +76,7 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Publicar @hwe/core-ui
-        run: pnpm --filter "@hwe/core-ui" publish --no-git-checks
+      - name: Publicar @hwe-platform/core-ui
+        run: pnpm --filter "@hwe-platform/core-ui" publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

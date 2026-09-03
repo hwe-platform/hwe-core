@@ -1,7 +1,9 @@
 # hwe-core
 
-Monorepo de paquetes npm compartidos del proyecto HWE. Contiene `@hwe-platform/core-ui`,
-consumido por `hwe-template` y por los sites de cliente vía GitHub Packages.
+Monorepo Turborepo del proyecto HWE. Contiene `@hwe-platform/core-ui` (paquete npm
+compartido, consumido por `hwe-template` y por los sites de cliente vía GitHub
+Packages) y `apps/site-demo/` (el site donde se construyen y prueban los bloques
+con datos reales de Payload durante el Hito 1 — ver `docs/decisiones/DEC-007-repos.md`).
 
 ## Estructura
 
@@ -9,6 +11,8 @@ consumido por `hwe-template` y por los sites de cliente vía GitHub Packages.
 hwe-core/
   packages/
     core-ui/        # @hwe-platform/core-ui — bloques, primitivas, renderer, layout, adapters, theme
+  apps/
+    site-demo/      # Next.js 15 + Payload CMS v3 — entorno de desarrollo y validación
 ```
 
 ## Requisitos
@@ -31,14 +35,17 @@ o para **consumirlo** desde otro repo (ver `.npmrc` de ese repo).
 
 ## Comandos
 
-| Comando             | Qué hace                                       |
-| ------------------- | ---------------------------------------------- |
-| `pnpm build`        | Compila todos los paquetes (`turbo run build`) |
-| `pnpm dev`          | Compila en modo watch                          |
-| `pnpm lint`         | ESLint en todos los paquetes                   |
-| `pnpm format`       | Formatea todo el repo con Prettier             |
-| `pnpm format:check` | Verifica formato sin escribir cambios          |
-| `pnpm test`         | Ejecuta Vitest en todos los paquetes           |
+| Comando                       | Qué hace                                       |
+| ----------------------------- | ---------------------------------------------- |
+| `pnpm build`                  | Compila todos los paquetes (`turbo run build`) |
+| `pnpm dev`                    | Compila en modo watch                          |
+| `pnpm lint`                   | ESLint en todos los paquetes                   |
+| `pnpm format`                 | Formatea todo el repo con Prettier             |
+| `pnpm format:check`           | Verifica formato sin escribir cambios          |
+| `pnpm test`                   | Ejecuta Vitest en todos los paquetes           |
+| `pnpm dev --filter site-demo` | Arranca solo el site-demo (Next.js + Payload)  |
+
+`site-demo` necesita su propio `.env` — ver `apps/site-demo/README.md`.
 
 ## CI/CD
 

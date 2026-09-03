@@ -1,0 +1,37 @@
+/**
+ * Tema base del cliente (Capa 1 — docs/arquitectura/tokens.md).
+ * Valores de La Civelle, usados como referencia para el site-demo.
+ * --heading-font y --body-font apuntan a las variables que genera
+ * next/font en (frontend)/layout.tsx — la fuente física se carga ahí,
+ * este token solo la referencia.
+ */
+:root {
+  /* Paleta de marca */
+  --primary: #0b665d;
+  --primary-foreground: #fcfcf1;
+  --secondary: #c9a87c;
+  --secondary-foreground: #2e3c2e;
+  --background: #fffeed;
+  --foreground: #2e3c2e;
+  --card: #ffffff;
+  --card-foreground: #2e3c2e;
+  --muted: #ecefee;
+  --muted-foreground: #525252;
+  --accent: #85a39c;
+  --accent-foreground: #0b665d;
+  --border: #ede5d8;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --ring: #0b665d;
+  --footer: #393939;
+
+  /* Tipografía */
+  --heading-font: var(--font-bitter), serif;
+  --body-font: var(--font-inter), sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Radios */
+  --radius: 1rem;
+}

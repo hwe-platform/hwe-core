@@ -1,0 +1,39 @@
+/**
+ * Theme de referencia — Capa 1 (tema base) de docs/arquitectura/tokens.md.
+ *
+ * Valores de La Civelle (primer cliente). Cada cliente nuevo copia este
+ * archivo a su propio repo (`src/styles/theme.css`) y sustituye los valores
+ * por los de su Figma. Las claves deben coincidir con TOKEN_CONTRACT
+ * (token-contract.ts) — si se añade o quita una variable aquí, hay que
+ * actualizar también el contrato.
+ */
+:root {
+  /* Paleta de marca */
+  --primary: #0b665d;
+  --primary-foreground: #fcfcf1;
+  --secondary: #c9a87c;
+  --secondary-foreground: #2e3c2e;
+  --background: #fffeed;
+  --foreground: #2e3c2e;
+  --card: #ffffff;
+  --card-foreground: #2e3c2e;
+  --muted: #ecefee;
+  --muted-foreground: #525252;
+  --accent: #85a39c;
+  --accent-foreground: #0b665d;
+  --border: #ede5d8;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --ring: #0b665d;
+  --footer: #393939;
+
+  /* Tipografía */
+  --heading-font: 'Bitter', serif;
+  --body-font: 'Inter', sans-serif;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Radios */
+  --radius: 1rem;
+}

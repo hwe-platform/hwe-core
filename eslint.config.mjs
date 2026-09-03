@@ -12,7 +12,7 @@ import prettier from 'eslint-config-prettier';
 // React, hooks, accesibilidad) que core-web-vitals trae por debajo.
 export default defineConfig([
   {
-    ignores: ['**/dist/**', '**/.turbo/**', '**/node_modules/**'],
+    ignores: ['**/dist/**', '**/.turbo/**', '**/node_modules/**', '**/coverage/**'],
   },
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,

@@ -40,6 +40,10 @@ importers:
         version: 8.69.0(eslint@9.39.5)(typescript@5.9.3)
 
   packages/core-ui:
+    dependencies:
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
     devDependencies:
       eslint:
         specifier: ^9.17.0

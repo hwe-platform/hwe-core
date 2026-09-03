@@ -7,8 +7,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '9'
+  NODE_VERSION: '22'
 
 jobs:
   ci:
@@ -20,8 +19,6 @@ jobs:
 
       - name: Configurar pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -62,8 +59,6 @@ jobs:
 
       - name: Configurar pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4

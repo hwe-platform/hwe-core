@@ -46,6 +46,12 @@ jobs:
 
       - name: Build
         run: pnpm build
+        env:
+          # Dummy — payload.config.ts necesita estas variables presentes para
+          # importarse durante `next build`, pero nunca se usan para conectar
+          # de verdad (no hay Postgres en CI). Evita depender de secrets.
+          DATABASE_URI: 'postgres://dummy:dummy@localhost:5432/dummy'
+          PAYLOAD_SECRET: 'dummy-secret-for-ci-build-only'
 
   publish:
     name: Publicar en GitHub Packages

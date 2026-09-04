@@ -66,6 +66,10 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       const hasAriaLabel = Boolean(props['aria-label']);
       const hasTextChildren = typeof children === 'string' && children.trim().length > 0;
       if (!hasAriaLabel && !hasTextChildren) {
+        // El guard de NODE_ENV elimina este aviso del bundle de producción, pero
+        // ESLint es estático y no lo evalúa: sin la excepción, `no-console` falla
+        // en CI (ver docs/estandares/codigo.md).
+        // eslint-disable-next-line no-console
         console.warn(
           '[Button] Falta aria-label: pasa texto como children o aria-label para que el botón sea accesible.',
         );

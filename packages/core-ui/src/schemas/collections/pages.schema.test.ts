@@ -13,12 +13,19 @@ function minimalPage(overrides: Record<string, unknown> = {}) {
   };
 }
 
+/** Bloque media-text completo, para los tests que solo necesitan uno válido. */
+function mediaTextBlock(overrides: Record<string, unknown> = {}) {
+  return {
+    blockType: 'media-text',
+    content: {},
+    image: 'media-1',
+    ...overrides,
+  };
+}
+
 describe('pageBlockSchema', () => {
-  it('valida cada stub de bloque por su blockType', () => {
+  it('valida por su blockType los bloques que siguen siendo stubs', () => {
     const blockTypes = [
-      'media-text',
-      'icon-grid',
-      'card-grid',
       'reviews-grid',
       'services-grid',
       'accommodations-grid',
@@ -27,9 +34,7 @@ describe('pageBlockSchema', () => {
       'map',
       'instagram',
       'blog',
-      'cta',
       'faq',
-      'rich-text',
       'embed',
     ];
 
@@ -37,6 +42,32 @@ describe('pageBlockSchema', () => {
       const result = pageBlockSchema.safeParse({ blockType });
       expect(result.success).toBe(true);
     }
+  });
+
+  it('exige los campos de los cinco bloques ya implementados', () => {
+    expect(pageBlockSchema.safeParse({ blockType: 'media-text' }).success).toBe(false);
+    expect(pageBlockSchema.safeParse(mediaTextBlock()).success).toBe(true);
+  });
+
+  it('aplica imagePosition = left por defecto en media-text', () => {
+    const result = pageBlockSchema.parse(mediaTextBlock());
+    expect(result).toHaveProperty('imagePosition', 'left');
+  });
+
+  it('valida icon-grid con sus items', () => {
+    const result = pageBlockSchema.safeParse({
+      blockType: 'icon-grid',
+      items: [{ icon: 'wifi', label: 'Wi-Fi gratuit' }],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('valida cta con sus enlaces y su variante por defecto', () => {
+    const result = pageBlockSchema.parse({
+      blockType: 'cta',
+      links: [{ label: 'Réserver', url: '/reserver' }],
+    });
+    expect(result).toHaveProperty('links.0.variant', 'primary');
   });
 
   it('rechaza un blockType desconocido', () => {
@@ -59,7 +90,7 @@ describe('pageSchema', () => {
   it('valida una secuencia de bloques mixta', () => {
     const result = pageSchema.safeParse(
       minimalPage({
-        blocks: [{ blockType: 'media-text' }, { blockType: 'faq' }],
+        blocks: [mediaTextBlock(), { blockType: 'faq' }],
       }),
     );
     expect(result.success).toBe(true);

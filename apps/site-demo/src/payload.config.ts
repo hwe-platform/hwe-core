@@ -10,10 +10,12 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 /**
- * Config base de Payload para site-demo. Sin colecciones de contenido
- * todavía (media, accommodations, entities, pages, articles, categories)
- * ni globals — llegan en HU-005, derivados de los schemas Zod de
- * @hwe-platform/core-ui (DEC-004).
+ * Config base de Payload para site-demo. Las colecciones de contenido y los
+ * globals se derivan de los schemas Zod de @hwe-platform/core-ui (DEC-004).
+ *
+ * TODO (Hito 5): antes de extraer estas colecciones a core-ui hay que revisar
+ * qué campos son base obligatorio y cuáles extensión por tipo de web (camping,
+ * hotel, etc.). Ver src/collections/README.md.
  */
 export default buildConfig({
   admin: {

@@ -97,3 +97,13 @@ export const accommodationSchema = z.object({
 
 /** Referencia a un alojamiento: id sin poblar o documento completo. */
 export const accommodationRefSchema = z.union([z.string(), accommodationSchema]);
+
+/**
+ * Forma de escritura de un alojamiento: lo que llega a un `beforeChange` de Payload
+ * en un `create`. Sin `id` (Payload lo asigna) y con los campos localizados
+ * ya resueltos al locale activo.
+ */
+export const accommodationInputSchema = accommodationSchema.omit({ id: true });
+
+/** Forma de escritura en un `update`: Payload solo manda los campos que cambian. */
+export const accommodationUpdateSchema = accommodationInputSchema.partial();

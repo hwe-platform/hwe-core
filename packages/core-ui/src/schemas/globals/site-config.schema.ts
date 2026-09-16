@@ -87,3 +87,13 @@ export const siteConfigSchema = z.object({
     engine: z.enum(['thr', 'witbooking', 'mastercamping', 'resalys']),
   }),
 });
+
+/**
+ * Forma de escritura de `site-config`. Los globals no tienen `id`, así que la
+ * entrada coincide con el documento; Payload solo manda los campos que
+ * cambian, de ahí la variante parcial.
+ */
+export const siteConfigInputSchema = siteConfigSchema;
+
+/** Forma de escritura en un `update` del global. */
+export const siteConfigUpdateSchema = siteConfigSchema.partial();

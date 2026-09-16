@@ -35,3 +35,13 @@ export const mediaSchema = z.object({
  * el id sin poblar, o el documento completo cuando Payload lo popula.
  */
 export const mediaRefSchema = z.union([z.string(), mediaSchema]);
+
+/**
+ * Forma de escritura de un archivo de `media`: lo que llega a un `beforeChange` de Payload
+ * en un `create`. Sin `id` (Payload lo asigna) y con los campos localizados
+ * ya resueltos al locale activo.
+ */
+export const mediaInputSchema = mediaSchema.omit({ id: true });
+
+/** Forma de escritura en un `update`: Payload solo manda los campos que cambian. */
+export const mediaUpdateSchema = mediaInputSchema.partial();

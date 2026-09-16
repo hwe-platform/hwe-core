@@ -1,8 +1,19 @@
 import type { z } from 'zod';
-import type { entitySchema, entityRefSchema } from './entities.schema';
+import type {
+  entitySchema,
+  entityRefSchema,
+  entityInputSchema,
+  entityUpdateSchema,
+} from './entities.schema';
 
 /** Documento de la colección `entities`, derivado del schema Zod. */
 export type EntityData = z.infer<typeof entitySchema>;
 
 /** Referencia a una entidad: id sin poblar o documento completo. */
 export type EntityRef = z.infer<typeof entityRefSchema>;
+
+/** Datos de entrada al crear una entidad. */
+export type EntityInput = z.infer<typeof entityInputSchema>;
+
+/** Datos de entrada al actualizar una entidad — todos los campos opcionales. */
+export type EntityUpdate = z.infer<typeof entityUpdateSchema>;

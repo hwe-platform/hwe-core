@@ -8,3 +8,13 @@ export const bannerSchema = z.object({
   dismissible: z.boolean().default(true),
   url: z.string().optional(),
 });
+
+/**
+ * Forma de escritura de `banner`. Los globals no tienen `id`, así que la
+ * entrada coincide con el documento; Payload solo manda los campos que
+ * cambian, de ahí la variante parcial.
+ */
+export const bannerInputSchema = bannerSchema;
+
+/** Forma de escritura en un `update` del global. */
+export const bannerUpdateSchema = bannerSchema.partial();

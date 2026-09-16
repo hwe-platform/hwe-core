@@ -87,3 +87,13 @@ export const pageSchema = z.object({
 
   personalization: z.array(personalizationEntrySchema).optional(),
 });
+
+/**
+ * Forma de escritura de una página: lo que llega a un `beforeChange` de Payload
+ * en un `create`. Sin `id` (Payload lo asigna) y con los campos localizados
+ * ya resueltos al locale activo.
+ */
+export const pageInputSchema = pageSchema.omit({ id: true });
+
+/** Forma de escritura en un `update`: Payload solo manda los campos que cambian. */
+export const pageUpdateSchema = pageInputSchema.partial();

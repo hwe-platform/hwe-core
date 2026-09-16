@@ -17,6 +17,8 @@ import type {
   faqBlockSchema,
   richTextBlockSchema,
   embedBlockSchema,
+  pageInputSchema,
+  pageUpdateSchema,
 } from './pages.schema';
 
 /** Documento de la colección `pages`, derivado del schema Zod. */
@@ -40,3 +42,9 @@ export type CtaBlockData = z.infer<typeof ctaBlockSchema>;
 export type FaqBlockData = z.infer<typeof faqBlockSchema>;
 export type RichTextBlockData = z.infer<typeof richTextBlockSchema>;
 export type EmbedBlockData = z.infer<typeof embedBlockSchema>;
+
+/** Datos de entrada al crear una página. */
+export type PageInput = z.infer<typeof pageInputSchema>;
+
+/** Datos de entrada al actualizar una página — todos los campos opcionales. */
+export type PageUpdate = z.infer<typeof pageUpdateSchema>;

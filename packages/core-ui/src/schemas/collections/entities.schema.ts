@@ -63,3 +63,13 @@ export const entitySchema = z.object({
 
 /** Referencia a una entidad: id sin poblar o documento completo. */
 export const entityRefSchema = z.union([z.string(), entitySchema]);
+
+/**
+ * Forma de escritura de una entidad: lo que llega a un `beforeChange` de Payload
+ * en un `create`. Sin `id` (Payload lo asigna) y con los campos localizados
+ * ya resueltos al locale activo.
+ */
+export const entityInputSchema = entitySchema.omit({ id: true });
+
+/** Forma de escritura en un `update`: Payload solo manda los campos que cambian. */
+export const entityUpdateSchema = entityInputSchema.partial();

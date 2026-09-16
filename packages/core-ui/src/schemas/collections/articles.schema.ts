@@ -24,3 +24,13 @@ export const articleSchema = z.object({
 
 /** Referencia a un artículo: id sin poblar o documento completo. */
 export const articleRefSchema = z.union([z.string(), articleSchema]);
+
+/**
+ * Forma de escritura de un artículo: lo que llega a un `beforeChange` de Payload
+ * en un `create`. Sin `id` (Payload lo asigna) y con los campos localizados
+ * ya resueltos al locale activo.
+ */
+export const articleInputSchema = articleSchema.omit({ id: true });
+
+/** Forma de escritura en un `update`: Payload solo manda los campos que cambian. */
+export const articleUpdateSchema = articleInputSchema.partial();

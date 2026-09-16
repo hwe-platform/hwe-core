@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { buildConfig } from 'payload';
+import sharp from 'sharp';
 
 import { Users } from './collections/Users';
 import { Media } from './collections/Media';
@@ -36,7 +37,24 @@ export default buildConfig({
   },
   collections: [Users, Media, Categories, Accommodations, Entities, Pages, Articles],
   globals: [SiteConfig, Header, Footer, Banner],
+  // Localización por campo, no por documento: un alojamiento es UN documento
+  // con los campos de texto traducidos (specs/payload/localizacion.md).
+  // Los tres idiomas son los del site demo; cada cliente configura los suyos
+  // y los sincroniza con site-config.languages.available.
+  localization: {
+    locales: [
+      { label: 'Français', code: 'fr' },
+      { label: 'English', code: 'en' },
+      { label: 'Español', code: 'es' },
+    ],
+    defaultLocale: 'fr',
+    // Un visitante inglés ve el texto en francés antes que un hueco vacío.
+    fallback: true,
+  },
   editor: lexicalEditor(),
+  // Payload necesita sharp para generar los tamaños de imagen de `media`.
+  // Sin él arranca igual, pero el upload no produce thumbnail/card/hero/og.
+  sharp,
   secret: process.env.PAYLOAD_SECRET ?? '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

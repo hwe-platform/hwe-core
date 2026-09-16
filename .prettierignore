@@ -10,5 +10,9 @@ apps/*/src/payload-types.ts
 apps/*/src/app/(payload)/admin/importMap.js
 apps/*/next-env.d.ts
 
+# Migrations de Payload: las genera `payload migrate:create` y el snapshot
+# .json se reescribe entero en cada una, así que formatearlas no aporta nada
+apps/*/src/migrations/
+
 # Submodule de hwe-tools — tiene su propio formato, no lo tocamos desde aquí
 docs

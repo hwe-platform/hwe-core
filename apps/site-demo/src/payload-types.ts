@@ -96,7 +96,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('fr' | 'en' | 'es') | ('fr' | 'en' | 'es')[];
   globals: {
     'site-config': SiteConfig;
     header: Header;
@@ -109,7 +109,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     banner: BannerSelect<false> | BannerSelect<true>;
   };
-  locale: null;
+  locale: 'fr' | 'en' | 'es';
   widgets: {
     collections: CollectionsWidget;
   };

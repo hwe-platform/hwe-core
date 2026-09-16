@@ -9,12 +9,15 @@ import prettier from 'eslint-config-prettier';
 // docs/estandares/herramientas.md).
 export default defineConfig([
   {
-    // payload-types.ts e importMap.js los genera Payload — no se lintan.
+    // payload-types.ts, importMap.js y las migrations los genera Payload —
+    // no se editan a mano, así que no se lintan ni se les aplican los
+    // límites de tamaño de codigo.md.
     ignores: [
       '**/.next/**',
       '**/node_modules/**',
       'src/payload-types.ts',
       'src/app/(payload)/admin/importMap.js',
+      'src/migrations/**',
     ],
   },
   ...nextVitals,

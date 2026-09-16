@@ -1,4 +1,4 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres';
+import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -335,7 +335,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"slug" varchar,
   	"subtype" varchar,
   	"short_description" varchar NOT NULL,
-  	"description" jsonb,
+  	"description" jsonb NOT NULL,
   	"pricing_price_note" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
@@ -421,7 +421,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"name" varchar NOT NULL,
   	"slug" varchar,
   	"short_description" varchar NOT NULL,
-  	"description" jsonb,
+  	"description" jsonb NOT NULL,
   	"tag" varchar,
   	"schedule_note" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
@@ -1225,7 +1225,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "footer_partners_parent_id_idx" ON "footer_partners" USING btree ("_parent_id");
   CREATE INDEX "footer_partners_logo_idx" ON "footer_partners" USING btree ("logo_id");
   CREATE UNIQUE INDEX "footer_locales_locale_parent_id_unique" ON "footer_locales" USING btree ("_locale","_parent_id");
-  CREATE UNIQUE INDEX "banner_locales_locale_parent_id_unique" ON "banner_locales" USING btree ("_locale","_parent_id");`);
+  CREATE UNIQUE INDEX "banner_locales_locale_parent_id_unique" ON "banner_locales" USING btree ("_locale","_parent_id");`)
 }
 
 export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
@@ -1353,5 +1353,5 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_header_top_bar_links_icon";
   DROP TYPE "public"."enum_footer_columns_type";
   DROP TYPE "public"."enum_footer_columns_newsletter_provider";
-  DROP TYPE "public"."enum_banner_type";`);
+  DROP TYPE "public"."enum_banner_type";`)
 }

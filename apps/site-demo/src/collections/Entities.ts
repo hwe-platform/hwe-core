@@ -47,7 +47,7 @@ export const Entities: CollectionConfig = {
     { name: 'name', type: 'text', required: true, localized: true },
     slugField('el nombre'),
     { name: 'shortDescription', type: 'textarea', required: true, localized: true },
-    { name: 'description', type: 'richText', localized: true },
+    { name: 'description', type: 'richText', required: true, localized: true },
     iconField({ required: true }),
     { name: 'image', type: 'upload', relationTo: 'media', required: true },
     { name: 'gallery', type: 'upload', relationTo: 'media', hasMany: true },
@@ -65,9 +65,10 @@ export const Entities: CollectionConfig = {
       label: 'Horarios',
       fields: [
         {
+          // Sin `required`: el grupo schedule es opcional (modelo-datos.md), y
+          // exigir filas aquí impediría guardar una entidad sin horarios.
           name: 'periods',
           type: 'array',
-          required: true,
           fields: [
             { name: 'label', type: 'text', required: true, localized: true },
             {

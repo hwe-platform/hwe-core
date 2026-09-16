@@ -54,8 +54,13 @@ describe('mediaRefSchema', () => {
     expect(result.success).toBe(true);
   });
 
-  it('rechaza un número', () => {
+  it('acepta un id numérico, que es lo que devuelve el adapter de Postgres', () => {
     const result = mediaRefSchema.safeParse(123);
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
+  });
+
+  it('rechaza lo que no es ni id ni documento', () => {
+    expect(mediaRefSchema.safeParse(true).success).toBe(false);
+    expect(mediaRefSchema.safeParse({ noSoy: 'media' }).success).toBe(false);
   });
 });

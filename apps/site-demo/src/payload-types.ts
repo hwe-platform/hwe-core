@@ -263,7 +263,7 @@ export interface Accommodation {
    * Resumen para las tarjetas de listado.
    */
   shortDescription: string;
-  description?: {
+  description: {
     root: {
       type: string;
       children: {
@@ -277,7 +277,7 @@ export interface Accommodation {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
+  };
   specs: {
     /**
      * Personas.
@@ -549,7 +549,7 @@ export interface Entity {
    */
   slug?: string | null;
   shortDescription: string;
-  description?: {
+  description: {
     root: {
       type: string;
       children: {
@@ -563,7 +563,7 @@ export interface Entity {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
+  };
   icon:
     | 'utensils'
     | 'bed'
@@ -593,13 +593,15 @@ export interface Entity {
   tag?: string | null;
   featured?: boolean | null;
   order?: number | null;
-  schedule: {
-    periods: {
-      label: string;
-      icon: 'utensils' | 'wine' | 'clock';
-      hours: string;
-      id?: string | null;
-    }[];
+  schedule?: {
+    periods?:
+      | {
+          label: string;
+          icon: 'utensils' | 'wine' | 'clock';
+          hours: string;
+          id?: string | null;
+        }[]
+      | null;
     note?: string | null;
   };
   features?:

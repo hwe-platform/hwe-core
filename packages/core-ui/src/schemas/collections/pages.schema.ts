@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { mediaRefSchema } from './media.schema';
+import { payloadIdSchema } from '../payload-id.schema';
 import { seoSchema, personalizationEntrySchema } from '../common.schema';
 
 /**
@@ -116,18 +117,18 @@ export const pageBlockSchema = z.discriminatedUnion('blockType', [
  * a poca profundidad — esta forma es suficiente para breadcrumbs y navegación.
  */
 const pageLiteRefSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   title: z.string(),
   slug: z.string(),
 });
 
 /** Documento de la colección `pages`: páginas con page builder de bloques. */
 export const pageSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   title: z.string(),
   slug: z.string(),
   type: z.enum(['home', 'landing', 'static', 'listing', 'contact', 'faq']),
-  parent: z.union([z.string(), pageLiteRefSchema]).optional(),
+  parent: z.union([payloadIdSchema, pageLiteRefSchema]).optional(),
 
   hero: z
     .object({
@@ -141,10 +142,13 @@ export const pageSchema = z.object({
 
   blocks: z.array(pageBlockSchema).default([]),
 
-  seo: seoSchema.extend({
-    noIndex: z.boolean().default(false),
-    canonicalUrl: z.string().optional(),
-  }),
+  /** Todos sus campos son opcionales, así que un SEO sin rellenar no viaja. */
+  seo: seoSchema
+    .extend({
+      noIndex: z.boolean().default(false),
+      canonicalUrl: z.string().optional(),
+    })
+    .optional(),
 
   personalization: z.array(personalizationEntrySchema).optional(),
 });

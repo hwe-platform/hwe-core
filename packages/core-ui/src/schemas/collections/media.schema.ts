@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { payloadIdSchema } from '../payload-id.schema';
 
 /** Variante de tamaño generada automáticamente por Payload para una imagen. */
 const mediaSizeSchema = z.object({
@@ -12,7 +13,7 @@ const mediaSizeSchema = z.object({
  * Payload gestiona el upload, el almacenamiento y los tamaños automáticamente.
  */
 export const mediaSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   filename: z.string(),
   alt: z.string(),
   caption: z.string().optional(),
@@ -34,7 +35,7 @@ export const mediaSchema = z.object({
  * Referencia a un documento de `media` en un campo de relación/upload:
  * el id sin poblar, o el documento completo cuando Payload lo popula.
  */
-export const mediaRefSchema = z.union([z.string(), mediaSchema]);
+export const mediaRefSchema = z.union([payloadIdSchema, mediaSchema]);
 
 /**
  * Forma de escritura de un archivo de `media`: lo que llega a un `beforeChange` de Payload

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { mediaRefSchema } from './media.schema';
 import { categoryRefSchema } from './categories.schema';
 import { pageBlockSchema } from './pages.schema';
+import { payloadIdSchema } from '../payload-id.schema';
 import { personalizationEntrySchema } from '../common.schema';
 
 /**
@@ -10,7 +11,7 @@ import { personalizationEntrySchema } from '../common.schema';
  * mostrar una tarjeta de comparación sin acoplarse al documento entero.
  */
 const accommodationLiteRefSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   name: z.string(),
   slug: z.string(),
   mainImage: mediaRefSchema.optional(),
@@ -18,7 +19,7 @@ const accommodationLiteRefSchema = z.object({
 
 /** Documento de la colección `accommodations`: alojamientos del cliente. */
 export const accommodationSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   name: z.string(),
   slug: z.string(),
   type: z.enum(['emplacement', 'mobilhome', 'cottage', 'chalet', 'tente']),
@@ -79,7 +80,7 @@ export const accommodationSchema = z.object({
     .optional(),
 
   /** Alojamientos recomendados. Si vacío, el frontend muestra otros de la misma categoría automáticamente. */
-  comparison: z.array(z.union([z.string(), accommodationLiteRefSchema])).optional(),
+  comparison: z.array(z.union([payloadIdSchema, accommodationLiteRefSchema])).optional(),
 
   category: categoryRefSchema,
   featured: z.boolean().default(false),
@@ -96,7 +97,7 @@ export const accommodationSchema = z.object({
 });
 
 /** Referencia a un alojamiento: id sin poblar o documento completo. */
-export const accommodationRefSchema = z.union([z.string(), accommodationSchema]);
+export const accommodationRefSchema = z.union([payloadIdSchema, accommodationSchema]);
 
 /**
  * Forma de escritura de un alojamiento: lo que llega a un `beforeChange` de Payload

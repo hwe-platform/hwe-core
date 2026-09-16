@@ -1,3 +1,4 @@
+export * from './payload-id.schema';
 export * from './common.schema';
 export * from './common.types';
 export * from './collections';

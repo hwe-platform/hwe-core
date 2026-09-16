@@ -69,7 +69,7 @@ export const Accommodations: CollectionConfig = {
       localized: true,
       admin: { description: 'Resumen para las tarjetas de listado.' },
     },
-    { name: 'description', type: 'richText', localized: true },
+    { name: 'description', type: 'richText', required: true, localized: true },
 
     specsGroup,
     bedroomDetailsField,

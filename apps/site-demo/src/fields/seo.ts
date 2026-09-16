@@ -16,6 +16,8 @@ export function seoGroup(extraFields: Field[] = []): Field {
     name: 'seo',
     type: 'group',
     label: 'SEO',
+    // El grupo siempre viaja, aunque sus campos estén vacíos: el schema Zod
+    // lo declara obligatorio porque toda página y todo artículo tienen SEO.
     fields: [...baseSeoFields, ...extraFields],
   };
 }

@@ -108,7 +108,12 @@ describe('pageSchema', () => {
 
   it('aplica noIndex = false por defecto dentro de seo', () => {
     const result = pageSchema.parse(minimalPage());
-    expect(result.seo.noIndex).toBe(false);
+    expect(result.seo?.noIndex).toBe(false);
+  });
+
+  it('acepta una página sin grupo seo: todos sus campos son opcionales', () => {
+    const { seo: _seo, ...sinSeo } = minimalPage();
+    expect(pageSchema.safeParse(sinSeo).success).toBe(true);
   });
 
   it('acepta parent como id sin poblar', () => {

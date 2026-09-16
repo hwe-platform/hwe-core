@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { mediaRefSchema } from './media.schema';
 import { categoryRefSchema } from './categories.schema';
+import { payloadIdSchema } from '../payload-id.schema';
 import { personalizationEntrySchema } from '../common.schema';
 
 /**
@@ -8,7 +9,7 @@ import { personalizationEntrySchema } from '../common.schema';
  * entorno y eventos. Los campos específicos de cada `type` son opcionales.
  */
 export const entitySchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   type: z.enum(['service', 'activity', 'restaurant', 'environment', 'event', 'custom']),
   name: z.string(),
   slug: z.string(),
@@ -62,7 +63,7 @@ export const entitySchema = z.object({
 });
 
 /** Referencia a una entidad: id sin poblar o documento completo. */
-export const entityRefSchema = z.union([z.string(), entitySchema]);
+export const entityRefSchema = z.union([payloadIdSchema, entitySchema]);
 
 /**
  * Forma de escritura de una entidad: lo que llega a un `beforeChange` de Payload

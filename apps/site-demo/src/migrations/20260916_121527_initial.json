@@ -3362,7 +3362,7 @@
           "name": "description",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "pricing_price_note": {
           "name": "pricing_price_note",
@@ -4419,7 +4419,7 @@
           "name": "description",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "tag": {
           "name": "tag",
@@ -10299,6 +10299,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "e3a344cd-b48e-4f49-911e-244c7e0141d3",
+  "id": "c811218b-544b-40f1-aefa-74d99104514c",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

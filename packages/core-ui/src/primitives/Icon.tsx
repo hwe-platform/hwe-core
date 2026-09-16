@@ -59,6 +59,13 @@ const ICONS = {
 /** Nombre de un icono del set predefinido. */
 export type IconName = keyof typeof ICONS;
 
+/**
+ * Nombres del set, en orden de declaración. Es la lista que consumen los
+ * `select` de icono en Payload: así el editor solo puede elegir iconos que
+ * esta primitiva sabe pintar.
+ */
+export const ICON_NAMES = Object.keys(ICONS) as IconName[];
+
 const iconVariants = cva('shrink-0', {
   variants: {
     size: {

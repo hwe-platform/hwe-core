@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { axe } from 'vitest-axe';
 import { describe, expect, it } from 'vitest';
 
-import { Icon } from './Icon';
+import { Icon, ICON_NAMES } from './Icon';
 
 describe('Icon', () => {
   it('renderiza un icono del set predefinido', () => {
@@ -30,5 +30,20 @@ describe('Icon', () => {
   it('no tiene violaciones de accesibilidad', async () => {
     const { container } = render(<Icon name="heart" aria-label="Favorito" />);
     expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe('ICON_NAMES', () => {
+  it('lista todos los iconos del set', () => {
+    expect(ICON_NAMES).toContain('utensils');
+    expect(ICON_NAMES).toContain('pawPrint');
+    expect(ICON_NAMES).toHaveLength(20);
+  });
+
+  it('cada nombre listado renderiza sin romper', () => {
+    for (const name of ICON_NAMES) {
+      const { container } = render(<Icon name={name} />);
+      expect(container.querySelector('svg')).not.toBeNull();
+    }
   });
 });

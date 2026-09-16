@@ -1,19 +1,83 @@
 import { z } from 'zod';
 import { mediaRefSchema } from './media.schema';
+import { payloadIdSchema } from '../payload-id.schema';
 import { seoSchema, personalizationEntrySchema } from '../common.schema';
 
 /**
- * Schemas de bloque — stubs.
+ * Schemas de bloque.
  *
- * Cada uno es un placeholder mínimo con solo `blockType`, lo justo para que
- * `pageBlockSchema` (unión discriminada) valide qué tipo de bloque es dentro
- * de `pages.blocks`. El schema completo con sus campos de contenido se define
- * cuando el bloque se construye de verdad (HU-009 en adelante), en
- * `blocks/{name}/{name}.schema.ts`, y sustituye a su stub aquí.
+ * Los cinco que el editor ya puede usar (HU-005) tienen sus campos definidos
+ * aquí. El resto siguen siendo placeholders con solo `blockType`, lo justo
+ * para que `pageBlockSchema` valide de qué tipo es el bloque; su schema
+ * completo llega cuando el bloque se construye de verdad (HU-009 en adelante).
  */
-export const mediaTextBlockSchema = z.object({ blockType: z.literal('media-text') });
-export const iconGridBlockSchema = z.object({ blockType: z.literal('icon-grid') });
-export const cardGridBlockSchema = z.object({ blockType: z.literal('card-grid') });
+
+/** Enlace con texto, destino y estilo de botón. Compartido por varios bloques. */
+export const blockLinkSchema = z.object({
+  label: z.string(),
+  url: z.string(),
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).default('primary'),
+});
+
+/** Cabecera opcional que comparten los bloques con título y subtítulo. */
+const blockHeadingSchema = {
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+};
+
+/** Imagen + texto en dos columnas. */
+export const mediaTextBlockSchema = z.object({
+  blockType: z.literal('media-text'),
+  ...blockHeadingSchema,
+  /** Contenido richText serializado por Payload (Lexical). */
+  content: z.unknown(),
+  image: mediaRefSchema,
+  /** Lado en el que se pinta la imagen respecto al texto. */
+  imagePosition: z.enum(['left', 'right']).default('left'),
+  link: blockLinkSchema.optional(),
+});
+
+/** Grid de iconos con label, para listar servicios o características. */
+export const iconGridBlockSchema = z.object({
+  blockType: z.literal('icon-grid'),
+  ...blockHeadingSchema,
+  items: z.array(
+    z.object({
+      icon: z.string(),
+      label: z.string(),
+      description: z.string().optional(),
+    }),
+  ),
+});
+
+/** Grid de tarjetas con imagen. */
+export const cardGridBlockSchema = z.object({
+  blockType: z.literal('card-grid'),
+  ...blockHeadingSchema,
+  cards: z.array(
+    z.object({
+      image: mediaRefSchema,
+      title: z.string(),
+      description: z.string().optional(),
+      url: z.string().optional(),
+    }),
+  ),
+});
+
+/** Texto libre. */
+export const richTextBlockSchema = z.object({
+  blockType: z.literal('rich-text'),
+  /** Contenido richText serializado por Payload (Lexical). */
+  content: z.unknown(),
+});
+
+/** Llamada a la acción con uno o varios botones. */
+export const ctaBlockSchema = z.object({
+  blockType: z.literal('cta'),
+  ...blockHeadingSchema,
+  links: z.array(blockLinkSchema),
+});
+
 export const reviewsGridBlockSchema = z.object({ blockType: z.literal('reviews-grid') });
 export const servicesGridBlockSchema = z.object({ blockType: z.literal('services-grid') });
 export const accommodationsGridBlockSchema = z.object({
@@ -24,9 +88,7 @@ export const galleryBlockSchema = z.object({ blockType: z.literal('gallery') });
 export const mapBlockSchema = z.object({ blockType: z.literal('map') });
 export const instagramBlockSchema = z.object({ blockType: z.literal('instagram') });
 export const blogBlockSchema = z.object({ blockType: z.literal('blog') });
-export const ctaBlockSchema = z.object({ blockType: z.literal('cta') });
 export const faqBlockSchema = z.object({ blockType: z.literal('faq') });
-export const richTextBlockSchema = z.object({ blockType: z.literal('rich-text') });
 export const embedBlockSchema = z.object({ blockType: z.literal('embed') });
 
 /** Unión discriminada de todos los bloques disponibles en un `blocks` field. */
@@ -55,18 +117,18 @@ export const pageBlockSchema = z.discriminatedUnion('blockType', [
  * a poca profundidad — esta forma es suficiente para breadcrumbs y navegación.
  */
 const pageLiteRefSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   title: z.string(),
   slug: z.string(),
 });
 
 /** Documento de la colección `pages`: páginas con page builder de bloques. */
 export const pageSchema = z.object({
-  id: z.string(),
+  id: payloadIdSchema,
   title: z.string(),
   slug: z.string(),
   type: z.enum(['home', 'landing', 'static', 'listing', 'contact', 'faq']),
-  parent: z.union([z.string(), pageLiteRefSchema]).optional(),
+  parent: z.union([payloadIdSchema, pageLiteRefSchema]).optional(),
 
   hero: z
     .object({
@@ -80,10 +142,23 @@ export const pageSchema = z.object({
 
   blocks: z.array(pageBlockSchema).default([]),
 
-  seo: seoSchema.extend({
-    noIndex: z.boolean().default(false),
-    canonicalUrl: z.string().optional(),
-  }),
+  /** Todos sus campos son opcionales, así que un SEO sin rellenar no viaja. */
+  seo: seoSchema
+    .extend({
+      noIndex: z.boolean().default(false),
+      canonicalUrl: z.string().optional(),
+    })
+    .optional(),
 
   personalization: z.array(personalizationEntrySchema).optional(),
 });
+
+/**
+ * Forma de escritura de una página: lo que llega a un `beforeChange` de Payload
+ * en un `create`. Sin `id` (Payload lo asigna) y con los campos localizados
+ * ya resueltos al locale activo.
+ */
+export const pageInputSchema = pageSchema.omit({ id: true });
+
+/** Forma de escritura en un `update`: Payload solo manda los campos que cambian. */
+export const pageUpdateSchema = pageInputSchema.partial();

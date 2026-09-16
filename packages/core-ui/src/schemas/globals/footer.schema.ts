@@ -50,3 +50,13 @@ export const footerSchema = z.object({
 
   copyright: z.string(),
 });
+
+/**
+ * Forma de escritura de `footer`. Los globals no tienen `id`, así que la
+ * entrada coincide con el documento; Payload solo manda los campos que
+ * cambian, de ahí la variante parcial.
+ */
+export const footerInputSchema = footerSchema;
+
+/** Forma de escritura en un `update` del global. */
+export const footerUpdateSchema = footerSchema.partial();

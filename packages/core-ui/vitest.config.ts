@@ -14,7 +14,12 @@ export default defineConfig({
       // su propio umbral aquí conforme se implementa — no se aplica un único
       // umbral global al paquete, porque los mínimos son distintos por capa.
       // theme/token-contract.ts queda fuera: es una constante, no tiene lógica.
-      include: ['src/schemas/**/*.ts', 'src/primitives/**/*.tsx', 'src/lib/**/*.ts'],
+      include: [
+        'src/schemas/**/*.ts',
+        'src/primitives/**/*.tsx',
+        'src/lib/**/*.ts',
+        'src/payload/**/*.ts',
+      ],
       exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.types.ts', '**/index.ts'],
       thresholds: {
         // Schemas Zod — fuente de verdad
@@ -23,6 +28,8 @@ export default defineConfig({
         'src/primitives/**': { lines: 80, statements: 80, functions: 80, branches: 80 },
         // Utilidades compartidas
         'src/lib/**': { lines: 90, statements: 90, functions: 90, branches: 90 },
+        // Helpers de los hooks de Payload (criterio de HU-005)
+        'src/payload/**': { lines: 70, statements: 70, functions: 70, branches: 70 },
       },
     },
   },

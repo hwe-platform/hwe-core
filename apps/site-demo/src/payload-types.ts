@@ -68,6 +68,12 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    media: Media;
+    categories: Category;
+    accommodations: Accommodation;
+    entities: Entity;
+    pages: Page;
+    articles: Article;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,6 +82,12 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    accommodations: AccommodationsSelect<false> | AccommodationsSelect<true>;
+    entities: EntitiesSelect<false> | EntitiesSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -84,10 +96,20 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
-  locale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('fr' | 'en' | 'es') | ('fr' | 'en' | 'es')[];
+  globals: {
+    'site-config': SiteConfig;
+    header: Header;
+    footer: Footer;
+    banner: Banner;
+  };
+  globalsSelect: {
+    'site-config': SiteConfigSelect<false> | SiteConfigSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    banner: BannerSelect<false> | BannerSelect<true>;
+  };
+  locale: 'fr' | 'en' | 'es';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -141,6 +163,716 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Imágenes, vídeos y documentos del site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe la imagen para quien no puede verla. Obligatorio.
+   */
+  alt: string;
+  /**
+   * Pie de foto opcional, visible junto a la imagen.
+   */
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    hero?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * Se genera desde el nombre. Edítalo solo si necesitas otra URL.
+   */
+  slug?: string | null;
+  description?: string | null;
+  /**
+   * De menor a mayor. Controla el orden en los listados.
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accommodations".
+ */
+export interface Accommodation {
+  id: number;
+  name: string;
+  /**
+   * Se genera desde el nombre. Edítalo solo si necesitas otra URL.
+   */
+  slug?: string | null;
+  type: 'emplacement' | 'mobilhome' | 'cottage' | 'chalet' | 'tente';
+  /**
+   * Ej: "Cyclo Rando", "Premium".
+   */
+  subtype?: string | null;
+  /**
+   * Resumen para las tarjetas de listado.
+   */
+  shortDescription: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  specs: {
+    /**
+     * Personas.
+     */
+    capacity: number;
+    bedrooms: number;
+    /**
+     * En m².
+     */
+    surface: number;
+    hasAC?: boolean | null;
+    petFriendly?: boolean | null;
+  };
+  bedroomDetails?:
+    | {
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  equipment?:
+    | {
+        label: string;
+        icon?:
+          | (
+              | 'utensils'
+              | 'bed'
+              | 'waves'
+              | 'mapPin'
+              | 'wifi'
+              | 'car'
+              | 'users'
+              | 'calendar'
+              | 'phone'
+              | 'mail'
+              | 'check'
+              | 'x'
+              | 'chevronRight'
+              | 'chevronLeft'
+              | 'chevronDown'
+              | 'star'
+              | 'heart'
+              | 'menu'
+              | 'search'
+              | 'pawPrint'
+            )
+          | null;
+        included?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  pricing?: {
+    /**
+     * Precio "desde". Opcional.
+     */
+    from?: number | null;
+    currency?: string | null;
+    /**
+     * Ej: "par nuit", "par semaine".
+     */
+    priceNote?: string | null;
+  };
+  media: {
+    mainImage: number | Media;
+    gallery?: (number | Media)[] | null;
+    floorPlan?: (number | null) | Media;
+    /**
+     * URL del vídeo. Opcional.
+     */
+    video?: string | null;
+  };
+  documents?:
+    | {
+        label: string;
+        file: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  features?:
+    | {
+        icon?:
+          | (
+              | 'utensils'
+              | 'bed'
+              | 'waves'
+              | 'mapPin'
+              | 'wifi'
+              | 'car'
+              | 'users'
+              | 'calendar'
+              | 'phone'
+              | 'mail'
+              | 'check'
+              | 'x'
+              | 'chevronRight'
+              | 'chevronLeft'
+              | 'chevronDown'
+              | 'star'
+              | 'heart'
+              | 'menu'
+              | 'search'
+              | 'pawPrint'
+            )
+          | null;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Si lo dejas vacío, el site propone otros de la misma categoría.
+   */
+  comparison?: (number | Accommodation)[] | null;
+  category: number | Category;
+  featured?: boolean | null;
+  order?: number | null;
+  booking?: {
+    /**
+     * ID del alojamiento en el motor de reservas.
+     */
+    externalId?: string | null;
+    bookable?: boolean | null;
+  };
+  /**
+   * Personalización por segmento. Se activa en el Hito 3 — déjalo vacío.
+   */
+  personalization?:
+    | {
+        segment: string;
+        image: number | Media;
+        gallery?: (number | Media)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Secciones de la página, en el orden en que se pintan.
+   */
+  blocks?:
+    | (
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            image: number | Media;
+            /**
+             * Lado en el que se pinta la imagen respecto al texto.
+             */
+            imagePosition?: ('left' | 'right') | null;
+            link: {
+              label: string;
+              url: string;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              id?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'media-text';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            items: {
+              icon?:
+                | (
+                    | 'utensils'
+                    | 'bed'
+                    | 'waves'
+                    | 'mapPin'
+                    | 'wifi'
+                    | 'car'
+                    | 'users'
+                    | 'calendar'
+                    | 'phone'
+                    | 'mail'
+                    | 'check'
+                    | 'x'
+                    | 'chevronRight'
+                    | 'chevronLeft'
+                    | 'chevronDown'
+                    | 'star'
+                    | 'heart'
+                    | 'menu'
+                    | 'search'
+                    | 'pawPrint'
+                  )
+                | null;
+              label: string;
+              description?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'icon-grid';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            cards: {
+              image: number | Media;
+              title: string;
+              description?: string | null;
+              url?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'card-grid';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'rich-text';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            links: {
+              label: string;
+              url: string;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "entities".
+ */
+export interface Entity {
+  id: number;
+  type: 'service' | 'activity' | 'restaurant' | 'environment' | 'event' | 'custom';
+  name: string;
+  /**
+   * Se genera desde el nombre. Edítalo solo si necesitas otra URL.
+   */
+  slug?: string | null;
+  shortDescription: string;
+  description: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  icon:
+    | 'utensils'
+    | 'bed'
+    | 'waves'
+    | 'mapPin'
+    | 'wifi'
+    | 'car'
+    | 'users'
+    | 'calendar'
+    | 'phone'
+    | 'mail'
+    | 'check'
+    | 'x'
+    | 'chevronRight'
+    | 'chevronLeft'
+    | 'chevronDown'
+    | 'star'
+    | 'heart'
+    | 'menu'
+    | 'search'
+    | 'pawPrint';
+  image: number | Media;
+  gallery?: (number | Media)[] | null;
+  /**
+   * Etiqueta corta. Ej: "Village & port", "Sur place".
+   */
+  tag?: string | null;
+  featured?: boolean | null;
+  order?: number | null;
+  schedule?: {
+    periods?:
+      | {
+          label: string;
+          icon: 'utensils' | 'wine' | 'clock';
+          hours: string;
+          id?: string | null;
+        }[]
+      | null;
+    note?: string | null;
+  };
+  features?:
+    | {
+        icon:
+          | 'utensils'
+          | 'bed'
+          | 'waves'
+          | 'mapPin'
+          | 'wifi'
+          | 'car'
+          | 'users'
+          | 'calendar'
+          | 'phone'
+          | 'mail'
+          | 'check'
+          | 'x'
+          | 'chevronRight'
+          | 'chevronLeft'
+          | 'chevronDown'
+          | 'star'
+          | 'heart'
+          | 'menu'
+          | 'search'
+          | 'pawPrint';
+        label: string;
+        detail: string;
+        id?: string | null;
+      }[]
+    | null;
+  ctas?:
+    | {
+        label: string;
+        url: string;
+        variant: 'primary' | 'outline';
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Si está activo, la entidad tiene URL propia.
+   */
+  hasOwnPage?: boolean | null;
+  category?: (number | null) | Category;
+  /**
+   * Personalización por segmento. Se activa en el Hito 3 — déjalo vacío.
+   */
+  personalization?:
+    | {
+        segment: string;
+        image: number | Media;
+        gallery?: (number | Media)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Se genera desde el título. Edítalo solo si necesitas otra URL.
+   */
+  slug?: string | null;
+  type: 'home' | 'landing' | 'static' | 'listing' | 'contact' | 'faq';
+  /**
+   * Página de la que cuelga esta, para los breadcrumbs.
+   */
+  parent?: (number | null) | Page;
+  hero: {
+    variant: 'video' | 'image' | 'minimal' | 'none';
+    media?: (number | null) | Media;
+    /**
+     * Sustituye al título de la página en el hero.
+     */
+    title?: string | null;
+    subtitle?: string | null;
+    showBreadcrumbs?: boolean | null;
+  };
+  /**
+   * Secciones de la página, en el orden en que se pintan.
+   */
+  blocks?:
+    | (
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            image: number | Media;
+            /**
+             * Lado en el que se pinta la imagen respecto al texto.
+             */
+            imagePosition?: ('left' | 'right') | null;
+            link: {
+              label: string;
+              url: string;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              id?: string | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'media-text';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            items: {
+              icon?:
+                | (
+                    | 'utensils'
+                    | 'bed'
+                    | 'waves'
+                    | 'mapPin'
+                    | 'wifi'
+                    | 'car'
+                    | 'users'
+                    | 'calendar'
+                    | 'phone'
+                    | 'mail'
+                    | 'check'
+                    | 'x'
+                    | 'chevronRight'
+                    | 'chevronLeft'
+                    | 'chevronDown'
+                    | 'star'
+                    | 'heart'
+                    | 'menu'
+                    | 'search'
+                    | 'pawPrint'
+                  )
+                | null;
+              label: string;
+              description?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'icon-grid';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            cards: {
+              image: number | Media;
+              title: string;
+              description?: string | null;
+              url?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'card-grid';
+          }
+        | {
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'rich-text';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            links: {
+              label: string;
+              url: string;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    noIndex?: boolean | null;
+    canonicalUrl?: string | null;
+  };
+  /**
+   * Personalización por segmento. Se activa en el Hito 3 — déjalo vacío.
+   */
+  personalization?:
+    | {
+        segment: string;
+        image: number | Media;
+        gallery?: (number | Media)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  title: string;
+  /**
+   * Se genera desde el título. Edítalo solo si necesitas otra URL.
+   */
+  slug?: string | null;
+  /**
+   * Resumen corto para las tarjetas del listado.
+   */
+  excerpt: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  image: number | Media;
+  category: string;
+  publishedAt: string;
+  author?: string | null;
+  featured?: boolean | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -163,10 +895,35 @@ export interface PayloadKv {
  */
 export interface PayloadLockedDocument {
   id: number;
-  document?: {
-    relationTo: 'users';
-    value: number | User;
-  } | null;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'accommodations';
+        value: number | Accommodation;
+      } | null)
+    | ({
+        relationTo: 'entities';
+        value: number | Entity;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -233,6 +990,443 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  caption?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        hero?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "accommodations_select".
+ */
+export interface AccommodationsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  type?: T;
+  subtype?: T;
+  shortDescription?: T;
+  description?: T;
+  specs?:
+    | T
+    | {
+        capacity?: T;
+        bedrooms?: T;
+        surface?: T;
+        hasAC?: T;
+        petFriendly?: T;
+      };
+  bedroomDetails?:
+    | T
+    | {
+        description?: T;
+        id?: T;
+      };
+  equipment?:
+    | T
+    | {
+        label?: T;
+        icon?: T;
+        included?: T;
+        id?: T;
+      };
+  pricing?:
+    | T
+    | {
+        from?: T;
+        currency?: T;
+        priceNote?: T;
+      };
+  media?:
+    | T
+    | {
+        mainImage?: T;
+        gallery?: T;
+        floorPlan?: T;
+        video?: T;
+      };
+  documents?:
+    | T
+    | {
+        label?: T;
+        file?: T;
+        id?: T;
+      };
+  features?:
+    | T
+    | {
+        icon?: T;
+        label?: T;
+        id?: T;
+      };
+  comparison?: T;
+  category?: T;
+  featured?: T;
+  order?: T;
+  booking?:
+    | T
+    | {
+        externalId?: T;
+        bookable?: T;
+      };
+  personalization?:
+    | T
+    | {
+        segment?: T;
+        image?: T;
+        gallery?: T;
+        id?: T;
+      };
+  blocks?:
+    | T
+    | {
+        'media-text'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              content?: T;
+              image?: T;
+              imagePosition?: T;
+              link?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'icon-grid'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    label?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'card-grid'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              cards?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    description?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'rich-text'?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "entities_select".
+ */
+export interface EntitiesSelect<T extends boolean = true> {
+  type?: T;
+  name?: T;
+  slug?: T;
+  shortDescription?: T;
+  description?: T;
+  icon?: T;
+  image?: T;
+  gallery?: T;
+  tag?: T;
+  featured?: T;
+  order?: T;
+  schedule?:
+    | T
+    | {
+        periods?:
+          | T
+          | {
+              label?: T;
+              icon?: T;
+              hours?: T;
+              id?: T;
+            };
+        note?: T;
+      };
+  features?:
+    | T
+    | {
+        icon?: T;
+        label?: T;
+        detail?: T;
+        id?: T;
+      };
+  ctas?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        variant?: T;
+        id?: T;
+      };
+  hasOwnPage?: T;
+  category?: T;
+  personalization?:
+    | T
+    | {
+        segment?: T;
+        image?: T;
+        gallery?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  type?: T;
+  parent?: T;
+  hero?:
+    | T
+    | {
+        variant?: T;
+        media?: T;
+        title?: T;
+        subtitle?: T;
+        showBreadcrumbs?: T;
+      };
+  blocks?:
+    | T
+    | {
+        'media-text'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              content?: T;
+              image?: T;
+              imagePosition?: T;
+              link?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'icon-grid'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    label?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'card-grid'?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              cards?:
+                | T
+                | {
+                    image?: T;
+                    title?: T;
+                    description?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'rich-text'?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noIndex?: T;
+        canonicalUrl?: T;
+      };
+  personalization?:
+    | T
+    | {
+        segment?: T;
+        image?: T;
+        gallery?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  image?: T;
+  category?: T;
+  publishedAt?: T;
+  author?: T;
+  featured?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -270,6 +1464,425 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-config".
+ */
+export interface SiteConfig {
+  id: number;
+  general: {
+    siteName: string;
+    siteDescription: string;
+    logo: number | Media;
+    /**
+     * Versión para fondos oscuros.
+     */
+    logoInverted: number | Media;
+    /**
+     * Clasificación. Opcional.
+     */
+    stars?: number | null;
+    openingDates: string;
+  };
+  contact: {
+    address: string;
+    postalCode: string;
+    city: string;
+    country: string;
+    phone: string;
+    email: string;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+    transport?:
+      | {
+          icon: 'car' | 'train' | 'plane';
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  languages: {
+    /**
+     * Códigos de idioma: fr, en, es.
+     */
+    available: string[];
+    default: string;
+    /**
+     * Si el idioma principal lleva prefijo en la URL.
+     */
+    prefixDefault: boolean;
+    /**
+     * El Hito 1 solo implementa "prefix".
+     */
+    strategy: 'prefix' | 'domain';
+    domainMap?:
+      | {
+          locale: string;
+          domain: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  social?: {
+    instagram?: string | null;
+    facebook?: string | null;
+    youtube?: string | null;
+    linkedin?: string | null;
+    tiktok?: string | null;
+    /**
+     * Ej: @camping_lacivelle
+     */
+    instagramHandle?: string | null;
+  };
+  /**
+   * Métodos de pago aceptados. Ej: CB, Visa, Mastercard.
+   */
+  payments?: string[] | null;
+  legal?: {
+    links?:
+      | {
+          label: string;
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  tracking?: {
+    gtmId?: string | null;
+    gaId?: string | null;
+    metaPixelId?: string | null;
+  };
+  customCode?:
+    | {
+        label: string;
+        code: string;
+        position: 'head' | 'bodyStart' | 'bodyEnd';
+        /**
+         * Si solo debe cargarse tras aceptar cookies.
+         */
+        requiresConsent?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  booking: {
+    engine: 'thr' | 'witbooking' | 'mastercamping' | 'resalys';
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  topBar: {
+    links?:
+      | {
+          label: string;
+          icon: 'help' | 'phone' | 'video' | 'user' | 'custom';
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+    showLogin?: boolean | null;
+    bookingButtonLabel: string;
+  };
+  navigation?:
+    | {
+        label: string;
+        url: string;
+        children?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  virtualAssistant?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    placeholder?: string | null;
+  };
+  columns?:
+    | {
+        title: string;
+        type: 'links' | 'text' | 'schedule' | 'newsletter';
+        links?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        newsletter?: {
+          description?: string | null;
+          buttonLabel: string;
+          provider: 'mailchimp' | 'sendinblue' | 'custom';
+          actionUrl: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  partners?:
+    | {
+        name: string;
+        logo: number | Media;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  copyright: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banner".
+ */
+export interface Banner {
+  id: number;
+  enabled?: boolean | null;
+  message: string;
+  type: 'info' | 'warning' | 'promo';
+  dismissible?: boolean | null;
+  /**
+   * Destino al pulsar el aviso.
+   */
+  url?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-config_select".
+ */
+export interface SiteConfigSelect<T extends boolean = true> {
+  general?:
+    | T
+    | {
+        siteName?: T;
+        siteDescription?: T;
+        logo?: T;
+        logoInverted?: T;
+        stars?: T;
+        openingDates?: T;
+      };
+  contact?:
+    | T
+    | {
+        address?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+        phone?: T;
+        email?: T;
+      };
+  location?:
+    | T
+    | {
+        latitude?: T;
+        longitude?: T;
+        transport?:
+          | T
+          | {
+              icon?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  languages?:
+    | T
+    | {
+        available?: T;
+        default?: T;
+        prefixDefault?: T;
+        strategy?: T;
+        domainMap?:
+          | T
+          | {
+              locale?: T;
+              domain?: T;
+              id?: T;
+            };
+      };
+  social?:
+    | T
+    | {
+        instagram?: T;
+        facebook?: T;
+        youtube?: T;
+        linkedin?: T;
+        tiktok?: T;
+        instagramHandle?: T;
+      };
+  payments?: T;
+  legal?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+      };
+  tracking?:
+    | T
+    | {
+        gtmId?: T;
+        gaId?: T;
+        metaPixelId?: T;
+      };
+  customCode?:
+    | T
+    | {
+        label?: T;
+        code?: T;
+        position?: T;
+        requiresConsent?: T;
+        id?: T;
+      };
+  booking?:
+    | T
+    | {
+        engine?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  topBar?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              icon?: T;
+              url?: T;
+              id?: T;
+            };
+        showLogin?: T;
+        bookingButtonLabel?: T;
+      };
+  navigation?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  virtualAssistant?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        placeholder?: T;
+      };
+  columns?:
+    | T
+    | {
+        title?: T;
+        type?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        content?: T;
+        newsletter?:
+          | T
+          | {
+              description?: T;
+              buttonLabel?: T;
+              provider?: T;
+              actionUrl?: T;
+            };
+        id?: T;
+      };
+  partners?:
+    | T
+    | {
+        name?: T;
+        logo?: T;
+        url?: T;
+        id?: T;
+      };
+  copyright?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banner_select".
+ */
+export interface BannerSelect<T extends boolean = true> {
+  enabled?: T;
+  message?: T;
+  type?: T;
+  dismissible?: T;
+  url?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,6 +1,14 @@
 import type { ZodType } from 'zod';
 
 /**
+ * Schema utilizable como boundary de escritura de Payload.
+ *
+ * Se reexporta para que los sites no necesiten declarar `zod` entre sus
+ * dependencias solo para tipar un hook: el schema lo pone core-ui.
+ */
+export type WriteSchema<T = unknown> = ZodType<T>;
+
+/**
  * Error de validación de un boundary de escritura de Payload. Lleva las rutas
  * de los campos que fallaron para que el mensaje del admin sea accionable.
  */

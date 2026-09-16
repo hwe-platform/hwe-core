@@ -1,7 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { compareFieldParity, mediaSchema } from '@hwe-platform/core-ui';
+import {
+  compareFieldParity,
+  mediaSchema,
+  categorySchema,
+  articleSchema,
+} from '@hwe-platform/core-ui';
 
 import { Media } from './Media';
+import { Categories } from './Categories';
+import { Articles } from './Articles';
 
 import type { ParityField } from '@hwe-platform/core-ui';
 
@@ -24,6 +31,27 @@ describe('paridad entre los configs de Payload y los schemas Zod', () => {
       schemaKeys: Object.keys(mediaSchema.shape),
       fields: Media.fields as ParityField[],
       autoFields: UPLOAD_AUTO_FIELDS,
+    });
+
+    expect(result.missingInConfig, 'campos del schema que faltan en el config').toEqual([]);
+    expect(result.missingInSchema, 'campos del config que faltan en el schema').toEqual([]);
+  });
+  it('categories coincide con categorySchema', () => {
+    const result = compareFieldParity({
+      schemaKeys: Object.keys(categorySchema.shape),
+      fields: Categories.fields as ParityField[],
+      autoFields: ['id'],
+    });
+
+    expect(result.missingInConfig, 'campos del schema que faltan en el config').toEqual([]);
+    expect(result.missingInSchema, 'campos del config que faltan en el schema').toEqual([]);
+  });
+
+  it('articles coincide con articleSchema', () => {
+    const result = compareFieldParity({
+      schemaKeys: Object.keys(articleSchema.shape),
+      fields: Articles.fields as ParityField[],
+      autoFields: ['id'],
     });
 
     expect(result.missingInConfig, 'campos del schema que faltan en el config').toEqual([]);

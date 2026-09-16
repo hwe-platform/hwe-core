@@ -97,8 +97,18 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-config': SiteConfig;
+    header: Header;
+    footer: Footer;
+    banner: Banner;
+  };
+  globalsSelect: {
+    'site-config': SiteConfigSelect<false> | SiteConfigSelect<true>;
+    header: HeaderSelect<false> | HeaderSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    banner: BannerSelect<false> | BannerSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -1452,6 +1462,425 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-config".
+ */
+export interface SiteConfig {
+  id: number;
+  general: {
+    siteName: string;
+    siteDescription: string;
+    logo: number | Media;
+    /**
+     * Versión para fondos oscuros.
+     */
+    logoInverted: number | Media;
+    /**
+     * Clasificación. Opcional.
+     */
+    stars?: number | null;
+    openingDates: string;
+  };
+  contact: {
+    address: string;
+    postalCode: string;
+    city: string;
+    country: string;
+    phone: string;
+    email: string;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+    transport?:
+      | {
+          icon: 'car' | 'train' | 'plane';
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  languages: {
+    /**
+     * Códigos de idioma: fr, en, es.
+     */
+    available: string[];
+    default: string;
+    /**
+     * Si el idioma principal lleva prefijo en la URL.
+     */
+    prefixDefault: boolean;
+    /**
+     * El Hito 1 solo implementa "prefix".
+     */
+    strategy: 'prefix' | 'domain';
+    domainMap?:
+      | {
+          locale: string;
+          domain: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  social?: {
+    instagram?: string | null;
+    facebook?: string | null;
+    youtube?: string | null;
+    linkedin?: string | null;
+    tiktok?: string | null;
+    /**
+     * Ej: @camping_lacivelle
+     */
+    instagramHandle?: string | null;
+  };
+  /**
+   * Métodos de pago aceptados. Ej: CB, Visa, Mastercard.
+   */
+  payments?: string[] | null;
+  legal?: {
+    links?:
+      | {
+          label: string;
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  tracking?: {
+    gtmId?: string | null;
+    gaId?: string | null;
+    metaPixelId?: string | null;
+  };
+  customCode?:
+    | {
+        label: string;
+        code: string;
+        position: 'head' | 'bodyStart' | 'bodyEnd';
+        /**
+         * Si solo debe cargarse tras aceptar cookies.
+         */
+        requiresConsent?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  booking: {
+    engine: 'thr' | 'witbooking' | 'mastercamping' | 'resalys';
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header".
+ */
+export interface Header {
+  id: number;
+  topBar: {
+    links?:
+      | {
+          label: string;
+          icon: 'help' | 'phone' | 'video' | 'user' | 'custom';
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+    showLogin?: boolean | null;
+    bookingButtonLabel: string;
+  };
+  navigation?:
+    | {
+        label: string;
+        url: string;
+        children?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  virtualAssistant?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    placeholder?: string | null;
+  };
+  columns?:
+    | {
+        title: string;
+        type: 'links' | 'text' | 'schedule' | 'newsletter';
+        links?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        content?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        newsletter?: {
+          description?: string | null;
+          buttonLabel: string;
+          provider: 'mailchimp' | 'sendinblue' | 'custom';
+          actionUrl: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  partners?:
+    | {
+        name: string;
+        logo: number | Media;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  copyright: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banner".
+ */
+export interface Banner {
+  id: number;
+  enabled?: boolean | null;
+  message: string;
+  type: 'info' | 'warning' | 'promo';
+  dismissible?: boolean | null;
+  /**
+   * Destino al pulsar el aviso.
+   */
+  url?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-config_select".
+ */
+export interface SiteConfigSelect<T extends boolean = true> {
+  general?:
+    | T
+    | {
+        siteName?: T;
+        siteDescription?: T;
+        logo?: T;
+        logoInverted?: T;
+        stars?: T;
+        openingDates?: T;
+      };
+  contact?:
+    | T
+    | {
+        address?: T;
+        postalCode?: T;
+        city?: T;
+        country?: T;
+        phone?: T;
+        email?: T;
+      };
+  location?:
+    | T
+    | {
+        latitude?: T;
+        longitude?: T;
+        transport?:
+          | T
+          | {
+              icon?: T;
+              label?: T;
+              id?: T;
+            };
+      };
+  languages?:
+    | T
+    | {
+        available?: T;
+        default?: T;
+        prefixDefault?: T;
+        strategy?: T;
+        domainMap?:
+          | T
+          | {
+              locale?: T;
+              domain?: T;
+              id?: T;
+            };
+      };
+  social?:
+    | T
+    | {
+        instagram?: T;
+        facebook?: T;
+        youtube?: T;
+        linkedin?: T;
+        tiktok?: T;
+        instagramHandle?: T;
+      };
+  payments?: T;
+  legal?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+      };
+  tracking?:
+    | T
+    | {
+        gtmId?: T;
+        gaId?: T;
+        metaPixelId?: T;
+      };
+  customCode?:
+    | T
+    | {
+        label?: T;
+        code?: T;
+        position?: T;
+        requiresConsent?: T;
+        id?: T;
+      };
+  booking?:
+    | T
+    | {
+        engine?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "header_select".
+ */
+export interface HeaderSelect<T extends boolean = true> {
+  topBar?:
+    | T
+    | {
+        links?:
+          | T
+          | {
+              label?: T;
+              icon?: T;
+              url?: T;
+              id?: T;
+            };
+        showLogin?: T;
+        bookingButtonLabel?: T;
+      };
+  navigation?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  virtualAssistant?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        placeholder?: T;
+      };
+  columns?:
+    | T
+    | {
+        title?: T;
+        type?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        content?: T;
+        newsletter?:
+          | T
+          | {
+              description?: T;
+              buttonLabel?: T;
+              provider?: T;
+              actionUrl?: T;
+            };
+        id?: T;
+      };
+  partners?:
+    | T
+    | {
+        name?: T;
+        logo?: T;
+        url?: T;
+        id?: T;
+      };
+  copyright?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banner_select".
+ */
+export interface BannerSelect<T extends boolean = true> {
+  enabled?: T;
+  message?: T;
+  type?: T;
+  dismissible?: T;
+  url?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

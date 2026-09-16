@@ -11,6 +11,10 @@ import { Articles } from './collections/Articles';
 import { Accommodations } from './collections/Accommodations';
 import { Entities } from './collections/Entities';
 import { Pages } from './collections/Pages';
+import { SiteConfig } from './globals/SiteConfig';
+import { Header } from './globals/Header';
+import { Footer } from './globals/Footer';
+import { Banner } from './globals/Banner';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -31,7 +35,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Categories, Accommodations, Entities, Pages, Articles],
-  globals: [],
+  globals: [SiteConfig, Header, Footer, Banner],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET ?? '',
   typescript: {

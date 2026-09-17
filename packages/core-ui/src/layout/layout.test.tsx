@@ -207,14 +207,31 @@ describe('Footer', () => {
     expect(screen.getByRole('link', { name: 'Le Camping' })).toBeInTheDocument();
   });
 
-  it('lee redes, pagos y legales de site-config, no del propio footer', () => {
+  it('lee contacto, redes, pagos y legales de site-config, no del propio footer', () => {
     render(<Footer data={footer} config={siteConfig} />);
+
+    // El contacto abre el pie en el diseño y sale de site-config
+    expect(screen.getByText(/Route de la Plage/)).toBeInTheDocument();
+    expect(screen.getByText('05 58 72 12 34')).toBeInTheDocument();
+
     expect(screen.getByRole('link', { name: 'instagram' })).toHaveAttribute(
       'href',
       'https://instagram.com/lacivelle',
     );
-    expect(screen.getByText('CB · Visa')).toBeInTheDocument();
+    // Los pagos son insignias sueltas, no una lista separada por puntos
+    expect(screen.getByText('CB')).toBeInTheDocument();
+    expect(screen.getByText('Visa')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'CGV' })).toBeInTheDocument();
+  });
+
+  it('pinta las estrellas de la clasificación junto al nombre', () => {
+    render(
+      <Footer
+        data={footer}
+        config={{ ...siteConfig, general: { ...siteConfig.general, stars: 3 } }}
+      />,
+    );
+    expect(screen.getByText(/Camping La Civelle ★★★/)).toBeInTheDocument();
   });
 
   it('oculta el asistente virtual si está desactivado', () => {

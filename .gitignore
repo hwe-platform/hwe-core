@@ -2,6 +2,10 @@ node_modules
 dist
 coverage
 .next
+
+# Archivos subidos por el editor: son contenido del cliente, no código.
+# En producción viven en un storage externo (ver DEC-010); en local, aquí.
+apps/*/media
 .turbo
 *.tsbuildinfo
 .env

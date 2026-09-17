@@ -33,7 +33,7 @@ async function login() {
 }
 
 /** El logo es obligatorio en site-config, así que hace falta un media. */
-async function ensureLogo(token) {
+async function ensureLogo() {
   const existing = await (await fetch(`${API}/media?limit=1`)).json();
   if (existing.docs?.[0]) return existing.docs[0].id;
 
@@ -59,7 +59,7 @@ async function saveGlobal(slug, data, token) {
 }
 
 const token = await login();
-const logo = await ensureLogo(token);
+const logo = await ensureLogo();
 
 console.log('Sembrando globals con los datos de La Civelle...\n');
 

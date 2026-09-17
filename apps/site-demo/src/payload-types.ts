@@ -1663,7 +1663,7 @@ export interface Header {
     links?:
       | {
           label: string;
-          icon: 'help' | 'phone' | 'video' | 'user' | 'custom';
+          icon: 'help' | 'phone' | 'mail' | 'video' | 'user' | 'custom';
           url: string;
           id?: string | null;
         }[]

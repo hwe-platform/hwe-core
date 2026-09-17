@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   compareFieldParity,
+  compareOptionParity,
   siteConfigSchema,
   headerSchema,
   footerSchema,
@@ -43,4 +44,14 @@ describe('paridad entre los globals de Payload y los schemas Zod', () => {
     expect(result.missingInConfig, 'campos del schema que faltan en el config').toEqual([]);
     expect(result.missingInSchema, 'campos del config que faltan en el schema').toEqual([]);
   });
+
+  // Los nombres de campo coincidían y las **opciones** de un `select` no: el
+  // panel ofrecía un valor que el schema rechazaba, y el fallo solo aparecía al
+  // escribir, como un HTTP 400 lejos de su causa.
+  it.each(casos)(
+    'las opciones de los select de $nombre coinciden con su enum',
+    ({ config, schema }) => {
+      expect(compareOptionParity({ schema, fields: config.fields as ParityField[] })).toEqual([]);
+    },
+  );
 });

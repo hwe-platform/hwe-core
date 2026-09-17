@@ -8,6 +8,16 @@
  * Uso:
  *   node scripts/seed-globals.mjs <email> <contraseña> [url]
  *
+ * o, sin teclear nada, con estas variables en el `.env` del site:
+ *
+ *   PAYLOAD_SEED_EMAIL=...
+ *   PAYLOAD_SEED_PASSWORD=...
+ *
+ * La segunda forma existe para que el sembrado lo pueda lanzar un skill o la
+ * integración continua. Son credenciales de un usuario del panel: van en el
+ * `.env`, que está en `.gitignore`, y conviene que sea un usuario dedicado al
+ * sembrado y no el personal de nadie.
+ *
  * Es idempotente: vuelve a escribir los mismos valores, no acumula.
  */
 
@@ -15,10 +25,41 @@ import { readFile } from 'node:fs/promises';
 
 import sharp from 'sharp';
 
-const [, , email, password, base = 'http://localhost:3000'] = process.argv;
+/**
+ * Lee el `.env` del site.
+ *
+ * Lo hace este script porque quien carga el `.env` es Next, y aquí no hay Next:
+ * es un proceso suelto. Diez líneas evitan una dependencia y el `--env-file` de
+ * Node, que falla si el fichero no existe.
+ */
+async function cargarEnv() {
+  let contenido;
+  try {
+    contenido = await readFile(new URL('../.env', import.meta.url), 'utf8');
+  } catch {
+    return;
+  }
+  for (const linea of contenido.split('\n')) {
+    const m = /^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i.exec(linea);
+    if (!m) continue;
+    const valor = m[2].trim().replace(/^["']|["']$/g, '');
+    process.env[m[1]] ??= valor;
+  }
+}
+
+const [, , argEmail, argPassword, base = 'http://localhost:3000'] = process.argv;
+
+await cargarEnv();
+
+const email = argEmail ?? process.env.PAYLOAD_SEED_EMAIL;
+const password = argPassword ?? process.env.PAYLOAD_SEED_PASSWORD;
 
 if (!email || !password) {
-  console.error('Uso: node scripts/seed-globals.mjs <email> <contraseña> [url]');
+  console.error(
+    'Faltan credenciales. Pásalas como argumentos:\n' +
+      '  node scripts/seed-globals.mjs <email> <contraseña> [url]\n' +
+      'o define PAYLOAD_SEED_EMAIL y PAYLOAD_SEED_PASSWORD en el .env del site.',
+  );
   process.exit(1);
 }
 

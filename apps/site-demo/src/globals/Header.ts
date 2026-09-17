@@ -42,7 +42,9 @@ export const Header: GlobalConfig = {
               name: 'icon',
               type: 'select',
               required: true,
-              options: ['help', 'phone', 'video', 'user', 'custom'],
+              // Debe coincidir con el enum de `header.schema.ts`. Lo comprueba
+              // el test de paridad.
+              options: ['help', 'phone', 'mail', 'video', 'user', 'custom'],
             },
             { name: 'url', type: 'text', required: true },
           ],

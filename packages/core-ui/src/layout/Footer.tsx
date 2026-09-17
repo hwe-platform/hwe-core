@@ -20,12 +20,37 @@ const REDES = [
 /** Clase de los enlaces del pie: crema atenuado que vira al acento. */
 const ENLACE = 'text-primary-foreground/70 hover:text-secondary text-sm';
 
+/**
+ * Rótulos de las secciones que el pie arma por su cuenta.
+ *
+ * No salen de Payload porque no son contenido: son etiquetas de interfaz, y el
+ * editor no debería tener que traducirlas por cada idioma del site. Van aquí, y
+ * no en un fichero de traducciones, porque hasta que haya más textos de UI que
+ * estos cuatro no compensa la dependencia (`codigo.md`). El valor por defecto
+ * es francés, el idioma del primer site.
+ */
+export type FooterLabels = {
+  contact: string;
+  partners: string;
+  social: string;
+  payments: string;
+};
+
+const ROTULOS: FooterLabels = {
+  contact: 'Contact',
+  partners: 'Nos Labels & Partenaires',
+  social: 'Suivez-nous',
+  payments: 'Paiements acceptés',
+};
+
 /** Props de {@link Footer}. */
 export type FooterProps = {
   /** Global `footer` de Payload. */
   data: FooterData;
   /** Global `site-config`: de aquí salen contacto, redes, pagos y legales. */
   config: SiteConfigData;
+  /** Rótulos de interfaz. Por defecto, los de {@link ROTULOS}. */
+  labels?: Partial<FooterLabels>;
 };
 
 /**
@@ -35,7 +60,7 @@ export type FooterProps = {
  * usan el bloque de mapa y los metadatos, y duplicarla sería pedirle al editor
  * que la mantenga en dos sitios.
  */
-function Contacto({ config }: { config: SiteConfigData }) {
+function Contacto({ config, rotulo }: { config: SiteConfigData; rotulo: string }) {
   const { general, contact } = config;
   const estrellas = general.stars ? ` ${'★'.repeat(general.stars)}` : '';
 
@@ -43,7 +68,7 @@ function Contacto({ config }: { config: SiteConfigData }) {
     <div className="flex flex-col gap-6 lg:col-span-3">
       <div>
         <Eyebrow size="sm" as="h2" className="mb-4">
-          Contacto
+          {rotulo}
         </Eyebrow>
         <div className="flex gap-3">
           <Icon name="mapPin" size="sm" className="text-secondary mt-1 shrink-0" />
@@ -118,13 +143,13 @@ function Columna({ columna }: { columna: FooterData['columns'][number] }) {
 }
 
 /** Logos de los sellos y partners del cliente. */
-function Partners({ partners }: { partners: FooterData['partners'] }) {
+function Partners({ partners, rotulo }: { partners: FooterData['partners']; rotulo: string }) {
   if (partners.length === 0) return null;
 
   return (
     <section className="flex flex-col items-center gap-6 border-t border-white/20 pt-8">
       <Eyebrow size="sm" as="h2">
-        Nuestros sellos y partners
+        {rotulo}
       </Eyebrow>
       <ul className="flex flex-wrap items-center justify-center gap-8">
         {partners.map((partner) => (
@@ -147,14 +172,20 @@ function Partners({ partners }: { partners: FooterData['partners'] }) {
 function PartnerLogo({ partner }: { partner: FooterData['partners'][number] }) {
   const url = mediaUrl(partner.logo);
   return url ? (
-    <Image src={url} alt={partner.name} width={120} height={48} />
+    <Image
+      src={url}
+      alt={partner.name}
+      width={120}
+      height={48}
+      className="h-12 w-auto object-contain"
+    />
   ) : (
     <span className="text-primary-foreground/70 text-sm">{partner.name}</span>
   );
 }
 
 /** Redes sociales y métodos de pago. Ambos salen de `site-config`. */
-function BandaSocial({ config }: { config: SiteConfigData }) {
+function BandaSocial({ config, rotulos }: { config: SiteConfigData; rotulos: FooterLabels }) {
   const redes = REDES.map((red) => ({ ...red, url: config.social[red.clave] })).filter(
     (red): red is (typeof REDES)[number] & { url: string } => Boolean(red.url),
   );
@@ -166,7 +197,7 @@ function BandaSocial({ config }: { config: SiteConfigData }) {
       {redes.length > 0 ? (
         <div className="flex flex-col gap-3">
           <Eyebrow size="sm" as="h2">
-            Síguenos
+            {rotulos.social}
           </Eyebrow>
           <ul className="flex flex-wrap gap-3">
             {redes.map((red) => (
@@ -187,7 +218,7 @@ function BandaSocial({ config }: { config: SiteConfigData }) {
       {config.payments.length > 0 ? (
         <div className="flex flex-col gap-3">
           <Eyebrow size="sm" as="h2">
-            Pagos aceptados
+            {rotulos.payments}
           </Eyebrow>
           <ul className="flex flex-wrap gap-2">
             {config.payments.map((pago) => (
@@ -236,14 +267,16 @@ function BandaLegal({ config, copyright }: { config: SiteConfigData; copyright: 
  * @example
  * <Footer data={footer} config={siteConfig} />
  */
-export function Footer({ data, config }: FooterProps) {
+export function Footer({ data, config, labels }: FooterProps) {
+  const rotulos = { ...ROTULOS, ...labels };
+
   return (
     <footer className="bg-footer text-primary-foreground mt-auto">
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-12 px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-12 px-4 py-16 sm:px-6 md:py-24 lg:px-8 lg:py-32">
         {data.virtualAssistant.enabled ? (
           <section className="flex flex-col gap-2 border-b border-white/20 pb-10">
             <Eyebrow size="sm" as="h2">
-              {data.virtualAssistant.title ?? 'Asistente virtual'}
+              {data.virtualAssistant.title ?? ''}
             </Eyebrow>
             {data.virtualAssistant.subtitle ? (
               <p className="text-primary-foreground/70 text-sm">{data.virtualAssistant.subtitle}</p>
@@ -252,14 +285,14 @@ export function Footer({ data, config }: FooterProps) {
         ) : null}
 
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
-          <Contacto config={config} />
+          <Contacto config={config} rotulo={rotulos.contact} />
           {data.columns.map((columna) => (
             <Columna key={columna.title} columna={columna} />
           ))}
         </div>
 
-        <Partners partners={data.partners} />
-        <BandaSocial config={config} />
+        <Partners partners={data.partners} rotulo={rotulos.partners} />
+        <BandaSocial config={config} rotulos={rotulos} />
         <BandaLegal config={config} copyright={data.copyright} />
       </div>
     </footer>

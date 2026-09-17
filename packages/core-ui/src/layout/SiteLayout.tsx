@@ -63,6 +63,8 @@ export function SiteLayout({ globals, locale, children }: SiteLayoutProps) {
         data={header}
         locales={{ available: siteConfig.languages.available, current: locale ?? '' }}
         onOpenMenu={() => setMenuAbierto(true)}
+        logoUrl={logo}
+        siteName={siteConfig.general.siteName}
       />
       {/* Compensa la altura de la barra fija, para que el contenido no salte. */}
       <div className="h-12 md:h-10" />

@@ -43,10 +43,70 @@ por eso su etiqueta HTML por defecto es `<p>`.
 | **Enlaces sobre fondo oscuro** | `--primary-foreground` al 70%, hover a `--secondary` | No blanco puro |
 | **Iconos junto a datos** | `--secondary` como trazo | El icono es dorado aunque el texto no lo sea |
 | **Fondo del pie** | `--footer` (gris muy oscuro) | Distinto de `--primary` |
-| **Barra superior** | `--primary` con texto `--primary-foreground` | |
-| **Botón principal** | `--secondary` de fondo | El CTA destacado es dorado, no verde |
+| **Barra superior y navegación** | `--background` (crema) con borde `--border` | **Nunca `--primary`.** Ver "El chrome" |
+| **Botón principal** | `--secondary` de fondo, texto `--primary-foreground` | El CTA destacado es dorado, y su texto **casi blanco**, no verde |
 | **Separadores sobre oscuro** | blanco al 20% | |
 | **Fondos alternos de sección** | `--card` ↔ `--muted` al 40% | Se alternan en secciones consecutivas |
+
+---
+
+## El chrome
+
+El marco del site —barra superior, navegación, pie— tiene **su propia escala**,
+más pequeña que la del contenido. Confundirlas es lo que hace que una web "con
+los colores buenos" no se parezca al diseño.
+
+### Las dos barras son claras, no verdes
+
+Ninguna de las dos usa el color de marca de fondo. Las dos van sobre
+`--background` (crema) separadas por `--border`. El verde aparece **solo en el
+texto**, para marcar lo activo:
+
+| | Altura | Fondo | Texto |
+|---|---|---|---|
+| Barra superior | 48px móvil / 40px | `--background` | `--muted-foreground` a 11px |
+| Navegación | 64px | `--background` | `--foreground`, y `--primary` en activo y hover |
+
+La navegación se queda fija a `top-40px`, justo bajo la barra superior, y al
+hacerlo gana sombra.
+
+### La escala tipográfica del chrome
+
+Muy por debajo de la del contenido. Nada aquí usa `text-sm` del sistema:
+
+```
+enlaces de servicio   11px · medium   · versalitas · tracking-wide
+entradas de menú      11px · bold     · versalitas · tracking-[1.16px]
+hijos de desplegable  12px · medium
+botón de reserva      11px · bold     · versalitas · tracking-[1.2px] · 28px de alto
+```
+
+### La sección activa se marca con un subrayado dorado
+
+Barra de 2px pegada al borde inferior de la entrada, en `--secondary`. Al pasar
+por encima se insinúa al 50%. **No** se marca con fondo ni con negrita extra.
+
+### Desplegables
+
+`rounded-2xl`, sombra grande, borde `--border` y fondo `--background`. Cada hijo
+lleva un borde izquierdo transparente que vira a dorado al pasar por encima. A
+partir de 6 hijos pasa a **dos columnas** de 440px; a partir de la séptima
+entrada del menú se alinea a la derecha para no salirse de la pantalla.
+
+### Botón de acento
+
+`--secondary` de fondo y `--primary-foreground` de texto — casi blanco sobre
+oro. **El tema declara `--secondary-foreground` en verde oscuro y el diseño no
+lo usa nunca**: es un resto del tema por defecto de shadcn. En este site ese
+token se ha corregido a `#fcfcf1` para que la primitiva `Button` dé el par que
+el diseño pide sin casos especiales.
+
+### El logo viene en blanco
+
+El export solo trae la versión blanca, y le aplica `invert` cada vez que la pone
+sobre fondo claro. En Payload van **las dos versiones**: `logo` la oscura, para
+las barras; `logoInverted` la blanca, para el pie y el menú móvil. El
+componente no lleva filtros: el color del logo es un dato del cliente.
 
 ---
 
@@ -103,3 +163,21 @@ Se registran para que no se repitan:
    en `site-config` y el diseño lo pone como primera columna del pie.
 3. **Las redes y los pagos salieron como texto plano**, cuando el diseño usa
    iconos circulares e insignias.
+4. **La barra superior se pintó verde.** El diseño la quiere crema con texto
+   gris de 11px. El fallo venía de este mismo documento, que en su primera
+   versión decía "barra superior: `--primary`" — se escribió de memoria en
+   lugar de leer el export. Un documento con el dato mal es peor que no
+   tenerlo: da confianza.
+5. **El botón dorado salió con texto verde oscuro.** Se usó la primitiva
+   `Button` con su par `--secondary` / `--secondary-foreground`, sin comprobar
+   que el diseño nunca usa ese par. El error estaba en el token del cliente,
+   no en la primitiva.
+6. **La navegación se construyó sin estado activo ni subrayado**, que es lo
+   único que en este diseño indica dónde estás.
+7. **Los rótulos fijos del pie quedaron en castellano** ("Contacto",
+   "Síguenos") dentro de un site en francés. Se escribieron en el idioma de la
+   conversación, no en el del cliente.
+8. **Se sembraron 6 entradas de menú de las 8 del diseño y 2 columnas de pie
+   de las 5.** Faltaba contenido, no código: la mitad de lo que parecía un
+   fallo de maquetación era el seed incompleto. Conviene descartar eso antes
+   de tocar componentes.

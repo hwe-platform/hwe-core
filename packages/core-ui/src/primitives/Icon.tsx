@@ -80,6 +80,8 @@ export const ICON_NAMES = Object.keys(ICONS) as IconName[];
 const iconVariants = cva('shrink-0', {
   variants: {
     size: {
+      /** 14px — el tamaño de los iconos del chrome (barra superior, chevrons). */
+      xs: 'h-3.5 w-3.5',
       sm: 'h-4 w-4',
       md: 'h-6 w-6',
       lg: 'h-8 w-8',

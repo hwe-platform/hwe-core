@@ -192,7 +192,7 @@ await saveGlobal(
     topBar: {
       links: [
         { label: 'Aide', icon: 'help', url: '/aide' },
-        { label: 'Contact', icon: 'phone', url: '/contact' },
+        { label: 'Contact', icon: 'mail', url: '/contact' },
         { label: 'Webcams', icon: 'video', url: '/webcams' },
         { label: 'Se connecter', icon: 'user', url: '/compte' },
       ],

@@ -1,0 +1,42 @@
+import { blockRegistry } from './blockRegistry';
+
+import type { BlockRendererProps } from './types';
+
+/**
+ * Recorre la secuencia de bloques de una página y renderiza cada uno con su
+ * componente.
+ *
+ * No valida nada: pasa los datos como `unknown` y cada bloque valida los suyos
+ * con su schema Zod. Así el renderer no se acopla a todos los schemas
+ * (ver docs/arquitectura/bloques.md).
+ *
+ * Un `blockType` sin componente no rompe la página — avisa en desarrollo y no
+ * pinta nada. Es la situación normal mientras el catálogo se construye: el
+ * editor puede insertar un bloque cuyo componente aún no existe.
+ *
+ * @example
+ * <BlockRenderer blocks={page.blocks} customRegistry={clientRegistry} />
+ */
+export function BlockRenderer({ blocks, customRegistry }: BlockRendererProps) {
+  return (
+    <>
+      {blocks.map((block) => {
+        // El registry del cliente manda sobre el de plataforma: así un site
+        // sustituye un bloque sin tocar core-ui.
+        const Component = customRegistry?.[block.blockType] ?? blockRegistry[block.blockType];
+
+        if (!Component) {
+          if (process.env.NODE_ENV === 'development') {
+            // El guard de NODE_ENV no lo evalúa ESLint: sin la excepción,
+            // `no-console` falla en CI (ver docs/estandares/codigo.md).
+            // eslint-disable-next-line no-console
+            console.warn(`[BlockRenderer] Bloque desconocido: ${block.blockType}`);
+          }
+          return null;
+        }
+
+        return <Component key={block.id} data={block} />;
+      })}
+    </>
+  );
+}

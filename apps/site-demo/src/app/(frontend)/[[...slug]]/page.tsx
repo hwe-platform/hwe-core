@@ -101,19 +101,14 @@ export default async function CatchAllPage({ params }: Args) {
     // Los templates de ficha llegan en HU-011; de momento se confirma que la
     // URL resuelve y de qué colección salió.
     return (
-      <main>
-        <p>
-          {resolved.collection} · {String(resolved.doc.slug)} — template pendiente de HU-011.
-        </p>
-      </main>
+      <p>
+        {resolved.collection} · {String(resolved.doc.slug)} — template pendiente de HU-011.
+      </p>
     );
   }
 
-  return (
-    <main>
-      <BlockRenderer blocks={blocksOf(resolved)} customRegistry={blockRegistry} />
-    </main>
-  );
+  // El <main> lo pone SiteLayout: la página solo aporta su contenido.
+  return <BlockRenderer blocks={blocksOf(resolved)} customRegistry={blockRegistry} />;
 }
 
 /**

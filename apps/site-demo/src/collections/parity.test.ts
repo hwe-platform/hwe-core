@@ -36,7 +36,16 @@ import type { CollectionConfig } from 'payload';
 const AUTO = ['id'];
 
 /** En una colección de uploads, Payload rellena además los metadatos del archivo. */
-const UPLOAD_AUTO = [...AUTO, 'filename', 'mimeType', 'filesize', 'width', 'height', 'sizes'];
+const UPLOAD_AUTO = [
+  ...AUTO,
+  'filename',
+  'url',
+  'mimeType',
+  'filesize',
+  'width',
+  'height',
+  'sizes',
+];
 
 /** Lo único que el test necesita de un schema Zod: sus claves de primer nivel. */
 type SchemaConShape = { shape: Record<string, unknown> };

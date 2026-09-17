@@ -19,6 +19,22 @@ export const Media: CollectionConfig = {
     group: 'Contenido',
     description: 'Imágenes, vídeos y documentos del site.',
   },
+  /**
+   * Árbol de carpetas en el panel, para que el editor sepa dónde va cada
+   * archivo y lo encuentre después.
+   *
+   * Es organización **del panel**, no del disco: Payload lo resuelve con una
+   * relación a una colección de carpetas, así que los ficheros siguen todos
+   * juntos en `media/`. Organizar también el almacenamiento es otra cosa, y
+   * corresponde al `prefix` del adapter de nube cuando se decida DEC-010.
+   *
+   * ⚠️ Payload marca esta función como **experimental**: "puede cambiar en
+   * versiones menores hasta que sea estable" (`Config.folders`, payload 3.88).
+   * En la práctica significa que una actualización menor de Payload podría
+   * romperla o cambiar cómo se guardan las carpetas. Conviene fijarse en ella
+   * al actualizar y no construir encima nada que no se pueda rehacer.
+   */
+  folders: true,
   upload: {
     imageSizes: [
       { name: 'thumbnail', width: 400 },

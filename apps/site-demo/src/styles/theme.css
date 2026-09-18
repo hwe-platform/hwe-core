@@ -10,7 +10,12 @@
   --primary: #0b665d;
   --primary-foreground: #fcfcf1;
   --secondary: #c9a87c;
-  --secondary-foreground: #2e3c2e;
+  /* Desviación deliberada del export de Figma, que declara #2e3c2e aquí y
+     luego no lo usa: sus botones dorados llevan text-primary-foreground en 5
+     de 7 apariciones. El #2e3c2e es un resto del tema por defecto de shadcn y
+     sobre el dorado da verde sobre oro, que no sale en ningún sitio del
+     diseño. Ver docs/lenguaje-visual.md, "Botón de acento". */
+  --secondary-foreground: #fcfcf1;
   --background: #fffeed;
   --foreground: #2e3c2e;
   --card: #ffffff;

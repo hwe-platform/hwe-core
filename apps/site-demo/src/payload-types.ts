@@ -355,6 +355,11 @@ export interface Accommodation {
               | 'menu'
               | 'search'
               | 'pawPrint'
+              | 'help'
+              | 'video'
+              | 'user'
+              | 'train'
+              | 'plane'
             )
           | null;
         included?: boolean | null;
@@ -412,6 +417,11 @@ export interface Accommodation {
               | 'menu'
               | 'search'
               | 'pawPrint'
+              | 'help'
+              | 'video'
+              | 'user'
+              | 'train'
+              | 'plane'
             )
           | null;
         label: string;
@@ -507,6 +517,11 @@ export interface Accommodation {
                     | 'menu'
                     | 'search'
                     | 'pawPrint'
+                    | 'help'
+                    | 'video'
+                    | 'user'
+                    | 'train'
+                    | 'plane'
                   )
                 | null;
               label: string;
@@ -617,7 +632,12 @@ export interface Entity {
     | 'heart'
     | 'menu'
     | 'search'
-    | 'pawPrint';
+    | 'pawPrint'
+    | 'help'
+    | 'video'
+    | 'user'
+    | 'train'
+    | 'plane';
   image: number | Media;
   gallery?: (number | Media)[] | null;
   /**
@@ -659,7 +679,12 @@ export interface Entity {
           | 'heart'
           | 'menu'
           | 'search'
-          | 'pawPrint';
+          | 'pawPrint'
+          | 'help'
+          | 'video'
+          | 'user'
+          | 'train'
+          | 'plane';
         label: string;
         detail: string;
         id?: string | null;
@@ -782,6 +807,11 @@ export interface Page {
                     | 'menu'
                     | 'search'
                     | 'pawPrint'
+                    | 'help'
+                    | 'video'
+                    | 'user'
+                    | 'train'
+                    | 'plane'
                   )
                 | null;
               label: string;
@@ -1633,7 +1663,7 @@ export interface Header {
     links?:
       | {
           label: string;
-          icon: 'help' | 'phone' | 'video' | 'user' | 'custom';
+          icon: 'help' | 'phone' | 'mail' | 'video' | 'user' | 'custom';
           url: string;
           id?: string | null;
         }[]

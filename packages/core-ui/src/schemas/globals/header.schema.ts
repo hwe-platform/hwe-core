@@ -6,7 +6,13 @@ export const headerSchema = z.object({
     links: z.array(
       z.object({
         label: z.string(),
-        icon: z.enum(['help', 'phone', 'video', 'user', 'custom']),
+        // Lista corta a propósito: la barra de servicio tiene sitio para cuatro
+        // o cinco enlaces, y un `select` con los sesenta iconos del set invita a
+        // elegir mal. Ampliarla es legítimo —`mail` se añadió porque el diseño
+        // usa un sobre para "Contacto"—, pero hay que tocar **también** las
+        // `options` del global de Payload, o el editor no podrá elegir el valor
+        // nuevo. El test de paridad comprueba que las dos listas coincidan.
+        icon: z.enum(['help', 'phone', 'mail', 'video', 'user', 'custom']),
         url: z.string(),
       }),
     ),

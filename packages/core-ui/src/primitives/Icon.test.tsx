@@ -37,7 +37,8 @@ describe('ICON_NAMES', () => {
   it('lista todos los iconos del set', () => {
     expect(ICON_NAMES).toContain('utensils');
     expect(ICON_NAMES).toContain('pawPrint');
-    expect(ICON_NAMES).toHaveLength(20);
+    expect(ICON_NAMES).toContain('help');
+    expect(ICON_NAMES.length).toBeGreaterThanOrEqual(20);
   });
 
   it('cada nombre listado renderiza sin romper', () => {

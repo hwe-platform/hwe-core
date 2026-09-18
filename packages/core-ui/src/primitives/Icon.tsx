@@ -6,16 +6,21 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  CircleHelp,
   Heart,
   Mail,
   MapPin,
   Menu,
   PawPrint,
   Phone,
+  Plane,
   Search,
   Star,
+  Train,
+  User,
   Users,
   Utensils,
+  Video,
   Waves,
   Wifi,
   X,
@@ -54,6 +59,12 @@ const ICONS = {
   menu: Menu,
   search: Search,
   pawPrint: PawPrint,
+  // Barra de servicio y accesos, que necesita el layout (HU-007)
+  help: CircleHelp,
+  video: Video,
+  user: User,
+  train: Train,
+  plane: Plane,
 } as const satisfies Record<string, LucideIcon>;
 
 /** Nombre de un icono del set predefinido. */
@@ -69,6 +80,8 @@ export const ICON_NAMES = Object.keys(ICONS) as IconName[];
 const iconVariants = cva('shrink-0', {
   variants: {
     size: {
+      /** 14px — el tamaño de los iconos del chrome (barra superior, chevrons). */
+      xs: 'h-3.5 w-3.5',
       sm: 'h-4 w-4',
       md: 'h-6 w-6',
       lg: 'h-8 w-8',

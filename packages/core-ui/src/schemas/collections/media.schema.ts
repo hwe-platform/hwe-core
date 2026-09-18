@@ -15,6 +15,14 @@ const mediaSizeSchema = z.object({
 export const mediaSchema = z.object({
   id: payloadIdSchema,
   filename: z.string(),
+  /**
+   * URL pública del archivo. La construye Payload al leer, a partir del
+   * adapter de almacenamiento — por eso cambiar de proveedor no obliga a
+   * migrar la base de datos (DEC-010).
+   *
+   * Opcional porque una consulta con `depth: 0` no la devuelve.
+   */
+  url: z.string().optional(),
   alt: z.string(),
   caption: z.string().optional(),
   mimeType: z.string(),

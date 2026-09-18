@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   compareFieldParity,
+  compareOptionParity,
   mediaSchema,
   categorySchema,
   accommodationSchema,
@@ -36,7 +37,16 @@ import type { CollectionConfig } from 'payload';
 const AUTO = ['id'];
 
 /** En una colección de uploads, Payload rellena además los metadatos del archivo. */
-const UPLOAD_AUTO = [...AUTO, 'filename', 'mimeType', 'filesize', 'width', 'height', 'sizes'];
+const UPLOAD_AUTO = [
+  ...AUTO,
+  'filename',
+  'url',
+  'mimeType',
+  'filesize',
+  'width',
+  'height',
+  'sizes',
+];
 
 /** Lo único que el test necesita de un schema Zod: sus claves de primer nivel. */
 type SchemaConShape = { shape: Record<string, unknown> };
@@ -74,4 +84,14 @@ describe('paridad entre los configs de Payload y los schemas Zod', () => {
     expect(result.missingInConfig, 'campos del schema que faltan en el config').toEqual([]);
     expect(result.missingInSchema, 'campos del config que faltan en el schema').toEqual([]);
   });
+
+  // La paridad de nombres no dice nada de los valores. Un `select` cuyas
+  // opciones no son las del enum deja al editor elegir algo que el schema
+  // rechaza, y el fallo aparece al escribir, lejos de su causa.
+  it.each(casos)(
+    'las opciones de los select de $nombre coinciden con su enum',
+    ({ config, schema }) => {
+      expect(compareOptionParity({ schema, fields: config.fields as ParityField[] })).toEqual([]);
+    },
+  );
 });

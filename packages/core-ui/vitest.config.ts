@@ -19,6 +19,9 @@ export default defineConfig({
         'src/primitives/**/*.tsx',
         'src/lib/**/*.ts',
         'src/payload/**/*.ts',
+        'src/layout/**/*.tsx',
+        'src/blocks/**/*.tsx',
+        'src/renderer/**/*.tsx',
       ],
       exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.types.ts', '**/index.ts'],
       thresholds: {
@@ -30,6 +33,11 @@ export default defineConfig({
         'src/lib/**': { lines: 90, statements: 90, functions: 90, branches: 90 },
         // Helpers de los hooks de Payload (criterio de HU-005)
         'src/payload/**': { lines: 70, statements: 70, functions: 70, branches: 70 },
+        // Layout — estables una vez construidos (criterio de HU-007)
+        'src/layout/**': { lines: 70, statements: 70, functions: 70, branches: 70 },
+        // Bloques y renderer (criterio de HU-008)
+        'src/blocks/**': { lines: 80, statements: 80, functions: 80, branches: 80 },
+        'src/renderer/**': { lines: 80, statements: 80, functions: 80, branches: 80 },
       },
     },
   },

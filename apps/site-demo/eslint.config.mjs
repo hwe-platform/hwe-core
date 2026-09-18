@@ -18,6 +18,8 @@ export default defineConfig([
       'src/payload-types.ts',
       'src/app/(payload)/admin/importMap.js',
       'src/migrations/**',
+      // Scripts de desarrollo: su salida por consola es el cometido, no un descuido
+      'scripts/**',
     ],
   },
   ...nextVitals,

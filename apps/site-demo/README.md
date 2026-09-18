@@ -25,6 +25,11 @@ Cuando el Hito 1 esté completo, este código se extrae como el repo `hwe-templa
    - `PAYLOAD_SECRET` — genera una cadena aleatoria propia, por ejemplo:
      `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
    - `NEXT_PUBLIC_SERVER_URL` — `http://localhost:3000` en local.
+   - `PAYLOAD_SEED_EMAIL` y `PAYLOAD_SEED_PASSWORD` — **opcionales**. Usuario del
+     panel con el que siembra `scripts/seed-globals.mjs`. Sin ellas el script
+     pide las credenciales por argumento; con ellas lo puede lanzar un agente o
+     la integración continua sin que nadie teclee una contraseña. Conviene que
+     sea un usuario creado para el sembrado, no el personal de nadie.
 
 2. Crea la base de datos si no existe:
 
@@ -53,13 +58,14 @@ Cuando el Hito 1 esté completo, este código se extrae como el repo `hwe-templa
 
 ## Comandos
 
-| Comando                                      | Qué hace                                                      |
-| -------------------------------------------- | ------------------------------------------------------------- |
-| `pnpm dev --filter site-demo`                | Next.js en modo desarrollo                                    |
-| `pnpm build --filter site-demo`              | Build de producción                                           |
-| `pnpm lint --filter site-demo`               | ESLint (variante repos-app)                                   |
-| `pnpm --filter site-demo generate:types`     | Regenera `src/payload-types.ts` desde las colecciones/globals |
-| `pnpm --filter site-demo generate:importmap` | Regenera `src/app/(payload)/admin/importMap.js`               |
+| Comando                                      | Qué hace                                                                                                                 |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm dev --filter site-demo`                | Next.js en modo desarrollo                                                                                               |
+| `pnpm build --filter site-demo`              | Build de producción                                                                                                      |
+| `pnpm lint --filter site-demo`               | ESLint (variante repos-app)                                                                                              |
+| `pnpm --filter site-demo generate:types`     | Regenera `src/payload-types.ts` desde las colecciones/globals                                                            |
+| `node scripts/seed-globals.mjs`              | Siembra los globals y sube los assets de marca. Necesita el site arrancado; es idempotente y **sobrescribe** los globals |
+| `pnpm --filter site-demo generate:importmap` | Regenera `src/app/(payload)/admin/importMap.js`                                                                          |
 
 ## Desarrollo contra `@hwe-platform/core-ui` local
 

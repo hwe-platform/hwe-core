@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { topLevelFieldNames, compareFieldParity } from './field-parity';
+import { z } from 'zod';
+
+import { topLevelFieldNames, compareFieldParity, compareOptionParity } from './field-parity';
 
 describe('topLevelFieldNames', () => {
   it('recoge los campos con nombre', () => {
@@ -60,5 +62,106 @@ describe('compareFieldParity', () => {
       autoFields: ['id', 'filename'],
     });
     expect(result).toEqual({ missingInConfig: [], missingInSchema: [] });
+  });
+});
+
+describe('compareOptionParity', () => {
+  it('no reporta nada cuando las opciones coinciden con el enum', () => {
+    const schema = z.object({ icon: z.enum(['help', 'phone']) });
+    const fields = [{ name: 'icon', type: 'select', options: ['help', 'phone'] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([]);
+  });
+
+  it('avisa del valor que el schema acepta y el editor no puede elegir', () => {
+    const schema = z.object({ icon: z.enum(['help', 'phone', 'mail']) });
+    const fields = [{ name: 'icon', type: 'select', options: ['help', 'phone'] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([
+      { path: 'icon', missingInConfig: ['mail'], missingInSchema: [] },
+    ]);
+  });
+
+  it('avisa del valor que el editor puede elegir y el schema rechaza', () => {
+    const schema = z.object({ icon: z.enum(['help']) });
+    const fields = [{ name: 'icon', type: 'select', options: ['help', 'sms'] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([
+      { path: 'icon', missingInConfig: [], missingInSchema: ['sms'] },
+    ]);
+  });
+
+  it('acepta las opciones en forma de objeto, como también admite Payload', () => {
+    const schema = z.object({ icon: z.enum(['help']) });
+    const fields = [{ name: 'icon', type: 'select', options: [{ value: 'help' }] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([]);
+  });
+
+  it('ignora los select cuyo campo no es un enum: hay valores que no son un conjunto cerrado', () => {
+    const schema = z.object({ tag: z.string() });
+    const fields = [{ name: 'tag', type: 'select', options: ['uno', 'dos'] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([]);
+  });
+
+  it('ignora los campos que el schema no declara, que ya caza compareFieldParity', () => {
+    const schema = z.object({});
+    const fields = [{ name: 'huerfano', type: 'select', options: ['x'] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([]);
+  });
+});
+
+describe('compareOptionParity — recorrido del árbol', () => {
+  // El caso real: el select vivía en un array dentro de un group, y por eso la
+  // comparación de primer nivel no lo veía.
+  it('baja por groups y arrays, y da la ruta completa', () => {
+    const schema = z.object({
+      topBar: z.object({
+        links: z.array(z.object({ icon: z.enum(['help', 'mail']) })),
+      }),
+    });
+    const fields = [
+      {
+        name: 'topBar',
+        type: 'group',
+        fields: [
+          {
+            name: 'links',
+            type: 'array',
+            fields: [{ name: 'icon', type: 'select', options: ['help'] }],
+          },
+        ],
+      },
+    ];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([
+      { path: 'topBar.links.icon', missingInConfig: ['mail'], missingInSchema: [] },
+    ]);
+  });
+
+  it('atraviesa los envoltorios optional y default', () => {
+    const schema = z.object({
+      variant: z.enum(['a', 'b']).optional(),
+      size: z.enum(['sm']).default('sm'),
+    });
+    const fields = [
+      { name: 'variant', type: 'select', options: ['a'] },
+      { name: 'size', type: 'select', options: ['sm'] },
+    ];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([
+      { path: 'variant', missingInConfig: ['b'], missingInSchema: [] },
+    ]);
+  });
+
+  it('atraviesa las rows, que agrupan sin añadir nivel', () => {
+    const schema = z.object({ variant: z.enum(['a']) });
+    const fields = [{ fields: [{ name: 'variant', type: 'select', options: ['b'] }] }];
+
+    expect(compareOptionParity({ schema, fields })).toEqual([
+      { path: 'variant', missingInConfig: ['a'], missingInSchema: ['b'] },
+    ]);
   });
 });

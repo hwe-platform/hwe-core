@@ -20,6 +20,8 @@ export default defineConfig([
       'src/migrations/**',
       // Scripts de desarrollo: su salida por consola es el cometido, no un descuido
       'scripts/**',
+      // Informe de cobertura: generado por vitest, no código del proyecto
+      '**/coverage/**',
     ],
   },
   ...nextVitals,

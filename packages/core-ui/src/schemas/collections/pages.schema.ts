@@ -17,7 +17,50 @@ export const blockLinkSchema = z.object({
   label: z.string(),
   url: z.string(),
   variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).default('primary'),
+  /**
+   * Icono a la derecha del texto, del set de la primitiva `Icon`.
+   *
+   * Es opcional porque no todos los botones lo llevan: en el Figma la flecha
+   * acompaña a los CTA de sección pero no al de reservar.
+   */
+  icon: z.string().optional(),
 });
+
+/**
+ * Dominios cuyo contenido se puede incrustar en un `<iframe>`.
+ *
+ * Con la URL libre, quien edite el panel puede meter dentro de una página
+ * nuestra cualquier documento —incluido un `data:text/html` con su propio
+ * script— y el visitante lo verá bajo el dominio del cliente. El `sandbox`
+ * del componente impide que ese marco toque nuestro origen, pero no que
+ * exista. Hasta que haya CSP, la lista es el único filtro.
+ *
+ * Crece **a propósito**: añadir un proveedor es un acto deliberado, no el
+ * efecto colateral de que alguien pegue una URL.
+ */
+export const DOMINIOS_INCRUSTABLES = [
+  'www.google.com',
+  'maps.google.com',
+  'www.youtube-nocookie.com',
+  'player.vimeo.com',
+] as const;
+
+/**
+ * Si una URL se puede incrustar: https y de un dominio de la lista.
+ *
+ * Vive junto al schema y no en el componente porque el dato inválido se
+ * rechaza **al escribir**, que es el criterio del resto del modelo. El
+ * componente la vuelve a usar como segunda barrera, para lo que se guardó
+ * antes de que existiera esta regla.
+ */
+export function esUrlIncrustable(valor: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(valor);
+    return protocol === 'https:' && DOMINIOS_INCRUSTABLES.includes(hostname as never);
+  } catch {
+    return false;
+  }
+}
 
 /** Cabecera opcional que comparten los bloques con título y subtítulo. */
 const blockHeadingSchema = {
@@ -26,16 +69,119 @@ const blockHeadingSchema = {
 };
 
 /** Imagen + texto en dos columnas. */
-export const mediaTextBlockSchema = z.object({
-  blockType: z.literal('media-text'),
-  ...blockHeadingSchema,
-  /** Contenido richText serializado por Payload (Lexical). */
-  content: z.unknown(),
-  image: mediaRefSchema,
-  /** Lado en el que se pinta la imagen respecto al texto. */
-  imagePosition: z.enum(['left', 'right']).default('left'),
-  link: blockLinkSchema.optional(),
-});
+export const mediaTextBlockSchema = z
+  .object({
+    blockType: z.literal('media-text'),
+    ...blockHeadingSchema,
+
+    /**
+     * Segunda línea del titular, en color de acento.
+     *
+     * El diseño parte el titular en dos y tiñe la segunda mitad; el lenguaje
+     * visual lo califica de recurso deliberado, no de salto accidental. Vacío
+     * deja el titular en una sola línea.
+     */
+    titleAccent: z.string().optional(),
+
+    /**
+     * Fondo de la sección.
+     *
+     * Las secciones del diseño alternan fondo para separarse entre sí: en La
+     * Civelle salen cuatro sobre `card`, dos sobre `muted` y una sin fondo.
+     */
+    background: z.enum(['default', 'muted', 'none']).default('default'),
+
+    /**
+     * Identifica esta instancia ante el registry de slots del site.
+     *
+     * Los slots son huecos que rellena **código del cliente**, no datos, así que
+     * no pueden viajar por Payload. Lo que viaja es este identificador: el site
+     * mapea `slotId` → slots en su `slot-registry.ts` y se lo pasa al
+     * `BlockRenderer`. Sin él, un override tendría que aplicarse a todas las
+     * instancias del bloque en lugar de a la que el editor eligió.
+     */
+    slotId: z.string().optional(),
+    /**
+     * Contenido richText serializado por Payload (Lexical).
+     *
+     * Opcional: en el Figma hay secciones de solo titular e imagen. Ojo, que en
+     * Zod 4 un `z.unknown()` suelto **exige la clave**, al revés que en Zod 3.
+     */
+    content: z.unknown().optional(),
+
+    /**
+     * Qué se pinta en la columna del medio. **Eje estructural**: cada valor tiene
+     * su propio componente, resuelto por mapa. En La Civelle salen los tres: fotos
+     * en la mayoría, el mapa de Google en "Accès" y carruseles en Le Camping.
+     */
+    media: z.enum(['image', 'embed', 'carousel']).default('image'),
+    /** Imagen única, cuando `media` es `image`. */
+    image: mediaRefSchema.optional(),
+    /** Imágenes del carrusel, cuando `media` es `carousel`. */
+    images: z.array(mediaRefSchema).optional(),
+    /** URL del contenido incrustado, cuando `media` es `embed`. */
+    embedUrl: z
+      .string()
+      .refine(esUrlIncrustable, {
+        message: `Solo se puede incrustar https de: ${DOMINIOS_INCRUSTABLES.join(', ')}`,
+      })
+      .optional(),
+
+    /**
+     * Columnas que ocupa el medio sobre doce. **Número, no enumeración**: el
+     * diseño de La Civelle ya usa tres repartos distintos —5 en la intro, 7 en
+     * Restaurant y Piscine, 6 en Le Camping—, y fijar la lista de lo visto se
+     * rompería con el primer cliente que quiera otro.
+     */
+    split: z.number().int().min(1).max(11).default(6),
+    /** Invierte el orden de las columnas. En el Figma: Piscine y Mobile Home. */
+    reverse: z.boolean().default(false),
+    /**
+     * Línea corta de acento a la izquierda del antetítulo.
+     *
+     * Es un eje y no un adorno constante: de los diecisiete antetítulos del
+     * diseño de referencia la llevan dos —la intro de la home
+     * (`App.tsx:548`) y la de Le Camping (`LeCampingPage.tsx:111`)—, así que
+     * ponerla siempre sería tan falso como no ponerla nunca.
+     */
+    eyebrowRule: z.boolean().default(false),
+    /** Alineación vertical de las dos columnas. */
+    align: z.enum(['start', 'center']).default('center'),
+    /**
+     * Proporción del marco del medio. Varía entre secciones —4/5 en la intro,
+     * apaisada en Restaurant—, así que va como eje y no como valor fijo.
+     *
+     * Las tres son proporciones reales. Hubo un cuarto valor, `auto`, que se
+     * retiró: el marco no tiene más hijo que una imagen en posición absoluta,
+     * así que sin proporción se quedaba a cero de alto y no pintaba nada. Un
+     * valor que no dibuja no es un valor del eje.
+     */
+    ratio: z.enum(['portrait', 'landscape', 'square']).default('landscape'),
+    /** De cero a dos en el Figma; la lista no tiene tope por diseño. */
+    ctas: z.array(blockLinkSchema).default([]),
+  })
+  /**
+   * Cada tipo de medio exige el suyo.
+   *
+   * Sin esto, un bloque con `media: 'carousel'` y ninguna imagen pasaría la
+   * validación y luego no pintaría nada: el editor guardaría tan contento y el
+   * fallo aparecería en la web. Es el mismo criterio que el resto del modelo —
+   * que el dato inválido se rechace al escribir, no al leer.
+   */
+  .superRefine((bloque, ctx) => {
+    const exigido = { image: 'image', embed: 'embedUrl', carousel: 'images' } as const;
+    const campo = exigido[bloque.media];
+    const valor = bloque[campo];
+    const vacio = valor === undefined || (Array.isArray(valor) && valor.length === 0);
+
+    if (vacio) {
+      ctx.addIssue({
+        code: 'custom',
+        path: [campo],
+        message: `Un bloque con media "${bloque.media}" necesita ${campo}`,
+      });
+    }
+  });
 
 /** Grid de iconos con label, para listar servicios o características. */
 export const iconGridBlockSchema = z.object({
@@ -91,6 +237,43 @@ export const blogBlockSchema = z.object({ blockType: z.literal('blog') });
 export const faqBlockSchema = z.object({ blockType: z.literal('faq') });
 export const embedBlockSchema = z.object({ blockType: z.literal('embed') });
 
+/**
+ * Cabecera de una página.
+ *
+ * **No es un bloque**: es un grupo de campos de `pages`, así que no aparece en
+ * la unión de abajo. Vive aquí, junto al resto del documento, y `blocks/hero/`
+ * lo reexporta en lugar de redefinirlo — duplicarlo reproduciría la divergencia
+ * entre Zod y Payload que ya costó cara, y el test de paridad no la vería
+ * porque solo compara el primer nivel.
+ *
+ * `titleMode` y `align` son ejes **independientes** de `variant`. En el Figma
+ * de La Civelle van correlacionados —el hero de vídeo lleva logo y centrado, los
+ * de imagen llevan texto a la izquierda—, pero esa correlación es de un cliente,
+ * no del sistema: separarlos cuesta lo mismo y absorbe diseños no vistos.
+ */
+export const heroSchema = z.object({
+  /** **Eje estructural**: cada valor tiene su componente, resuelto por mapa. */
+  variant: z.enum(['video', 'image', 'minimal', 'none']),
+  media: mediaRefSchema.optional(),
+  /**
+   * Supertítulo sobre el titular. En el Figma es la línea de localización
+   * —"Capbreton · Landes · Atlantique"— y aparece en los tres heros, con logo
+   * y con texto, así que es una pieza propia y no el subtítulo reubicado.
+   */
+  eyebrow: z.string().optional(),
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  /**
+   * Qué hace de título visible. Con `logo` el nombre del site sustituye al
+   * titular, como en la home del Figma — y entonces el `<h1>` se pinta igual,
+   * oculto, porque una página sin encabezado legible es un fallo de
+   * accesibilidad y SEO que no se copia.
+   */
+  titleMode: z.enum(['text', 'logo']).default('text'),
+  align: z.enum(['left', 'center']).default('left'),
+  showBreadcrumbs: z.boolean().default(false),
+});
+
 /** Unión discriminada de todos los bloques disponibles en un `blocks` field. */
 export const pageBlockSchema = z.discriminatedUnion('blockType', [
   mediaTextBlockSchema,
@@ -130,15 +313,7 @@ export const pageSchema = z.object({
   type: z.enum(['home', 'landing', 'static', 'listing', 'contact', 'faq']),
   parent: z.union([payloadIdSchema, pageLiteRefSchema]).optional(),
 
-  hero: z
-    .object({
-      variant: z.enum(['video', 'image', 'minimal', 'none']),
-      media: mediaRefSchema.optional(),
-      title: z.string().optional(),
-      subtitle: z.string().optional(),
-      showBreadcrumbs: z.boolean().default(false),
-    })
-    .optional(),
+  hero: heroSchema.optional(),
 
   blocks: z.array(pageBlockSchema).default([]),
 

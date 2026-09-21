@@ -63,12 +63,34 @@ export const Pages: CollectionConfig = {
         },
         { name: 'media', type: 'upload', relationTo: 'media' },
         {
+          name: 'eyebrow',
+          type: 'text',
+          localized: true,
+          admin: { description: 'Línea corta sobre el titular. En el diseño, la localización.' },
+        },
+        {
           name: 'title',
           type: 'text',
           localized: true,
           admin: { description: 'Sustituye al título de la página en el hero.' },
         },
         { name: 'subtitle', type: 'text', localized: true },
+        {
+          name: 'titleMode',
+          type: 'select',
+          defaultValue: 'text',
+          options: ['text', 'logo'],
+          admin: {
+            description:
+              'Con "logo" el logo del site hace de titular. El h1 se pinta igual, oculto, para no dejar la página sin encabezado.',
+          },
+        },
+        {
+          name: 'align',
+          type: 'select',
+          defaultValue: 'left',
+          options: ['left', 'center'],
+        },
         { name: 'showBreadcrumbs', type: 'checkbox', defaultValue: false },
       ],
     },

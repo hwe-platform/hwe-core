@@ -1,6 +1,5 @@
 # Claude Code
 
-
 ## Reglas inamovibles
 
 Estas reglas se aplican siempre, sin excepciones, en cada tarea:
@@ -27,6 +26,15 @@ Estas reglas se aplican siempre, sin excepciones, en cada tarea:
    necesita que el humano vea el resultado en localhost y lo compare con
    el Figma antes de commitear a main.
 
+7. **Calidad desde el inicio.** Lee los estándares ANTES de implementar,
+   aplica las reglas MIENTRAS escribes, ejecuta lint y tests DURANTE el
+   desarrollo (no solo al final). Antes de entregar:
+   - `pnpm lint && pnpm format:check && pnpm test && pnpm build`
+   - Si todo verde → lanza el Reviewer (`.claude/agents/reviewer.md`)
+   - `/security-review` solo cuando la historia toca inputs, auth,
+     headers, iframes o sanitización
+   - Si el Reviewer encuentra errores, corrígelos y repite solo el Reviewer
+
 Este repo forma parte del proyecto HWE. La documentación de referencia, las
 historias de usuario, los estándares y los archivos operativos viven en
 `docs/` — un git submodule que apunta a `hwe-tools`. Léelos directamente
@@ -41,6 +49,7 @@ Antes de implementar código en `hwe-core`, consulta en `docs/`:
   `DEC-007-repos.md` sobre por qué existen tres repositorios
 - `docs/.claude/agentes/code-builder.md` — flujo de trabajo del Code Builder
 - `docs/specs/` — specs de producto (modelo de datos, bloques, etc.)
+- `docs/docs/estandares/seguridad.md`, `seo.md` — reglas de seguridad y SEO en código
 
 ## Actualizar el submodule
 
@@ -49,3 +58,29 @@ Antes de implementar código en `hwe-core`, consulta en `docs/`:
 ```bash
 git submodule update --remote docs
 ```
+
+## Qué NO leer
+
+- Documentos vacíos (solo tienen el título): `seguridad.md` tiene contenido ahora,
+  pero `mejora-continua.md` y algunas specs de hitos futuros siguen vacías — no las cargues
+- Archivos de hitos futuros (personalización, contenido-IA) — no son relevantes para el Hito 1
+- No cargues todo `docs/` a la vez — lee solo lo que la tarea pide
+
+## Agentes
+
+El Reviewer es el único agente ejecutable como subagente de Claude Code.
+Vive en `.claude/agents/reviewer.md` con frontmatter YAML.
+
+Los demás roles no se ejecutan como subagentes:
+
+- **Planner** (Opus) opera desde claude.ai
+- **Code Builder** es la propia sesión de Claude Code
+- Las definiciones de todos los roles están en `docs/.claude/agentes/`
+
+## Cuando estés perdido
+
+1. `docs/docs/proyecto.md` — visión del proyecto, stack, hitos
+2. `docs/docs/decisiones/` — decisiones ya tomadas (DEC-001 a DEC-009)
+3. `docs/docs/arquitectura/bloques.md` — cómo funciona el sistema de bloques
+4. `docs/specs/payload/modelo-datos.md` — modelo de datos de Payload
+5. `docs/historias/index.md` — cola de prioridades, qué hay que hacer

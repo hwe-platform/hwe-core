@@ -7,7 +7,9 @@ import type { VariantProps } from 'class-variance-authority';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 rounded-lg font-body font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  // El peso lo fija la talla, que lo toma de los tokens del cliente: dos
+  // dueños para la misma propiedad dependerían del orden del CSS.
+  'inline-flex items-center justify-center gap-2 rounded-lg font-body transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -16,10 +18,20 @@ const buttonVariants = cva(
         outline: 'border border-border bg-transparent text-foreground hover:bg-muted',
         ghost: 'bg-transparent text-foreground hover:bg-muted',
       },
+      /**
+       * La talla por defecto (`md`) sale de **tokens del cliente**, con
+       * respaldo: un site que no los declare se ve exactamente igual que antes.
+       * La forma del botón es identidad de marca —La Civelle lo quiere más
+       * ancho, más bajo y en negrita que el valor genérico— y fijarla en la
+       * primitiva la hacía específica del primero que llegara.
+       *
+       * `sm` y `lg` siguen siendo escalones fijos: son los casos
+       * excepcionales, no la identidad.
+       */
       size: {
-        sm: 'h-9 px-3 text-sm',
-        md: 'h-10 px-4 text-base',
-        lg: 'h-12 px-6 text-lg',
+        sm: 'h-9 px-3 text-sm font-medium',
+        md: 'px-(--button-px,1rem) py-(--button-py,0.5rem) text-(length:--button-font-size,1rem) font-(--button-font-weight,500) shadow-(--button-shadow,none)',
+        lg: 'h-12 px-6 text-lg font-medium',
       },
     },
     defaultVariants: {

@@ -30,6 +30,13 @@
   --ring: #0b665d;
   --footer: #393939;
 
+  /* Forma del botón — App.tsx:688, el CTA más repetido del diseño (×4) */
+  --button-px: 2rem; /* px-8 */
+  --button-py: 0.875rem; /* py-3.5 */
+  --button-font-size: 0.875rem; /* text-sm */
+  --button-font-weight: 700; /* font-bold */
+  --button-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+
   /* Tipografía */
   --heading-font: var(--font-bitter), serif;
   --body-font: var(--font-inter), sans-serif;

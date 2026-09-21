@@ -350,6 +350,7 @@ export interface Accommodation {
               | 'chevronRight'
               | 'chevronLeft'
               | 'chevronDown'
+              | 'arrowRight'
               | 'star'
               | 'heart'
               | 'menu'
@@ -412,6 +413,7 @@ export interface Accommodation {
               | 'chevronRight'
               | 'chevronLeft'
               | 'chevronDown'
+              | 'arrowRight'
               | 'star'
               | 'heart'
               | 'menu'
@@ -461,7 +463,7 @@ export interface Accommodation {
         | {
             title?: string | null;
             subtitle?: string | null;
-            content: {
+            content?: {
               root: {
                 type: string;
                 children: {
@@ -475,18 +477,61 @@ export interface Accommodation {
                 version: number;
               };
               [k: string]: unknown;
-            };
-            image: number | Media;
+            } | null;
             /**
-             * Lado en el que se pinta la imagen respecto al texto.
+             * Qué se pinta en la columna del medio.
              */
-            imagePosition?: ('left' | 'right') | null;
-            link: {
-              label: string;
-              url: string;
-              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
-              id?: string | null;
-            };
+            media: 'image' | 'embed' | 'carousel';
+            image?: (number | null) | Media;
+            images?: (number | Media)[] | null;
+            /**
+             * URL del contenido incrustado — por ejemplo, un mapa. Dominios admitidos: www.google.com, maps.google.com, www.youtube-nocookie.com, player.vimeo.com.
+             */
+            embedUrl?: string | null;
+            /**
+             * Columnas que ocupa el medio sobre doce. 6 es mitad y mitad; el diseño de referencia usa 5, 6 y 7.
+             */
+            split?: number | null;
+            /**
+             * Pone el medio a la derecha en lugar de a la izquierda.
+             */
+            reverse?: boolean | null;
+            /**
+             * Línea corta de acento a la izquierda del antetítulo.
+             */
+            eyebrowRule?: boolean | null;
+            /**
+             * Alineación vertical de las dos columnas.
+             */
+            align?: ('start' | 'center') | null;
+            /**
+             * Proporción del marco del medio.
+             */
+            ratio?: ('portrait' | 'landscape' | 'square') | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Segunda línea del titular, en color de acento. Vacío deja el titular en una línea.
+             */
+            titleAccent?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * Identificador para que el site inserte contenido propio en esta instancia (slot-registry.tsx). Déjalo vacío si no hay ninguno.
+             */
+            slotId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'media-text';
@@ -512,6 +557,7 @@ export interface Accommodation {
                     | 'chevronRight'
                     | 'chevronLeft'
                     | 'chevronDown'
+                    | 'arrowRight'
                     | 'star'
                     | 'heart'
                     | 'menu'
@@ -573,6 +619,10 @@ export interface Accommodation {
               label: string;
               url: string;
               variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              /**
+               * Icono a la derecha del texto. Opcional.
+               */
+              icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
               id?: string | null;
             }[];
             id?: string | null;
@@ -628,6 +678,7 @@ export interface Entity {
     | 'chevronRight'
     | 'chevronLeft'
     | 'chevronDown'
+    | 'arrowRight'
     | 'star'
     | 'heart'
     | 'menu'
@@ -675,6 +726,7 @@ export interface Entity {
           | 'chevronRight'
           | 'chevronLeft'
           | 'chevronDown'
+          | 'arrowRight'
           | 'star'
           | 'heart'
           | 'menu'
@@ -737,10 +789,19 @@ export interface Page {
     variant: 'video' | 'image' | 'minimal' | 'none';
     media?: (number | null) | Media;
     /**
+     * Línea corta sobre el titular. En el diseño, la localización.
+     */
+    eyebrow?: string | null;
+    /**
      * Sustituye al título de la página en el hero.
      */
     title?: string | null;
     subtitle?: string | null;
+    /**
+     * Con "logo" el logo del site hace de titular. El h1 se pinta igual, oculto, para no dejar la página sin encabezado.
+     */
+    titleMode?: ('text' | 'logo') | null;
+    align?: ('left' | 'center') | null;
     showBreadcrumbs?: boolean | null;
   };
   /**
@@ -751,7 +812,7 @@ export interface Page {
         | {
             title?: string | null;
             subtitle?: string | null;
-            content: {
+            content?: {
               root: {
                 type: string;
                 children: {
@@ -765,18 +826,61 @@ export interface Page {
                 version: number;
               };
               [k: string]: unknown;
-            };
-            image: number | Media;
+            } | null;
             /**
-             * Lado en el que se pinta la imagen respecto al texto.
+             * Qué se pinta en la columna del medio.
              */
-            imagePosition?: ('left' | 'right') | null;
-            link: {
-              label: string;
-              url: string;
-              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
-              id?: string | null;
-            };
+            media: 'image' | 'embed' | 'carousel';
+            image?: (number | null) | Media;
+            images?: (number | Media)[] | null;
+            /**
+             * URL del contenido incrustado — por ejemplo, un mapa. Dominios admitidos: www.google.com, maps.google.com, www.youtube-nocookie.com, player.vimeo.com.
+             */
+            embedUrl?: string | null;
+            /**
+             * Columnas que ocupa el medio sobre doce. 6 es mitad y mitad; el diseño de referencia usa 5, 6 y 7.
+             */
+            split?: number | null;
+            /**
+             * Pone el medio a la derecha en lugar de a la izquierda.
+             */
+            reverse?: boolean | null;
+            /**
+             * Línea corta de acento a la izquierda del antetítulo.
+             */
+            eyebrowRule?: boolean | null;
+            /**
+             * Alineación vertical de las dos columnas.
+             */
+            align?: ('start' | 'center') | null;
+            /**
+             * Proporción del marco del medio.
+             */
+            ratio?: ('portrait' | 'landscape' | 'square') | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            /**
+             * Segunda línea del titular, en color de acento. Vacío deja el titular en una línea.
+             */
+            titleAccent?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * Identificador para que el site inserte contenido propio en esta instancia (slot-registry.tsx). Déjalo vacío si no hay ninguno.
+             */
+            slotId?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'media-text';
@@ -802,6 +906,7 @@ export interface Page {
                     | 'chevronRight'
                     | 'chevronLeft'
                     | 'chevronDown'
+                    | 'arrowRight'
                     | 'star'
                     | 'heart'
                     | 'menu'
@@ -863,6 +968,10 @@ export interface Page {
               label: string;
               url: string;
               variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              /**
+               * Icono a la derecha del texto. Opcional.
+               */
+              icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
               id?: string | null;
             }[];
             id?: string | null;
@@ -1221,16 +1330,27 @@ export interface AccommodationsSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               content?: T;
+              media?: T;
               image?: T;
-              imagePosition?: T;
-              link?:
+              images?: T;
+              embedUrl?: T;
+              split?: T;
+              reverse?: T;
+              eyebrowRule?: T;
+              align?: T;
+              ratio?: T;
+              ctas?:
                 | T
                 | {
                     label?: T;
                     url?: T;
                     variant?: T;
+                    icon?: T;
                     id?: T;
                   };
+              titleAccent?: T;
+              background?: T;
+              slotId?: T;
               id?: T;
               blockName?: T;
             };
@@ -1285,6 +1405,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
                     label?: T;
                     url?: T;
                     variant?: T;
+                    icon?: T;
                     id?: T;
                   };
               id?: T;
@@ -1366,8 +1487,11 @@ export interface PagesSelect<T extends boolean = true> {
     | {
         variant?: T;
         media?: T;
+        eyebrow?: T;
         title?: T;
         subtitle?: T;
+        titleMode?: T;
+        align?: T;
         showBreadcrumbs?: T;
       };
   blocks?:
@@ -1379,16 +1503,27 @@ export interface PagesSelect<T extends boolean = true> {
               title?: T;
               subtitle?: T;
               content?: T;
+              media?: T;
               image?: T;
-              imagePosition?: T;
-              link?:
+              images?: T;
+              embedUrl?: T;
+              split?: T;
+              reverse?: T;
+              eyebrowRule?: T;
+              align?: T;
+              ratio?: T;
+              ctas?:
                 | T
                 | {
                     label?: T;
                     url?: T;
                     variant?: T;
+                    icon?: T;
                     id?: T;
                   };
+              titleAccent?: T;
+              background?: T;
+              slotId?: T;
               id?: T;
               blockName?: T;
             };
@@ -1443,6 +1578,7 @@ export interface PagesSelect<T extends boolean = true> {
                     label?: T;
                     url?: T;
                     variant?: T;
+                    icon?: T;
                     id?: T;
                   };
               id?: T;

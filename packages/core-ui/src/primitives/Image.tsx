@@ -27,7 +27,7 @@ const ASPECT_RATIO_CLASSES: Record<AspectRatio, string> = {
   '3/4': 'aspect-[3/4]',
 };
 
-export type ImageProps = Omit<NextImageProps, 'alt' | 'sizes' | 'fill'> & {
+export type ImageProps = Omit<NextImageProps, 'alt' | 'sizes'> & {
   /** Texto alternativo. Obligatorio — una imagen sin `alt` no es accesible. */
   alt: string;
   /** Relación de aspecto del contenedor. Si se omite, se usa el `width`/`height` nativos. */
@@ -36,6 +36,17 @@ export type ImageProps = Omit<NextImageProps, 'alt' | 'sizes' | 'fill'> & {
   mediaSize?: MediaSize;
   /** Activa el placeholder de desenfoque mientras carga (requiere `blurDataURL`). */
   showBlurPlaceholder?: boolean;
+  /**
+   * La imagen llena su contenedor posicionado, sin declarar dimensiones.
+   *
+   * Es el caso de las imágenes de fondo a sangre —la cabecera de una página, una
+   * tarjeta con la foto detrás—, donde el alto lo pone el contenedor y no la
+   * imagen. Quien la use es responsable de que el padre tenga `position`, que es
+   * lo que exige `next/image`, y de darle `object-cover` por `className`.
+   *
+   * Incompatible con `aspectRatio`, que ya crea su propio contenedor.
+   */
+  fill?: boolean;
 };
 
 /**
@@ -51,11 +62,14 @@ export function Image({
   aspectRatio,
   mediaSize = 'card',
   showBlurPlaceholder = false,
+  fill = false,
   className,
   blurDataURL,
   ...props
 }: ImageProps) {
-  const sizes = `(max-width: 768px) 100vw, ${MEDIA_SIZE_WIDTHS[mediaSize]}px`;
+  // A sangre la imagen puede ocupar todo el ancho de la ventana, así que pedir
+  // el tamaño de referencia serviría una imagen corta en pantallas grandes.
+  const sizes = fill ? '100vw' : `(max-width: 768px) 100vw, ${MEDIA_SIZE_WIDTHS[mediaSize]}px`;
   const useBlur = showBlurPlaceholder && Boolean(blurDataURL);
   const blurProps = useBlur ? { placeholder: 'blur' as const, blurDataURL } : {};
 
@@ -71,6 +85,12 @@ export function Image({
           {...props}
         />
       </div>
+    );
+  }
+
+  if (fill) {
+    return (
+      <NextImage alt={alt} fill sizes={sizes} className={className} {...blurProps} {...props} />
     );
   }
 

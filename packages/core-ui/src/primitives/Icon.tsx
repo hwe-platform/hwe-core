@@ -4,6 +4,7 @@ import {
   Car,
   Check,
   ChevronDown,
+  ArrowRight,
   ChevronLeft,
   ChevronRight,
   CircleHelp,
@@ -54,6 +55,8 @@ const ICONS = {
   chevronRight: ChevronRight,
   chevronLeft: ChevronLeft,
   chevronDown: ChevronDown,
+  // Flecha, no galón: el diseño la usa en los CTA de sección
+  arrowRight: ArrowRight,
   star: Star,
   heart: Heart,
   menu: Menu,

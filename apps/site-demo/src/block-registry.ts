@@ -13,8 +13,11 @@ import type { BlockRegistry } from '@hwe-platform/core-ui';
  * plataforma:
  *
  * ```ts
- * import { HeroBlock } from './blocks/hero';
- * export const blockRegistry: BlockRegistry = { ...platformRegistry, hero: HeroBlock };
+ * import { MediaTextBlock } from './blocks/media-text';
+ * export const blockRegistry: BlockRegistry = { ...platformRegistry, 'media-text': MediaTextBlock };
  * ```
+ *
+ * El hero **no va aquí**: no es un bloque del array `blocks` sino un grupo de
+ * campos de `pages`, y lo pinta la plantilla de página directamente.
  */
 export const blockRegistry: BlockRegistry = { ...platformRegistry };

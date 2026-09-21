@@ -199,6 +199,35 @@ Devuelvo al Code Builder.
 - [ ] La rama sigue el formato tipo/HU-XXX-descripcion
 - [ ] El PR tiene descripción con Qué, Por qué, y Refs: HU-XXX
 
+### SEO
+
+- [ ] Un solo `<h1>` por página
+- [ ] Headings en orden (h1 → h2 → h3, sin saltar)
+- [ ] Etiquetas semánticas: `<main>`, `<nav>`, `<section>`, `<footer>`
+- [ ] `alt` en toda imagen
+- [ ] Meta title y description presentes
+- [ ] `hreflang` entre idiomas si la página es localizada
+- [ ] JSON-LD básico presente (Organization + WebSite en layout)
+
+### Seguridad
+
+- [ ] No hay `dangerouslySetInnerHTML` sin sanitización
+- [ ] No hay secrets en el frontend (sin `NEXT_PUBLIC_` para datos sensibles)
+- [ ] Inputs validados con Zod antes de usar
+- [ ] Links externos con `rel="noopener noreferrer"`
+
+### Aprendizajes
+
+- [ ] La sección `## Aprendizajes` de la historia está completa (si hubo descubrimientos)
+- [ ] Cada aprendizaje tiene un documento destino asignado
+- [ ] Cada aprendizaje sin propagar (`⬜`) dice a qué documento va
+
+La propagación ocurre **después del merge**, no antes: escribir en una guía o
+un estándar lo que todavía puede cambiar en revisión ensucia documentos que
+lee todo el mundo. Un `⬜` con destino asignado es el estado correcto de una
+historia en revisión — **no devuelvas por eso**. Lo que sí es un fallo es un
+aprendizaje sin destino, porque nadie sabrá dónde llevarlo.
+
 ---
 
 ## Qué leer

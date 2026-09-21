@@ -1,5 +1,5 @@
 import { APIError } from 'payload';
-import { validateInput, normalizeWriteData, PayloadValidationError } from '@hwe-platform/core-ui';
+import { validateInput, normalizePayloadData, PayloadValidationError } from '@hwe-platform/core-ui';
 
 import type { CollectionBeforeChangeHook, GlobalBeforeChangeHook } from 'payload';
 import type { WriteSchema } from '@hwe-platform/core-ui';
@@ -27,7 +27,7 @@ export type WriteSchemas = {
  */
 function validarOFallar(schema: WriteSchema, data: unknown, label: string): void {
   try {
-    validateInput(schema, normalizeWriteData(data), label);
+    validateInput(schema, normalizePayloadData(data), label);
   } catch (error) {
     if (error instanceof PayloadValidationError) {
       throw new APIError(error.message, 400, { fields: error.fields }, true);

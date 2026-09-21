@@ -47,3 +47,20 @@ describe('Eyebrow', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe('Eyebrow — línea de acento', () => {
+  it('sin rule no añade ningún envoltorio', () => {
+    const { container } = render(<Eyebrow>Etiqueta</Eyebrow>);
+
+    expect(container.firstElementChild?.tagName).toBe('P');
+  });
+
+  it('con rule pinta una línea decorativa oculta a lectores, delante del texto', () => {
+    const { container } = render(<Eyebrow rule>Etiqueta</Eyebrow>);
+
+    const linea = container.querySelector('span[aria-hidden]');
+    expect(linea).toBeTruthy();
+    expect(linea?.className).toContain('bg-secondary');
+    expect(container.textContent).toBe('Etiqueta');
+  });
+});

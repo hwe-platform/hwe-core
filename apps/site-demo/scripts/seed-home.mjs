@@ -1,0 +1,221 @@
+/**
+ * Siembra la home con el contenido real del Figma de La Civelle, para poder
+ * comparar lo construido con el diseño en lugar de con datos inventados.
+ *
+ * **Todo el texto es literal del export, con su cita** — regla 1 de
+ * CLAUDE.md. La primera versión de este script resumió los párrafos "para
+ * que cupieran" y le puso a la intro un botón que el diseño no lleva; el
+ * Reviewer lo cazó contrastando línea a línea. Texto parecido es texto
+ * inventado.
+ *
+ * Uso:
+ *   node scripts/seed-home.mjs            (credenciales del .env)
+ *   node scripts/seed-home.mjs <email> <contraseña>
+ *
+ * Es idempotente: reescribe la misma página, no acumula.
+ */
+
+import { readFile } from 'node:fs/promises';
+
+const [, , argEmail, argPassword, base = 'http://localhost:3000'] = process.argv;
+
+/** Lee el `.env` del site; aquí no hay Next que lo cargue por nosotros. */
+async function cargarEnv() {
+  try {
+    const contenido = await readFile(new URL('../.env', import.meta.url), 'utf8');
+    for (const linea of contenido.split('\n')) {
+      const m = /^\s*([A-Z_][A-Z0-9_]*)\s*=\s*(.*)$/i.exec(linea);
+      if (m) process.env[m[1]] ??= m[2].trim().replace(/^["']|["']$/g, '');
+    }
+  } catch {
+    /* sin .env, se usan los argumentos */
+  }
+}
+
+await cargarEnv();
+
+const email = argEmail ?? process.env.PAYLOAD_SEED_EMAIL;
+const password = argPassword ?? process.env.PAYLOAD_SEED_PASSWORD;
+
+if (!email || !password) {
+  console.error('Faltan credenciales: pásalas como argumentos o define PAYLOAD_SEED_* en el .env.');
+  process.exit(1);
+}
+
+const API = `${base}/api`;
+const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
+
+async function login() {
+  const res = await fetch(`${API}/users/login`, {
+    method: 'POST',
+    headers: JSON_HEADERS,
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await res.json();
+  if (!body.token) throw new Error(`No se pudo iniciar sesión (HTTP ${res.status})`);
+  return body.token;
+}
+
+/** Id de un archivo ya subido, buscándolo por nombre. */
+async function media(nombre) {
+  const query = new URLSearchParams({ where: JSON.stringify({ filename: { equals: nombre } }) });
+  const res = await (await fetch(`${API}/media?limit=1&${query}`)).json();
+  return res.docs?.[0]?.id;
+}
+
+/** Máscara de negrita de Lexical. Los formatos son bits y se acumulan. */
+const NEGRITA = 1;
+
+/** Un tramo de texto. `negrita` marca lo que el export pone en `<strong>`. */
+const t = (text, negrita = false) => ({
+  type: 'text',
+  text,
+  format: negrita ? NEGRITA : 0,
+  detail: 0,
+  mode: 'normal',
+  style: '',
+  version: 1,
+});
+
+/**
+ * Un cuerpo de texto en el formato que Payload guarda para Lexical.
+ *
+ * Cada párrafo es una lista de tramos, para poder reproducir las negritas del
+ * export: sin eso el diseño pierde los énfasis que sí lleva.
+ */
+function cuerpo(...parrafos) {
+  return {
+    root: {
+      type: 'root',
+      format: '',
+      indent: 0,
+      version: 1,
+      direction: 'ltr',
+      children: parrafos.map((tramos) => ({
+        type: 'paragraph',
+        format: '',
+        indent: 0,
+        version: 1,
+        direction: 'ltr',
+        children: tramos,
+      })),
+    },
+  };
+}
+
+const token = await login();
+
+const video = await media('hero-camping.mp4');
+const fotoEmplazamientos = await media('emplacements.png');
+const fotoPiscina = await media('piscine.png');
+
+if (!video || !fotoEmplazamientos || !fotoPiscina) {
+  throw new Error('Faltan assets. Ejecuta antes: node scripts/seed-assets.mjs');
+}
+
+console.log('Sembrando la home con el contenido del Figma...\n');
+
+// Buscada por `type`, no por «la primera que salga»: con `?limit=1` a secas
+// el script le machacaba el contenido a una página cualquiera en cuanto
+// hubiera más de una.
+const filtro = new URLSearchParams({ where: JSON.stringify({ type: { equals: 'home' } }) });
+const pagina = await (await fetch(`${API}/pages?limit=1&locale=fr&${filtro}`)).json();
+const id = pagina.docs?.[0]?.id;
+if (!id) throw new Error('No hay ninguna página con type "home" que actualizar.');
+
+/**
+ * Hero de la home — App.tsx:466-503.
+ *
+ * Vídeo de fondo, el logo haciendo de titular y la línea de localización como
+ * supertítulo. El `<h1>` se pinta oculto: el export deja esta página sin
+ * encabezado legible y eso no se copia.
+ */
+const hero = {
+  variant: 'video',
+  media: video,
+  eyebrow: 'Capbreton · Landes · Atlantique', // App.tsx:495
+  title: 'Camping La Civelle', // alt del logo, App.tsx:500
+  titleMode: 'logo',
+  align: 'center',
+  showBreadcrumbs: false,
+};
+
+/**
+ * Los dos usos de imagen + texto que mejor enseñan los ejes, con su texto
+ * literal del export.
+ *
+ * El primero es la sección *intro* (App.tsx:546-566): medio a cinco columnas
+ * de doce, alineado arriba y **sin botón** — el diseño no lo lleva. El segundo
+ * es *La Piscine* (App.tsx:837-880): invertida, centrada, medio a siete y un
+ * único CTA.
+ *
+ * El titular de la intro va partido en dos: `title` es la primera línea y
+ * `titleAccent` la segunda, que el bloque pinta en dorado.
+ */
+const bloques = [
+  {
+    blockType: 'media-text',
+    subtitle: 'Camping 3 étoiles · Capbreton · Landes', // App.tsx:550
+    title: 'Bienvenue au Camping La Civelle,', // App.tsx:553
+    titleAccent: 'votre camping à Capbreton au cœur des Landes', // App.tsx:554
+    background: 'default', // bg-card — App.tsx:520
+    slotId: 'intro-medallion', // la insignia «Depuis 30 Ans» — App.tsx:536-541
+    content: cuerpo(
+      // App.tsx:558-562
+      [
+        t('Niché au cœur de la forêt landaise, le '),
+        t('Camping La Civelle', true),
+        t(' vous accueille à '),
+        t('Capbreton', true),
+        t(", à seulement 800 mètres des plages de l'Atlantique."),
+      ],
+      // App.tsx:564-566
+      [
+        t(
+          "Ce domaine de 11 hectares de pins maritimes est un sanctuaire où la nature, le calme et la convivialité se conjuguent pour des vacances inoubliables. Que vous soyez en famille, en couple ou entre amis, notre camping landais est le point de départ idéal pour découvrir la Côte d'Argent et le Pays Basque.",
+        ),
+      ],
+    ),
+    media: 'image',
+    image: fotoEmplazamientos,
+    split: 5,
+    reverse: false,
+    align: 'start',
+    ratio: 'portrait',
+    ctas: [],
+  },
+  {
+    blockType: 'media-text',
+    subtitle: 'Baignade & Détente', // App.tsx:839
+    title: 'La Piscine', // App.tsx:842
+    background: 'default', // bg-card — App.tsx:835
+    content: cuerpo([
+      // App.tsx:845-847
+      t(
+        "Piscine chauffée entourée de transats et d'espaces ombragés. Bassin principal 15 × 8 m, pataugeoire pour les petits et cours d'aquagym en juillet-août.",
+      ),
+    ]),
+    media: 'image',
+    image: fotoPiscina,
+    split: 7,
+    reverse: true,
+    align: 'center',
+    ratio: 'landscape',
+    // El CTA del diseño lleva flecha a la derecha (App.tsx:870).
+    ctas: [{ label: 'En savoir plus', url: '/piscine', variant: 'primary', icon: 'arrowRight' }],
+  },
+];
+
+const res = await fetch(`${API}/pages/${id}?locale=fr`, {
+  method: 'PATCH',
+  headers: { ...JSON_HEADERS, Authorization: `JWT ${token}` },
+  body: JSON.stringify({ hero, blocks: bloques }),
+});
+const body = await res.json().catch(() => ({}));
+
+console.log(
+  res.ok
+    ? '  OK    home: hero de vídeo + dos bloques imagen/texto\n\nListo. Recarga http://localhost:3000'
+    : `  FALLO HTTP ${res.status}: ${JSON.stringify(body).slice(0, 500)}`,
+);
+process.exit(res.ok ? 0 : 1);

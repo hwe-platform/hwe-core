@@ -3,6 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 
 import { BlockRenderer } from './BlockRenderer';
 
+import type { ReactNode } from 'react';
 import type { BlockInstance, BlockRegistry } from './types';
 
 /** Bloque de prueba que pinta su propio tipo, para distinguir quién renderizó. */
@@ -78,5 +79,62 @@ describe('BlockRenderer', () => {
   it('una página sin bloques no pinta nada', () => {
     const { container } = render(<BlockRenderer blocks={[]} />);
     expect(container).toBeEmptyDOMElement();
+  });
+});
+
+describe('BlockRenderer — reparto de slots', () => {
+  /** Un bloque que pinta lo que le llegue por el slot `aside`. */
+  function ConSlot({ data, aside }: { data: unknown; aside?: ReactNode }) {
+    return (
+      <div>
+        <span>{(data as { id: string }).id}</span>
+        {aside}
+      </div>
+    );
+  }
+
+  const registry = { prueba: ConSlot };
+  const slots = { 'el-primero': { aside: <b>desde el site</b> } };
+
+  // Sin esto, un override tendría que aplicarse a todas las instancias del
+  // bloque en lugar de a la que el editor eligió.
+  it('entrega el slot solo a la instancia con ese slotId', () => {
+    const { container } = render(
+      <BlockRenderer
+        blocks={[
+          { blockType: 'prueba', id: 'a', slotId: 'el-primero' },
+          { blockType: 'prueba', id: 'b' },
+        ]}
+        customRegistry={registry}
+        slotRegistry={slots}
+      />,
+    );
+
+    expect(container.querySelectorAll('b')).toHaveLength(1);
+    expect(container.textContent).toContain('desde el site');
+  });
+
+  it('un slotId sin entrada en el registry no rompe nada', () => {
+    const { container } = render(
+      <BlockRenderer
+        blocks={[{ blockType: 'prueba', id: 'a', slotId: 'inventado' }]}
+        customRegistry={registry}
+        slotRegistry={slots}
+      />,
+    );
+
+    expect(container.querySelector('b')).toBeNull();
+    expect(container.textContent).toContain('a');
+  });
+
+  it('sin slotRegistry el renderer sigue funcionando', () => {
+    const { container } = render(
+      <BlockRenderer
+        blocks={[{ blockType: 'prueba', id: 'a', slotId: 'el-primero' }]}
+        customRegistry={registry}
+      />,
+    );
+
+    expect(container.querySelector('b')).toBeNull();
   });
 });

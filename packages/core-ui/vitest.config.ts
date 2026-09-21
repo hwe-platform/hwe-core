@@ -20,7 +20,11 @@ export default defineConfig({
         'src/lib/**/*.ts',
         'src/payload/**/*.ts',
         'src/layout/**/*.tsx',
-        'src/blocks/**/*.tsx',
+        // `.ts` además de `.tsx`: en los bloques hay lógica que no es un
+        // componente —tablas de clases, respaldos— y con solo `.tsx` se
+        // quedaba fuera del umbral sin que nada avisara. Los barriles y los
+        // ficheros de tipos ya los quita el `exclude` de abajo.
+        'src/blocks/**/*.{ts,tsx}',
         'src/renderer/**/*.tsx',
       ],
       exclude: ['**/*.test.ts', '**/*.test.tsx', '**/*.types.ts', '**/index.ts'],

@@ -38,6 +38,12 @@ export type EyebrowProps = VariantProps<typeof eyebrowVariants> & {
   children: ReactNode;
   className?: string;
   /**
+   * Línea corta de acento a la izquierda, como en la intro de La Civelle
+   * (`App.tsx:548`). Es aditiva —nada cambia si no se pide— y vive aquí y no
+   * en el bloque porque la etiqueta es la primitiva y la línea la acompaña.
+   */
+  rule?: boolean;
+  /**
    * Etiqueta HTML. Se cambia solo cuando la etiqueta encabeza una región con
    * significado propio — por ejemplo `h2` en una columna del pie.
    */
@@ -50,6 +56,23 @@ export type EyebrowProps = VariantProps<typeof eyebrowVariants> & {
  * <Eyebrow size="sm" as="h2">Plan du site</Eyebrow>
  * <Eyebrow variant="badge">Camping</Eyebrow>
  */
-export function Eyebrow({ children, className, size, variant, as: Tag = 'p' }: EyebrowProps) {
-  return <Tag className={cn(eyebrowVariants({ size, variant }), className)}>{children}</Tag>;
+export function Eyebrow({
+  children,
+  className,
+  size,
+  variant,
+  rule = false,
+  as: Tag = 'p',
+}: EyebrowProps) {
+  const clases = cn(eyebrowVariants({ size, variant }), className);
+
+  if (!rule) return <Tag className={clases}>{children}</Tag>;
+
+  // La línea va fuera de la etiqueta y decorativa: no es texto ni lo separa.
+  return (
+    <div className="flex items-center gap-4">
+      <span aria-hidden className="bg-secondary h-px w-12 shrink-0" />
+      <Tag className={clases}>{children}</Tag>
+    </div>
+  );
 }

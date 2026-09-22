@@ -20,6 +20,15 @@ export type { HeroProps, HeroData, HeroLabels, Breadcrumb, HeroVariantProps } fr
 export { BlockCtas, fondoDe } from './blocks/seccion';
 export type { BlockLink, BlockCtasProps } from './blocks/seccion';
 
+export { BlogBlock, blogBlockSchema, consultaDeBlog, articuloATarjeta } from './blocks/blog';
+export type {
+  BlogProps,
+  BlogData,
+  ConsultaDeBlog,
+  ArticuloResuelto,
+  OpcionesDeTarjeta,
+} from './blocks/blog';
+
 export { CardGridBlock, CardOverlay, CardStacked, cardGridBlockSchema } from './blocks/card-grid';
 export type { CardGridProps, CardGridData, CardGridItem, CardProps } from './blocks/card-grid';
 

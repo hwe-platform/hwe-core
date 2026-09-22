@@ -704,6 +704,33 @@ export interface Accommodation {
             blockType: 'card-grid';
           }
         | {
+            title?: string | null;
+            subtitle?: string | null;
+            /**
+             * Párrafo de entrada entre el titular y las tarjetas.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * Qué artículos se muestran.
+             */
+            source: 'latest' | 'featured' | 'byCategory';
+            category?: string | null;
+            /**
+             * Cuántos artículos se piden.
+             */
+            limit?: number | null;
+            showMoreLink?: boolean | null;
+            showMoreUrl?: string | null;
+            showMoreLabel?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'blog';
+          }
+        | {
             content: {
               root: {
                 type: string;
@@ -1162,6 +1189,33 @@ export interface Page {
             id?: string | null;
             blockName?: string | null;
             blockType: 'card-grid';
+          }
+        | {
+            title?: string | null;
+            subtitle?: string | null;
+            /**
+             * Párrafo de entrada entre el titular y las tarjetas.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * Qué artículos se muestran.
+             */
+            source: 'latest' | 'featured' | 'byCategory';
+            category?: string | null;
+            /**
+             * Cuántos artículos se piden.
+             */
+            limit?: number | null;
+            showMoreLink?: boolean | null;
+            showMoreUrl?: string | null;
+            showMoreLabel?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'blog';
           }
         | {
             content: {
@@ -1648,6 +1702,22 @@ export interface AccommodationsSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        blog?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              description?: T;
+              background?: T;
+              source?: T;
+              category?: T;
+              limit?: T;
+              showMoreLink?: T;
+              showMoreUrl?: T;
+              showMoreLabel?: T;
+              id?: T;
+              blockName?: T;
+            };
         'rich-text'?:
           | T
           | {
@@ -1857,6 +1927,22 @@ export interface PagesSelect<T extends boolean = true> {
                     icon?: T;
                     id?: T;
                   };
+              id?: T;
+              blockName?: T;
+            };
+        blog?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              description?: T;
+              background?: T;
+              source?: T;
+              category?: T;
+              limit?: T;
+              showMoreLink?: T;
+              showMoreUrl?: T;
+              showMoreLabel?: T;
               id?: T;
               blockName?: T;
             };

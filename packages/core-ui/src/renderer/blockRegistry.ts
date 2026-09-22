@@ -1,3 +1,4 @@
+import { BlogBlock } from '../blocks/blog';
 import { CardGridBlock } from '../blocks/card-grid';
 import { CtaBlock } from '../blocks/cta';
 import { IconGridBlock } from '../blocks/icon-grid';
@@ -25,4 +26,5 @@ export const blockRegistry: BlockRegistry = {
   'media-text': MediaTextBlock,
   'icon-grid': IconGridBlock,
   'card-grid': CardGridBlock,
+  blog: BlogBlock,
 };

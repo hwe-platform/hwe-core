@@ -240,6 +240,36 @@ export const iconGridBlockSchema = z.object({
 
 /** Grid de tarjetas con imagen. */
 /**
+ * Una tarjeta con imagen.
+ *
+ * Compartida entre `card-grid` y `blog`: las dos pintan la misma anatomía,
+ * y un artículo resuelto no es más que una tarjeta con fecha. Tener dos formas
+ * para lo mismo obligaría a mantener dos tarjetas.
+ */
+const cardItemSchema = z.object({
+  image: mediaRefSchema,
+  title: z.string(),
+  /** Segunda línea bajo el titular. */
+  subtitle: z.string().optional(),
+  /** Etiqueta corta sobre el titular: categoría, zona, tipo. */
+  tag: z.string().optional(),
+  url: z.string().optional(),
+  /** Fecha ya formateada. La da quien resuelve, no la tarjeta. */
+  date: z.string().optional(),
+  /** Texto del enlace. Sin él la tarjeta no pinta llamada a la acción. */
+  readMoreLabel: z.string().optional(),
+  /**
+   * Tratamiento de la llamada a la acción.
+   *
+   * Es un eje y no un valor fijo: el diseño de referencia usa las dos formas
+   * en secciones contiguas —botón relleno en «Nos Hébergements», enlace
+   * suelto en «Les Alentours»— así que elegir una sería elegir por el cliente
+   * siguiente.
+   */
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'link']).default('link'),
+});
+
+/**
  * Rejilla de tarjetas con imagen.
  *
  * Cinco apariciones en el diseño de referencia y dos anatomías distintas: el
@@ -287,32 +317,7 @@ export const cardGridBlockSchema = z.object({
       featured: z.boolean().optional(),
     })
     .optional(),
-  items: z
-    .array(
-      z.object({
-        image: mediaRefSchema,
-        title: z.string(),
-        /** Segunda línea bajo el titular. */
-        subtitle: z.string().optional(),
-        /** Etiqueta corta sobre el titular: categoría, zona, tipo. */
-        tag: z.string().optional(),
-        url: z.string().optional(),
-        /** Fecha ya formateada. La da quien resuelve, no la tarjeta. */
-        date: z.string().optional(),
-        /** Texto del enlace. Sin él la tarjeta no pinta llamada a la acción. */
-        readMoreLabel: z.string().optional(),
-        /**
-         * Tratamiento de la llamada a la acción de la tarjeta.
-         *
-         * Es un eje y no un valor fijo: el diseño de referencia usa las dos
-         * formas en secciones contiguas —botón relleno en «Nos Hébergements»,
-         * enlace suelto en «Les Alentours»— así que elegir una sería elegir
-         * por el cliente siguiente.
-         */
-        variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'link']).default('link'),
-      }),
-    )
-    .default([]),
+  items: z.array(cardItemSchema).default([]),
   /** Enlace al final de la sección, bajo la rejilla. */
   ctas: z.array(blockLinkSchema).default([]),
 });
@@ -340,7 +345,44 @@ export const environmentGridBlockSchema = z.object({ blockType: z.literal('envir
 export const galleryBlockSchema = z.object({ blockType: z.literal('gallery') });
 export const mapBlockSchema = z.object({ blockType: z.literal('map') });
 export const instagramBlockSchema = z.object({ blockType: z.literal('instagram') });
-export const blogBlockSchema = z.object({ blockType: z.literal('blog') });
+/**
+ * Listado de artículos del blog.
+ *
+ * **El primer bloque de referencia**: no lleva contenido, lleva la consulta.
+ * El editor dice qué quiere —los últimos, los destacados, los de una
+ * categoría— y quien resuelve es el site, porque `core-ui` no habla con
+ * Payload. Los artículos ya resueltos llegan en `items`, con la misma forma
+ * que las tarjetas de `card-grid`: comparten anatomía y no hace falta una
+ * tarjeta aparte.
+ */
+export const blogBlockSchema = z.object({
+  blockType: z.literal('blog'),
+  ...blockHeadingSchema,
+  /** Párrafo de entrada entre el titular y las tarjetas. */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /** Qué artículos se piden. */
+  source: z.enum(['latest', 'featured', 'byCategory']).default('latest'),
+  /** Categoría, cuando `source` es `byCategory`. */
+  category: z.string().optional(),
+  /** Cuántos se piden. Tres es lo que muestra el diseño de referencia. */
+  limit: z.number().int().positive().max(24).default(3),
+  /** Si hay enlace al listado completo bajo las tarjetas. */
+  showMoreLink: z.boolean().default(false),
+  /** Destino de ese enlace. Sin él no se pinta aunque `showMoreLink` esté. */
+  showMoreUrl: z.string().optional(),
+  /** Texto de ese enlace. En el diseño, «Voir toutes les actualités». */
+  showMoreLabel: z.string().optional(),
+  /**
+   * Artículos ya resueltos, en forma de tarjeta.
+   *
+   * No lo rellena el editor: lo inyecta el site antes de renderizar. Por eso
+   * tiene valor por defecto — un bloque recién creado es válido y se queda
+   * vacío hasta que alguien lo resuelva.
+   */
+  items: z.array(cardItemSchema).default([]),
+});
 export const faqBlockSchema = z.object({ blockType: z.literal('faq') });
 export const embedBlockSchema = z.object({ blockType: z.literal('embed') });
 

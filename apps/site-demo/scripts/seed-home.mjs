@@ -298,6 +298,20 @@ const bloques = [
       },
     ],
   },
+  {
+    // «Actualités» — App.tsx:985-1058.
+    // Bloque de referencia: no lleva los artículos, lleva la consulta. Los
+    // resuelve el site antes de pintar.
+    blockType: 'blog',
+    subtitle: 'Blog', // App.tsx:990
+    title: 'Actualités', // App.tsx:993
+    background: 'muted', // bg-muted/40 — App.tsx:985
+    source: 'latest',
+    limit: 3, // tres tarjetas — App.tsx:1000
+    showMoreLink: true,
+    showMoreUrl: '/actualites',
+    showMoreLabel: 'Voir toutes les actualités', // App.tsx:1054
+  },
 ];
 
 const res = await fetch(`${API}/pages/${id}?locale=fr`, {

@@ -34,11 +34,18 @@ Estas reglas se aplican siempre, sin excepciones, en cada tarea:
    - `/security-review` solo cuando la historia toca inputs, auth,
      headers, iframes o sanitización
    - Si el Reviewer encuentra errores, corrígelos y repite solo el Reviewer
-   8. **Antes de implementar un bloque, verifica su spec.** Comprueba que
-      existe su archivo en `docs/specs/` con el formato de
-      `docs/specs/_template-bloque.md`. Si está vacío o no existe, rellénalo
-      desde la HU antes de escribir código. Si durante la implementación
-      algo cambia respecto a la spec, actualízala al terminar.
+
+   **Reviewer por bloque, no por historia.** Si la historia tiene varios
+   bloques o componentes independientes, lanza el Reviewer al terminar cada
+   uno — no al final con 20 ficheros de golpe. Una lista de 3 hallazgos se
+   corrige sin meter errores nuevos; una de 12 no. La pasada final de cierre
+   solo revisa lo que no se ve desde un bloque aislado.
+
+8. **Antes de implementar un bloque, verifica su spec.** Comprueba que
+   existe su archivo en `docs/specs/` con el formato de
+   `docs/specs/_template-bloque.md`. Si está vacío o no existe, rellénalo
+   desde la HU antes de escribir código. Si durante la implementación
+   algo cambia respecto a la spec, actualízala al terminar.
 
 Este repo forma parte del proyecto HWE. La documentación de referencia, las
 historias de usuario, los estándares y los archivos operativos viven en
@@ -86,7 +93,6 @@ Los demás roles no se ejecutan como subagentes:
 - **Planner** (Opus) opera desde claude.ai
 - **Code Builder** es la propia sesión de Claude Code
 - Las definiciones de todos los roles están en `docs/.claude/agentes/`
-
 
 ## Cuando estés perdido
 

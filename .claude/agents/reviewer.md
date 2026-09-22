@@ -37,6 +37,75 @@ para revisión (PR creada o cambios pendientes de verificar).
 
 ---
 
+## Modos de revisión
+
+Tres modos, con alcance distinto. El Code Builder indica cuál al invocarte.
+
+### Modo 1 — Revisión de bloque
+
+Se lanza al terminar **un** bloque o componente, no la historia entera.
+
+**Qué lees:** solo el código de ese bloque, su spec, sus tests y su
+sección del Figma. Nada más.
+
+**Qué verificas:** checklist de código, naming, documentación, tests y
+diseño — limitado a los ficheros de ese bloque.
+
+**Verificaciones automáticas:** lint, format, tests, build — una sola vez.
+
+**Salida:** lista corta (2-4 hallazgos típico). Termina con:
+
+```
+Ya verificado
+[lista de ficheros aprobados en este bloque]
+```
+
+### Modo 2 — Revisión de cierre
+
+Se lanza **una sola vez**, cuando todos los bloques de la historia ya
+pasaron modo 1.
+
+**Qué lees:** solo lo que no se ve desde un bloque aislado:
+
+- Piezas compartidas (componentes reutilizados entre bloques)
+- Registry y wiring
+- Paridad Zod ↔ Payload entre bloques
+- Migración de Payload
+- Criterios de aceptación de la historia
+- Coherencia entre specs
+- SEO, seguridad, git, aprendizajes
+
+**Qué NO relees:** los ficheros que aparecen en la lista "Ya verificado"
+de los informes de modo 1. Esos están aprobados — no los vuelvas a abrir.
+
+**Verificaciones automáticas:** lint, format, tests, build — completa, sin
+caché.
+
+### Modo 3 — Re-revisión (tras corrección)
+
+Se lanza después de que el Code Builder corrija los hallazgos de una
+revisión anterior.
+
+**Qué lees:** solo dos cosas:
+
+1. El **diff** desde el commit del veredicto anterior
+2. Tu **lista de hallazgos** anterior — verificar que cada uno se corrigió
+
+**Tu única pregunta:** ¿se corrigió lo que dije, y el parche ha roto algo
+en la zona editada?
+
+**Verificaciones automáticas:** solo si el diff toca código (no si solo
+toca comentarios o markdown). Si toca código: lint + tests (no build
+completo si no cambió estructura).
+
+**Qué NO haces:** no relees ficheros fuera del diff. No buscas hallazgos
+nuevos fuera de la zona del parche. No repites las verificaciones
+automáticas si solo cambiaron comentarios.
+
+**Duración esperada:** 2-3 minutos, no 13.
+
+---
+
 ## Flujo de trabajo
 
 ### 1. Leer la historia

@@ -12,10 +12,10 @@ import type { IconGridVariantProps, IconRegistry } from './icon-grid.types';
 /**
  * Variante → componente.
  *
- * Va por mapa aunque las dos variantes sean de estilo: lo que cambia es el
- * envoltorio de cada item y la etiqueta HTML de su rótulo —`<h3>` suelto,
- * `<p>` dentro de tarjeta—, y resolverlo con un `if` dejaría un componente
- * haciendo dos cosas. La regla de `bloques.md` es el mapa, no el `switch`.
+ * **Eje estructural**, así que va por mapa: cambia el envoltorio de cada item
+ * y la etiqueta HTML de su rótulo —`<h3>` suelto, `<p>` dentro de tarjeta—, y
+ * resolverlo con un `if` dejaría un componente haciendo dos cosas. La regla de
+ * `bloques.md` es el mapa, no el `switch`.
  */
 const VARIANTES: Record<string, ComponentType<IconGridVariantProps>> = {
   bare: IconGridBare,

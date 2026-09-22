@@ -208,8 +208,10 @@ export const iconGridBlockSchema = z.object({
   /**
    * Si cada icono va suelto sobre el fondo o dentro de una tarjeta.
    *
-   * Es de estilo y no estructural: cambia el envoltorio y la escala, no la
-   * anatomía —icono en marco circular, etiqueta y descripción opcional.
+   * **Eje estructural**: el icono suelto y el icono en tarjeta no comparten
+   * envoltorio, así que van por mapa —`IconGridBare` e `IconGridCard`— y no
+   * por `if`. Lo que comparten es el interior del item: marco circular,
+   * etiqueta y descripción opcional.
    */
   variant: z.enum(['bare', 'card']).default('bare'),
   /**

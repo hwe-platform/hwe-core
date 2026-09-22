@@ -34,6 +34,11 @@ Estas reglas se aplican siempre, sin excepciones, en cada tarea:
    - `/security-review` solo cuando la historia toca inputs, auth,
      headers, iframes o sanitización
    - Si el Reviewer encuentra errores, corrígelos y repite solo el Reviewer
+   8. **Antes de implementar un bloque, verifica su spec.** Comprueba que
+      existe su archivo en `docs/specs/` con el formato de
+      `docs/specs/_template-bloque.md`. Si está vacío o no existe, rellénalo
+      desde la HU antes de escribir código. Si durante la implementación
+      algo cambia respecto a la spec, actualízala al terminar.
 
 Este repo forma parte del proyecto HWE. La documentación de referencia, las
 historias de usuario, los estándares y los archivos operativos viven en
@@ -68,14 +73,20 @@ git submodule update --remote docs
 
 ## Agentes
 
-El Reviewer es el único agente ejecutable como subagente de Claude Code.
-Vive en `.claude/agents/reviewer.md` con frontmatter YAML.
+El Reviewer y el Researcher son subagentes ejecutables de Claude Code.
+Viven en `.claude/agents/` con frontmatter YAML.
+
+- **Reviewer** — valida contra estándares. Lo dispara la regla 7.
+- **Researcher** (Haiku) — busca en el repo y devuelve resumen corto.
+  Invócalo cuando necesites localizar código sin cargar archivos enteros
+  en tu contexto.
 
 Los demás roles no se ejecutan como subagentes:
 
 - **Planner** (Opus) opera desde claude.ai
 - **Code Builder** es la propia sesión de Claude Code
 - Las definiciones de todos los roles están en `docs/.claude/agentes/`
+
 
 ## Cuando estés perdido
 

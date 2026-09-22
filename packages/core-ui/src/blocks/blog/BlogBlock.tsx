@@ -51,7 +51,7 @@ export function BlogBlock({ data }: BlogProps) {
           {
             label: bloque.showMoreLabel ?? '',
             url: bloque.showMoreUrl,
-            variant: 'link' as const,
+            variant: 'link-underline' as const,
             icon: 'arrowRight',
           },
         ]
@@ -64,6 +64,7 @@ export function BlogBlock({ data }: BlogProps) {
           subtitle={bloque.subtitle}
           title={bloque.title}
           description={bloque.description}
+          tone={bloque.headingTone}
         />
 
         <div className={cn(reticulaDe(COLUMNAS), 'gap-8 md:gap-10')}>

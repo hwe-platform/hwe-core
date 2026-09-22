@@ -1,4 +1,4 @@
-import { headingFields, linkFields, iconField } from './partes';
+import { headingFields, headingToneField, iconField, linkFields } from './partes';
 
 import type { Block } from 'payload';
 
@@ -7,6 +7,7 @@ export const IconGrid: Block = {
   labels: { singular: 'Grid de iconos', plural: 'Grids de iconos' },
   fields: [
     ...headingFields,
+    headingToneField,
     {
       name: 'columns',
       type: 'number',

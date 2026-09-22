@@ -196,3 +196,23 @@ describe('IconGridBlock — resolución de iconos', () => {
     vi.unstubAllEnvs();
   });
 });
+
+describe('Cabecera — tono del titular', () => {
+  it('por defecto el titular va en el color de texto', () => {
+    // Tres de las cuatro secciones del diseño de referencia lo llevan así.
+    const { container } = render(<IconGridBlock data={{ ...base, title: 'Sur place' }} />);
+
+    const titular = container.querySelector('h2');
+    expect(titular?.className).toContain('text-foreground');
+  });
+
+  it('el tono de marca lo pone en el color primario', () => {
+    // «Pourquoi choisir La Civelle ?», la única que lo destaca.
+    const { container } = render(
+      <IconGridBlock data={{ ...base, title: 'Pourquoi choisir ?', headingTone: 'brand' }} />,
+    );
+
+    const titular = container.querySelector('h2');
+    expect(titular?.className).toContain('text-primary');
+  });
+});

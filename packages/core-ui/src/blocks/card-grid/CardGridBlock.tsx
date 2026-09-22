@@ -64,11 +64,17 @@ export function CardGridBlock({ data }: CardGridProps) {
           subtitle={bloque.subtitle}
           title={bloque.title}
           description={bloque.description}
+          tone={bloque.headingTone}
         />
 
         <div className={cn(reticula(bloque), 'gap-8 md:gap-10')}>
           {bloque.items.map((item, i) => (
-            <Tarjeta key={`${item.title}-${i}`} item={item} className={columnaDe(bloque, i)} />
+            <Tarjeta
+              key={`${item.title}-${i}`}
+              item={item}
+              className={columnaDe(bloque, i)}
+              size={bloque.cardSize}
+            />
           ))}
         </div>
 
@@ -79,11 +85,17 @@ export function CardGridBlock({ data }: CardGridProps) {
 }
 
 /**
- * Clases de la retícula.
+ * La retícula de la sección: uniforme, o de doce columnas si hay reparto.
  *
- * Con reparto asimétrico la rejilla pasa a las doce columnas de Tailwind, que
- * es lo único que permite que dos tarjetas midan 5 y 7; sin él, el número de
- * columnas manda y la rampa responsive sale de `icon-grid`, que ya la resolvió.
+ * Las doce columnas de Tailwind son lo único que permite que dos tarjetas
+ * midan 5 y 7; sin reparto manda el número de columnas y la rampa sale de
+ * `icon-grid`, que ya la resolvió.
+ *
+ * El reparto asimétrico llega en `lg` y no en `md` como el export, **a
+ * propósito**: allí la rejilla pasa a doce columnas en `md` mientras que los
+ * repartos por tarjeta solo existen en `lg`, así que entre los dos tamaños
+ * cada tarjeta ocupa una de doce columnas y queda en una astilla. Es un
+ * defecto del diseño exportado, de los que DEC-002 dice que no se copian.
  */
 function reticula(bloque: CardGridData): string {
   return bloque.spans.length > 0 ? 'grid grid-cols-1 lg:grid-cols-12' : reticulaDe(bloque.columns);

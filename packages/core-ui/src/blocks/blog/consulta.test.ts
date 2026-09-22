@@ -72,12 +72,23 @@ describe('articuloATarjeta', () => {
 
     expect(tarjeta).toMatchObject({
       title: 'Nouvelle saison 2026',
-      subtitle: 'Toutes les nouveautés du camping',
       tag: 'Camping',
       url: '/blog/nouvelle-saison-2026',
       readMoreLabel: "Lire l'article",
       variant: 'link',
     });
+  });
+
+  it('sin pedirlo, la tarjeta no lleva resumen', () => {
+    // La tarjeta del diseño de referencia es píldora, fecha, titular y enlace.
+    // Un párrafo que nadie ha pedido es contenido inventado en la página.
+    expect(articuloATarjeta(articulo, { locale: 'fr' }).subtitle).toBeUndefined();
+  });
+
+  it('con `showExcerpt` el resumen va de subtítulo', () => {
+    const tarjeta = articuloATarjeta(articulo, { locale: 'fr', showExcerpt: true });
+
+    expect(tarjeta.subtitle).toBe('Toutes les nouveautés du camping');
   });
 
   it('formatea la fecha en el idioma de la página', () => {

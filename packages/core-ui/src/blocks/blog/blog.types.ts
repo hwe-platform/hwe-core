@@ -36,4 +36,6 @@ export type OpcionesDeTarjeta = {
   readMoreLabel?: string;
   /** Prefijo de la URL del artículo. Por defecto `/blog`. */
   basePath?: string;
+  /** Si la tarjeta lleva el resumen bajo el titular. Lo dice el bloque. */
+  showExcerpt?: boolean;
 };

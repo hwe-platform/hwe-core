@@ -7,8 +7,9 @@ import type { VariantProps } from 'class-variance-authority';
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 
 const buttonVariants = cva(
-  // El peso lo fija la talla, que lo toma de los tokens del cliente: dos
-  // dueños para la misma propiedad dependerían del orden del CSS.
+  // Ni peso ni cuerpo aquí: los pone quien corresponda —los tokens en los
+  // botones, la variante en los enlaces—. Dos dueños para la misma propiedad
+  // dependerían del orden de la hoja, que es justo lo que ya falló.
   'inline-flex items-center justify-center gap-2 rounded-lg font-body transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
@@ -26,27 +27,53 @@ const buttonVariants = cva(
          * son dos cosas distintas y no dos grados de la misma.
          */
         link: 'bg-transparent font-bold hover:opacity-80',
+        /**
+         * El enlace de sección: el «ver todo» al pie de una rejilla.
+         *
+         * Es el segundo tratamiento de enlace del lenguaje visual, y no un
+         * `link` más grande: el de tarjeta va pequeño y en secundario, y este
+         * va en color de marca con una línea inferior tenue. Los dos aparecen
+         * en la misma página del diseño de referencia.
+         */
+        'link-underline':
+          'bg-transparent font-bold text-primary border-b-2 border-primary/20 hover:opacity-80',
       },
       /**
-       * La talla por defecto (`md`) sale de **tokens del cliente**, con
-       * respaldo: un site que no los declare se ve exactamente igual que antes.
-       * La forma del botón es identidad de marca —La Civelle lo quiere más
-       * ancho, más bajo y en negrita que el valor genérico— y fijarla en la
-       * primitiva la hacía específica del primero que llegara.
-       *
-       * `sm` y `lg` siguen siendo escalones fijos: son los casos
-       * excepcionales, no la identidad.
+       * `sm` y `lg` son escalones fijos: los casos excepcionales, no la
+       * identidad. La talla por defecto la visten los tokens del cliente desde
+       * la compuesta, y solo en los botones.
        */
       size: {
         sm: 'h-9 px-3 text-sm font-medium',
-        md: 'px-(--button-px,1rem) py-(--button-py,0.5rem) text-(length:--button-font-size,1rem) font-(--button-font-weight,500) shadow-(--button-shadow,none)',
+        // La talla por defecto no pone nada por su cuenta: sus clases salen de
+        // la compuesta de abajo, porque son tokens **de botón** y un enlace no
+        // los quiere.
+        md: '',
         lg: 'h-12 px-6 text-lg font-medium',
       },
     },
-    // La talla aporta padding y sombra desde los tokens del cliente, y un
-    // enlace no los quiere. Va como compuesta para que gane a la talla: CVA
-    // las aplica después, y tailwind-merge se queda con la última.
-    compoundVariants: [{ variant: 'link', className: 'px-0 py-0 shadow-none' }],
+    /*
+     * La forma del botón —relleno, cuerpo, peso y sombra— sale de tokens del
+     * cliente, y es identidad de marca: La Civelle lo quiere más ancho, más
+     * bajo y en negrita que el valor genérico.
+     *
+     * Va aquí y no en la talla porque **es de los botones, no de los
+     * enlaces**. Tenerlo en `md` obligaba a deshacerlo después en cada
+     * variante de enlace, y deshacerlo no siempre funciona: `tailwind-merge`
+     * no reconoce `text-(length:…)` como cuerpo, así que las dos clases
+     * llegaban juntas al HTML y ganaba la que la hoja emite más tarde —el
+     * token—, dejando el enlace de sección a 1rem con su `text-xl` puesto.
+     * Una clase presente no es una clase aplicada.
+     */
+    compoundVariants: [
+      {
+        variant: ['primary', 'secondary', 'outline', 'ghost'],
+        size: 'md',
+        className:
+          'px-(--button-px,1rem) py-(--button-py,0.5rem) text-(length:--button-font-size,1rem) font-(--button-font-weight,500) shadow-(--button-shadow,none)',
+      },
+      { variant: 'link-underline', className: 'text-xl pb-1' },
+    ],
     defaultVariants: {
       variant: 'primary',
       size: 'md',

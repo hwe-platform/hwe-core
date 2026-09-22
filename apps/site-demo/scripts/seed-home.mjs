@@ -109,8 +109,20 @@ const video = await media('hero-camping.mp4');
 const fotoEmplazamientos = await media('emplacements.png');
 const fotoPiscina = await media('piscine.png');
 const fotoAlojamientos = await media('locations.png');
+const fotoCapbreton = await media('capbreton.png');
+const fotoSurf = await media('surf-plages.png');
+const fotoPaysBasque = await media('pays-basque.png');
+const fotoGastronomia = await media('gastronomie.png');
 
-if (!video || !fotoEmplazamientos || !fotoPiscina || !fotoAlojamientos) {
+const fotosDeLaRegion = [fotoCapbreton, fotoSurf, fotoPaysBasque, fotoGastronomia];
+
+if (
+  !video ||
+  !fotoEmplazamientos ||
+  !fotoPiscina ||
+  !fotoAlojamientos ||
+  fotosDeLaRegion.some((foto) => !foto)
+) {
   throw new Error('Faltan assets. Ejecuta antes: node scripts/seed-assets.mjs');
 }
 
@@ -191,6 +203,7 @@ const bloques = [
     blockType: 'icon-grid',
     subtitle: 'Notre esprit', // App.tsx:601
     title: 'Pourquoi choisir La Civelle ?', // App.tsx:604
+    headingTone: 'brand', // text-primary — App.tsx:607; las otras tres secciones van en text-foreground
     background: 'default', // bg-card — App.tsx:597
     columns: 3, // App.tsx:612
     variant: 'bare',
@@ -297,6 +310,57 @@ const bloques = [
         icon: 'arrowRight',
       },
     ],
+  },
+  {
+    // «Découvrez les alentours» — App.tsx:941-975.
+    // Cuatro tarjetas con el texto sobre la imagen, en la escala pequeña: la
+    // otra sección overlay del diseño, y la que prueba el eje `cardSize`.
+    blockType: 'card-grid',
+    subtitle: 'La région', // App.tsx:945
+    title: 'Découvrez les alentours', // App.tsx:948
+    headingTone: 'brand', // text-primary — App.tsx:947
+    description: 'Côte landaise, Pays Basque, surf et gastronomie à deux pas', // App.tsx:951
+    background: 'default', // bg-card — App.tsx:941
+    card: 'overlay',
+    cardSize: 'compact', // h-[320px] md:h-[420px] lg:h-[540px] — App.tsx:960
+    columns: 4, // App.tsx:954
+    spans: [],
+    source: 'manual',
+    items: [
+      {
+        image: fotoCapbreton,
+        title: 'Capbreton', // App.tsx:955
+        tag: 'Village & port', // App.tsx:955
+        url: '/capbreton',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link', // enlace suelto, sin caja — App.tsx:970
+      },
+      {
+        image: fotoSurf,
+        title: 'Surf & Plages', // App.tsx:956
+        tag: 'Atlantique', // App.tsx:956
+        url: '/surf-plages',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link',
+      },
+      {
+        image: fotoPaysBasque,
+        title: 'Pays Basque', // App.tsx:957
+        tag: 'Excursions', // App.tsx:957
+        url: '/pays-basque',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link',
+      },
+      {
+        image: fotoGastronomia,
+        title: 'Gastronomie', // App.tsx:958
+        tag: 'Marchés & saveurs', // App.tsx:958
+        url: '/gastronomie',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link',
+      },
+    ],
+    ctas: [],
   },
   {
     // «Actualités» — App.tsx:985-1058.

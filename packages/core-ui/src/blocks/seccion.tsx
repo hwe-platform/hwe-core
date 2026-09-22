@@ -33,6 +33,18 @@ export function fondoDe(background: string): string {
   return FONDOS[background] ?? '';
 }
 
+/**
+ * Si una variante de botón se pinta como enlace y no como caja.
+ *
+ * Por familia y no por igualdad: hay dos tratamientos de enlace —el de tarjeta
+ * y el de sección, subrayado— y comparar contra `'link'` a secas dejaba al
+ * segundo sin el color que le da la tarjeta. Lo que decide es si hay caja
+ * debajo, que es lo que comparten.
+ */
+export function esVarianteDeEnlace(variant: string): boolean {
+  return variant.startsWith('link');
+}
+
 /** Un enlace de sección, tal como lo declara el schema compartido. */
 export type BlockLink = z.infer<typeof blockLinkSchema>;
 
@@ -71,12 +83,26 @@ export function BlockCtas({ ctas, className }: BlockCtasProps) {
   );
 }
 
+/**
+ * Color del titular de sección.
+ *
+ * Por mapa como todo lo demás: el diseño de referencia usa el color de texto
+ * en tres secciones y el de marca en una, y añadir un tono es añadir una
+ * entrada aquí.
+ */
+const TONOS: Record<string, string> = {
+  default: 'text-foreground',
+  brand: 'text-primary',
+};
+
 export type CabeceraProps = {
   /** Antetítulo: una línea corta de contexto sobre el titular. */
   subtitle?: string;
   title?: string;
   /** Párrafo de entrada entre el titular y el contenido. */
   description?: string;
+  /** Color del titular. Por defecto, el color de texto. */
+  tone?: string;
 };
 
 /**
@@ -86,13 +112,15 @@ export type CabeceraProps = {
  * dentro de un bloque pasaba del límite de complejidad de `codigo.md`. Si no
  * hay ninguna, no pinta ni el contenedor.
  */
-export function Cabecera({ subtitle, title, description }: CabeceraProps) {
+export function Cabecera({ subtitle, title, description, tone = 'default' }: CabeceraProps) {
   if (!subtitle && !title && !description) return null;
 
   return (
     <div className="mb-10 md:mb-16 lg:mb-20">
       {subtitle ? <Eyebrow className="mb-4">{subtitle}</Eyebrow> : null}
-      {title ? <h2 className={cn('text-primary', description && 'mb-6')}>{title}</h2> : null}
+      {title ? (
+        <h2 className={cn(TONOS[tone] ?? TONOS.default, description && 'mb-6')}>{title}</h2>
+      ) : null}
       {description ? (
         <p className="text-muted-foreground max-w-2xl text-xl font-medium">{description}</p>
       ) : null}

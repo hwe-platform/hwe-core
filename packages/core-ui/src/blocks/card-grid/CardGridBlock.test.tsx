@@ -184,12 +184,59 @@ describe('CardGridBlock — reparto', () => {
 
     expect(container.querySelector('.lg\\:grid-cols-4')).toBeTruthy();
   });
+});
+
+describe('CardGridBlock — escala de la tarjeta', () => {
+  it('la escala por defecto de la tarjeta overlay es la de «Nos Hébergements»', () => {
+    const { container } = render(<CardGridBlock data={{ ...base, card: 'overlay' }} />);
+
+    expect(container.querySelector('.h-\\[360px\\]')).toBeTruthy();
+  });
+
+  it('la escala compacta es la de «Les Alentours», un escalón por debajo', () => {
+    // El diseño de referencia usa las dos, y cuál se aplica lo dice el bloque:
+    // atarlo al número de columnas convertiría en regla una correlación suya.
+    const { container } = render(
+      <CardGridBlock data={{ ...base, card: 'overlay', cardSize: 'compact' }} />,
+    );
+
+    expect(container.querySelector('.h-\\[320px\\]')).toBeTruthy();
+    expect(container.querySelector('.h-\\[360px\\]')).toBeNull();
+  });
+});
+
+describe('CardGridBlock — la tarjeta y su llamada a la acción', () => {
+  it('el enlace de sección en una tarjeta recibe el color de la tarjeta', () => {
+    // Comparar contra 'link' a secas dejaba `link-underline` sin color.
+    const { container } = render(
+      <CardGridBlock
+        data={{
+          ...base,
+          card: 'stacked',
+          items: [
+            {
+              ...base.items[0],
+              url: '/blog/uno',
+              readMoreLabel: 'Lire',
+              variant: 'link-underline',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(container.querySelector('a')?.className).toContain('text-secondary');
+  });
 
   it('un reparto asimétrico pasa la rejilla a doce columnas y reparte por tarjeta', () => {
-    // «Nos Hébergements»: dos tarjetas a 5 y 7 de doce.
+    // «Nos Hébergements»: dos tarjetas a 5 y 7 de doce. Las doce columnas
+    // llegan en `lg`, con los repartos, y no en `md` como el export: allí la
+    // rejilla se parte antes que los repartos y las tarjetas quedan en una
+    // astilla de una columna entre los dos tamaños.
     const { container } = render(<CardGridBlock data={{ ...base, spans: [5, 7] }} />);
 
     expect(container.querySelector('.lg\\:grid-cols-12')).toBeTruthy();
+    expect(container.querySelector('.md\\:grid-cols-12')).toBeNull();
     expect(container.querySelector('.lg\\:col-span-5')).toBeTruthy();
     expect(container.querySelector('.lg\\:col-span-7')).toBeTruthy();
   });

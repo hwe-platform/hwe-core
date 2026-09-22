@@ -534,7 +534,7 @@ export interface Accommodation {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -562,6 +562,10 @@ export interface Accommodation {
             title?: string | null;
             subtitle?: string | null;
             /**
+             * Titular en color de texto, o en color de marca para destacar.
+             */
+            headingTone?: ('default' | 'brand') | null;
+            /**
              * Cuántos caben en una fila en pantalla grande. El diseño de referencia usa 3, 5 y 6. El tamaño de los iconos y la rampa responsive se derivan de este número.
              */
             columns?: number | null;
@@ -581,7 +585,7 @@ export interface Accommodation {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -643,6 +647,10 @@ export interface Accommodation {
             title?: string | null;
             subtitle?: string | null;
             /**
+             * Titular en color de texto, o en color de marca para destacar.
+             */
+            headingTone?: ('default' | 'brand') | null;
+            /**
              * Párrafo de entrada entre el titular y la rejilla.
              */
             description?: string | null;
@@ -654,6 +662,10 @@ export interface Accommodation {
              * Texto sobre la imagen, o imagen arriba y texto debajo.
              */
             card: 'overlay' | 'stacked';
+            /**
+             * Escala de la tarjeta con texto sobre la imagen.
+             */
+            cardSize?: ('default' | 'compact') | null;
             /**
              * Cuántas tarjetas caben en una fila. El diseño usa 3 y 4.
              */
@@ -683,7 +695,7 @@ export interface Accommodation {
                   /**
                    * Botón relleno o enlace suelto, como en el diseño.
                    */
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   id?: string | null;
                 }[]
               | null;
@@ -691,7 +703,7 @@ export interface Accommodation {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -706,6 +718,10 @@ export interface Accommodation {
         | {
             title?: string | null;
             subtitle?: string | null;
+            /**
+             * Titular en color de texto, o en color de marca para destacar.
+             */
+            headingTone?: ('default' | 'brand') | null;
             /**
              * Párrafo de entrada entre el titular y las tarjetas.
              */
@@ -723,6 +739,10 @@ export interface Accommodation {
              * Cuántos artículos se piden.
              */
             limit?: number | null;
+            /**
+             * Añade el resumen del artículo bajo el titular de cada tarjeta.
+             */
+            showExcerpt?: boolean | null;
             showMoreLink?: boolean | null;
             showMoreUrl?: string | null;
             showMoreLabel?: string | null;
@@ -756,7 +776,7 @@ export interface Accommodation {
             links: {
               label: string;
               url: string;
-              variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
               /**
                * Icono a la derecha del texto. Opcional.
                */
@@ -1021,7 +1041,7 @@ export interface Page {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -1049,6 +1069,10 @@ export interface Page {
             title?: string | null;
             subtitle?: string | null;
             /**
+             * Titular en color de texto, o en color de marca para destacar.
+             */
+            headingTone?: ('default' | 'brand') | null;
+            /**
              * Cuántos caben en una fila en pantalla grande. El diseño de referencia usa 3, 5 y 6. El tamaño de los iconos y la rampa responsive se derivan de este número.
              */
             columns?: number | null;
@@ -1068,7 +1092,7 @@ export interface Page {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -1130,6 +1154,10 @@ export interface Page {
             title?: string | null;
             subtitle?: string | null;
             /**
+             * Titular en color de texto, o en color de marca para destacar.
+             */
+            headingTone?: ('default' | 'brand') | null;
+            /**
              * Párrafo de entrada entre el titular y la rejilla.
              */
             description?: string | null;
@@ -1141,6 +1169,10 @@ export interface Page {
              * Texto sobre la imagen, o imagen arriba y texto debajo.
              */
             card: 'overlay' | 'stacked';
+            /**
+             * Escala de la tarjeta con texto sobre la imagen.
+             */
+            cardSize?: ('default' | 'compact') | null;
             /**
              * Cuántas tarjetas caben en una fila. El diseño usa 3 y 4.
              */
@@ -1170,7 +1202,7 @@ export interface Page {
                   /**
                    * Botón relleno o enlace suelto, como en el diseño.
                    */
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   id?: string | null;
                 }[]
               | null;
@@ -1178,7 +1210,7 @@ export interface Page {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -1193,6 +1225,10 @@ export interface Page {
         | {
             title?: string | null;
             subtitle?: string | null;
+            /**
+             * Titular en color de texto, o en color de marca para destacar.
+             */
+            headingTone?: ('default' | 'brand') | null;
             /**
              * Párrafo de entrada entre el titular y las tarjetas.
              */
@@ -1210,6 +1246,10 @@ export interface Page {
              * Cuántos artículos se piden.
              */
             limit?: number | null;
+            /**
+             * Añade el resumen del artículo bajo el titular de cada tarjeta.
+             */
+            showExcerpt?: boolean | null;
             showMoreLink?: boolean | null;
             showMoreUrl?: string | null;
             showMoreLabel?: string | null;
@@ -1243,7 +1283,7 @@ export interface Page {
             links: {
               label: string;
               url: string;
-              variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
               /**
                * Icono a la derecha del texto. Opcional.
                */
@@ -1635,6 +1675,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingTone?: T;
               columns?: T;
               variant?: T;
               description?: T;
@@ -1664,9 +1705,11 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingTone?: T;
               description?: T;
               background?: T;
               card?: T;
+              cardSize?: T;
               columns?: T;
               spans?: T;
               source?: T;
@@ -1707,11 +1750,13 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingTone?: T;
               description?: T;
               background?: T;
               source?: T;
               category?: T;
               limit?: T;
+              showExcerpt?: T;
               showMoreLink?: T;
               showMoreUrl?: T;
               showMoreLabel?: T;
@@ -1863,6 +1908,7 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingTone?: T;
               columns?: T;
               variant?: T;
               description?: T;
@@ -1892,9 +1938,11 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingTone?: T;
               description?: T;
               background?: T;
               card?: T;
+              cardSize?: T;
               columns?: T;
               spans?: T;
               source?: T;
@@ -1935,11 +1983,13 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              headingTone?: T;
               description?: T;
               background?: T;
               source?: T;
               category?: T;
               limit?: T;
+              showExcerpt?: T;
               showMoreLink?: T;
               showMoreUrl?: T;
               showMoreLabel?: T;

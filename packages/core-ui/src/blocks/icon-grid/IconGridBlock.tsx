@@ -81,6 +81,7 @@ export function IconGridBlock({ data, iconRegistry }: IconGridProps) {
           subtitle={bloque.subtitle}
           title={bloque.title}
           description={bloque.description}
+          tone={bloque.headingTone}
         />
 
         <div

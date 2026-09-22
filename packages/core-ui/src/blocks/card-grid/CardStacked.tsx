@@ -1,5 +1,6 @@
 import { Image } from '../../primitives/Image';
 import { Button } from '../../primitives/Button';
+import { esVarianteDeEnlace } from '../seccion';
 import { Icon } from '../../primitives/Icon';
 import { mediaAlt, mediaUrl } from '../../lib/media';
 import { cn } from '../../lib/cn';
@@ -58,7 +59,7 @@ export function CardStacked({ item, className }: CardProps) {
           <Button
             href={item.url}
             variant={item.variant}
-            className={item.variant === 'link' ? 'text-secondary' : undefined}
+            className={esVarianteDeEnlace(item.variant) ? 'text-secondary text-sm' : undefined}
           >
             {item.readMoreLabel}
             <Icon name="arrowRight" size="sm" />

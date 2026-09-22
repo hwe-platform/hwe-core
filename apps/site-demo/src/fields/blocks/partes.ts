@@ -34,7 +34,7 @@ export const linkFields: Field[] = [
     name: 'variant',
     type: 'select',
     defaultValue: 'primary',
-    options: ['primary', 'secondary', 'outline', 'ghost', 'link'],
+    options: ['primary', 'secondary', 'outline', 'ghost', 'link', 'link-underline'],
   },
   {
     name: 'icon',
@@ -43,5 +43,19 @@ export const linkFields: Field[] = [
     admin: { description: 'Icono a la derecha del texto. Opcional.' },
   },
 ];
+
+/**
+ * Color del titular de sección, compartido por los bloques que llevan cabecera.
+ *
+ * El diseño de referencia usa los dos: el color de texto en tres secciones y
+ * el de marca en «Pourquoi choisir». Por eso es un campo y no una constante.
+ */
+export const headingToneField: Field = {
+  name: 'headingTone',
+  type: 'select',
+  defaultValue: 'default',
+  options: ['default', 'brand'],
+  admin: { description: 'Titular en color de texto, o en color de marca para destacar.' },
+};
 
 export { iconField };

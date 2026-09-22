@@ -39,7 +39,8 @@ async function resolverBloque(
 ): Promise<BlockInstance> {
   if (bloque.blockType !== 'blog') return bloque;
 
-  const { sort, limit, where } = consultaDeBlog(bloque as unknown as BlogData);
+  const datos = bloque as unknown as BlogData;
+  const { sort, limit, where } = consultaDeBlog(datos);
 
   try {
     const { docs } = await payload.find({
@@ -52,7 +53,11 @@ async function resolverBloque(
     });
 
     const items = (docs as unknown as ArticuloResuelto[]).map((articulo) =>
-      articuloATarjeta(articulo, { locale, readMoreLabel: ROTULOS.leerArticulo }),
+      articuloATarjeta(articulo, {
+        locale,
+        readMoreLabel: ROTULOS.leerArticulo,
+        showExcerpt: datos.showExcerpt,
+      }),
     );
 
     return { ...bloque, items };

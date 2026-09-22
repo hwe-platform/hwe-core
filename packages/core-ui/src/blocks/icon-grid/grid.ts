@@ -21,6 +21,20 @@ const COLUMNAS: Record<number, string> = {
   12: 'lg:grid-cols-12',
 };
 
+/**
+ * Retícula destino de las rejillas amplias, que llegan a su sitio antes.
+ *
+ * En el export una rejilla de tres ya está repartida en `md` —`grid-cols-1
+ * md:grid-cols-3`— mientras que las de cinco y seis pasan por una parada
+ * intermedia y no llegan hasta `lg`. Es el mismo umbral que gobierna el resto:
+ * cuantos menos entran en la fila, antes caben.
+ */
+const COLUMNAS_AMPLIAS: Record<number, string> = {
+  1: 'md:grid-cols-1',
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-3',
+};
+
 /** Columnas por defecto si el número está fuera de tabla. */
 export const COLUMNAS_POR_DEFECTO = 3;
 
@@ -43,15 +57,19 @@ export function esAmplio(columns: number): boolean {
 /**
  * Clases de retícula de una rejilla de N columnas, con su rampa responsive.
  *
- * La rampa sale del export: la de tres arranca en una columna y las de cinco y
- * seis arrancan en dos, con una parada intermedia en tres. El tope de la
- * parada intermedia es el propio número, para que una rejilla de dos no pase
- * por tres columnas antes de llegar a su sitio.
+ * La rampa sale del export: la de tres arranca en una columna y llega a su
+ * sitio en `md`; las de cinco y seis arrancan en dos, paran en tres y no
+ * llegan hasta `lg`. Un solo umbral decide las dos cosas —dónde arranca y
+ * dónde acaba— porque son la misma pregunta: cuántos caben en la fila.
  */
 export function reticulaDe(columns: number): string {
-  const destino = COLUMNAS[columns] ?? COLUMNAS[COLUMNAS_POR_DEFECTO];
-  const base = esAmplio(columns) ? 'grid-cols-1' : 'grid-cols-2';
-  const intermedia = columns <= 3 ? '' : 'md:grid-cols-3';
+  const amplio = esAmplio(columns);
 
-  return ['grid', base, intermedia, destino].filter(Boolean).join(' ');
+  if (amplio) {
+    const destino = COLUMNAS_AMPLIAS[columns] ?? COLUMNAS_AMPLIAS[COLUMNAS_POR_DEFECTO];
+    return ['grid', 'grid-cols-1', destino].join(' ');
+  }
+
+  const destino = COLUMNAS[columns] ?? COLUMNAS[COLUMNAS_POR_DEFECTO];
+  return ['grid', 'grid-cols-2', 'md:grid-cols-3', destino].join(' ');
 }

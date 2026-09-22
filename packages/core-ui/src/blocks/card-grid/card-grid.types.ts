@@ -12,4 +12,6 @@ export type CardProps = {
   item: CardGridItem;
   /** Clase de columna, cuando el reparto es asimétrico. */
   className?: string;
+  /** Escala de la tarjeta. Solo la usa la variante con texto sobre la imagen. */
+  size?: string;
 };

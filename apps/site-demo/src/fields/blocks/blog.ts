@@ -1,4 +1,4 @@
-import { headingFields } from './partes';
+import { headingFields, headingToneField } from './partes';
 
 import type { Block } from 'payload';
 
@@ -13,6 +13,7 @@ export const Blog: Block = {
   labels: { singular: 'Blog', plural: 'Blogs' },
   fields: [
     ...headingFields,
+    headingToneField,
     {
       name: 'description',
       type: 'textarea',
@@ -47,6 +48,12 @@ export const Blog: Block = {
       min: 1,
       max: 24,
       admin: { description: 'Cuántos artículos se piden.' },
+    },
+    {
+      name: 'showExcerpt',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { description: 'Añade el resumen del artículo bajo el titular de cada tarjeta.' },
     },
     { name: 'showMoreLink', type: 'checkbox', defaultValue: false },
     {

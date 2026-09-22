@@ -1,4 +1,4 @@
-import { headingFields, linkFields } from './partes';
+import { headingFields, headingToneField, linkFields } from './partes';
 
 import type { Block } from 'payload';
 
@@ -7,6 +7,7 @@ export const CardGrid: Block = {
   labels: { singular: 'Grid de tarjetas', plural: 'Grids de tarjetas' },
   fields: [
     ...headingFields,
+    headingToneField,
     {
       name: 'description',
       type: 'textarea',
@@ -27,6 +28,16 @@ export const CardGrid: Block = {
       defaultValue: 'stacked',
       options: ['overlay', 'stacked'],
       admin: { description: 'Texto sobre la imagen, o imagen arriba y texto debajo.' },
+    },
+    {
+      name: 'cardSize',
+      type: 'select',
+      defaultValue: 'default',
+      options: ['default', 'compact'],
+      admin: {
+        condition: (_, hermanos) => hermanos?.card === 'overlay',
+        description: 'Escala de la tarjeta con texto sobre la imagen.',
+      },
     },
     {
       name: 'columns',
@@ -81,7 +92,7 @@ export const CardGrid: Block = {
           name: 'variant',
           type: 'select',
           defaultValue: 'link',
-          options: ['primary', 'secondary', 'outline', 'ghost', 'link'],
+          options: ['primary', 'secondary', 'outline', 'ghost', 'link', 'link-underline'],
           admin: { description: 'Botón relleno o enlace suelto, como en el diseño.' },
         },
       ],

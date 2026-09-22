@@ -13,9 +13,10 @@ describe('esAmplio', () => {
 
 describe('reticulaDe', () => {
   it('reproduce las rampas del diseño de referencia', () => {
-    // «Pourquoi choisir» arranca en una columna; «Nos Engagements» y
-    // «Activités & Services» arrancan en dos con parada en tres.
-    expect(reticulaDe(3)).toBe('grid grid-cols-1 lg:grid-cols-3');
+    // «Pourquoi choisir» arranca en una columna y ya está repartida en `md`;
+    // «Nos Engagements» y «Activités & Services» arrancan en dos, paran en
+    // tres y no llegan a su sitio hasta `lg`.
+    expect(reticulaDe(3)).toBe('grid grid-cols-1 md:grid-cols-3');
     expect(reticulaDe(5)).toBe('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5');
     expect(reticulaDe(6)).toBe('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6');
   });
@@ -23,19 +24,23 @@ describe('reticulaDe', () => {
   it('una rejilla estrecha no pasa por más columnas de las que tiene', () => {
     // Sin esto, una de dos se ensancharía a tres en tablet y volvería a
     // encoger en escritorio.
-    expect(reticulaDe(2)).toBe('grid grid-cols-1 lg:grid-cols-2');
+    expect(reticulaDe(2)).toBe('grid grid-cols-1 md:grid-cols-2');
   });
 
   it('cubre el dominio entero del eje', () => {
+    // Las amplias llegan a su sitio en `md` y las estrechas en `lg`: es el
+    // mismo umbral que decide el marco y la escala tipográfica.
     for (let n = 1; n <= 12; n += 1) {
-      expect(reticulaDe(n)).toContain(`lg:grid-cols-${n}`);
+      const prefijo = esAmplio(n) ? 'md' : 'lg';
+      expect(reticulaDe(n)).toContain(`${prefijo}:grid-cols-${n}`);
     }
   });
 
   it('cae a las columnas por defecto si el número está fuera de tabla', () => {
     // El schema lo acota, pero el bloque también se usa con datos crudos en
     // overrides y tests; sin respaldo la fila se quedaría sin clase.
+    // 99 es estrecha y 0 es amplia, así que cada una cae en su tabla.
     expect(reticulaDe(99)).toContain(`lg:grid-cols-${COLUMNAS_POR_DEFECTO}`);
-    expect(reticulaDe(0)).toContain(`lg:grid-cols-${COLUMNAS_POR_DEFECTO}`);
+    expect(reticulaDe(0)).toContain(`md:grid-cols-${COLUMNAS_POR_DEFECTO}`);
   });
 });

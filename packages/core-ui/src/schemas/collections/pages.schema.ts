@@ -16,7 +16,9 @@ import { seoSchema, personalizationEntrySchema } from '../common.schema';
 export const blockLinkSchema = z.object({
   label: z.string(),
   url: z.string(),
-  variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'link']).default('primary'),
+  variant: z
+    .enum(['primary', 'secondary', 'outline', 'ghost', 'link', 'link-underline'])
+    .default('primary'),
   /**
    * Icono a la derecha del texto, del set de la primitiva `Icon`.
    *
@@ -193,6 +195,15 @@ export const iconGridBlockSchema = z.object({
   blockType: z.literal('icon-grid'),
   ...blockHeadingSchema,
   /**
+   * Color del titular de la sección.
+   *
+   * **Es un eje porque el diseño lo varía de verdad**: de las cuatro secciones
+   * de referencia, tres llevan el titular en el color de texto y «Pourquoi
+   * choisir» lo lleva en el de marca. No es una errata del export ni una
+   * preferencia del primer cliente: es la dimensión «cuánto pesa esta sección».
+   */
+  headingTone: z.enum(['default', 'brand']).default('default'),
+  /**
    * Cuántos iconos caben en una fila en pantalla grande.
    *
    * **Número, no enumeración.** La Civelle ya usa tres valores —3 en «Pourquoi
@@ -268,7 +279,9 @@ const cardItemSchema = z.object({
    * suelto en «Les Alentours»— así que elegir una sería elegir por el cliente
    * siguiente.
    */
-  variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'link']).default('link'),
+  variant: z
+    .enum(['primary', 'secondary', 'outline', 'ghost', 'link', 'link-underline'])
+    .default('link'),
 });
 
 /**
@@ -287,11 +300,33 @@ export const cardGridBlockSchema = z.object({
   /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
   background: z.enum(['default', 'muted', 'none']).default('default'),
   /**
+   * Color del titular de la sección.
+   *
+   * **Es un eje porque el diseño lo varía de verdad**: de las cuatro secciones
+   * de referencia, tres llevan el titular en el color de texto y «Pourquoi
+   * choisir» lo lleva en el de marca. No es una errata del export ni una
+   * preferencia del primer cliente: es la dimensión «cuánto pesa esta sección».
+   */
+  headingTone: z.enum(['default', 'brand']).default('default'),
+  /**
    * Anatomía de la tarjeta. **Eje estructural**: el texto sobre la imagen y el
    * texto debajo no comparten esqueleto —uno va en absoluto sobre un degradado
    * y el otro en flujo normal—, así que van por mapa y no por `if`.
    */
   card: z.enum(['overlay', 'stacked']).default('stacked'),
+  /**
+   * Escala de la tarjeta con texto sobre la imagen.
+   *
+   * **Eje y no derivación.** El diseño de referencia usa la grande donde hay
+   * dos tarjetas anchas y la pequeña donde hay cuatro, pero atar la escala al
+   * número de columnas convertiría en ley del sistema una correlación de un
+   * cliente: el siguiente que quiera cuatro tarjetas grandes tendría que
+   * sobrescribir el bloque. Es la misma razón por la que en el hero `align` y
+   * `titleMode` van sueltos de `variant`.
+   *
+   * Solo afecta a `card: overlay`; la apilada tiene una sola escala.
+   */
+  cardSize: z.enum(['default', 'compact']).default('default'),
   /** Cuántas tarjetas caben en una fila. El diseño usa 3 y 4. */
   columns: z.number().int().min(1).max(6).default(3),
   /**
@@ -364,12 +399,30 @@ export const blogBlockSchema = z.object({
   description: z.string().optional(),
   /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
   background: z.enum(['default', 'muted', 'none']).default('default'),
+  /**
+   * Color del titular de la sección.
+   *
+   * **Es un eje porque el diseño lo varía de verdad**: de las cuatro secciones
+   * de referencia, tres llevan el titular en el color de texto y «Pourquoi
+   * choisir» lo lleva en el de marca. No es una errata del export ni una
+   * preferencia del primer cliente: es la dimensión «cuánto pesa esta sección».
+   */
+  headingTone: z.enum(['default', 'brand']).default('default'),
   /** Qué artículos se piden. */
   source: z.enum(['latest', 'featured', 'byCategory']).default('latest'),
   /** Categoría, cuando `source` es `byCategory`. */
   category: z.string().optional(),
   /** Cuántos se piden. Tres es lo que muestra el diseño de referencia. */
   limit: z.number().int().positive().max(24).default(3),
+  /**
+   * Si la tarjeta lleva el resumen del artículo bajo el titular.
+   *
+   * Por defecto no, que es lo que hace el diseño de referencia: su tarjeta es
+   * píldora, fecha, titular y enlace. Pero un listado con sinopsis es una
+   * forma corriente de blog y `excerpt` existe precisamente para eso, así que
+   * la dimensión es real y no se decide por el primer cliente.
+   */
+  showExcerpt: z.boolean().default(false),
   /** Si hay enlace al listado completo bajo las tarjetas. */
   showMoreLink: z.boolean().default(false),
   /** Destino de ese enlace. Sin él no se pinta aunque `showMoreLink` esté. */

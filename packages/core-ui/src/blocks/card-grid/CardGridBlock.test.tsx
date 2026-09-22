@@ -240,3 +240,42 @@ describe('CardGridBlock — sección', () => {
     expect(screen.getByText('Explorer toute la région')).toBeTruthy();
   });
 });
+
+describe('CardGridBlock — forma de la llamada a la acción', () => {
+  it('por defecto es un enlace suelto, sin caja', () => {
+    const { container } = render(
+      <CardGridBlock
+        data={{
+          ...base,
+          items: [{ image: imagen, title: 'Capbreton', url: '/x', readMoreLabel: 'Découvrir' }],
+        }}
+      />,
+    );
+
+    expect(container.querySelector('a')?.className).not.toContain('bg-primary');
+  });
+
+  it('con variant primary sale el botón relleno del diseño', () => {
+    // «Nos Hébergements» lo lleva relleno y «Les Alentours» suelto, las dos
+    // en el mismo diseño: por eso es un eje y no un valor fijo.
+    const { container } = render(
+      <CardGridBlock
+        data={{
+          ...base,
+          card: 'overlay',
+          items: [
+            {
+              image: imagen,
+              title: 'Nos Emplacements',
+              url: '/emplacements',
+              readMoreLabel: 'Découvrir',
+              variant: 'primary',
+            },
+          ],
+        }}
+      />,
+    );
+
+    expect(container.querySelector('a')?.className).toContain('bg-primary');
+  });
+});

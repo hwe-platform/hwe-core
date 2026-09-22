@@ -17,6 +17,15 @@ const buttonVariants = cva(
         secondary: 'bg-secondary text-secondary-foreground hover:opacity-90',
         outline: 'border border-border bg-transparent text-foreground hover:bg-muted',
         ghost: 'bg-transparent text-foreground hover:bg-muted',
+        /**
+         * Texto y flecha, sin fondo ni caja.
+         *
+         * No es un `ghost` sin relleno: `ghost` sigue siendo un botón —tiene
+         * caja, padding y fondo al pasar por encima— y esto es un enlace que
+         * se lee como texto. El diseño de referencia los usa a la vez, así que
+         * son dos cosas distintas y no dos grados de la misma.
+         */
+        link: 'bg-transparent font-bold hover:opacity-80',
       },
       /**
        * La talla por defecto (`md`) sale de **tokens del cliente**, con
@@ -34,6 +43,10 @@ const buttonVariants = cva(
         lg: 'h-12 px-6 text-lg font-medium',
       },
     },
+    // La talla aporta padding y sombra desde los tokens del cliente, y un
+    // enlace no los quiere. Va como compuesta para que gane a la talla: CVA
+    // las aplica después, y tailwind-merge se queda con la última.
+    compoundVariants: [{ variant: 'link', className: 'px-0 py-0 shadow-none' }],
     defaultVariants: {
       variant: 'primary',
       size: 'md',

@@ -1,6 +1,6 @@
 import { Image } from '../../primitives/Image';
+import { Button } from '../../primitives/Button';
 import { Icon } from '../../primitives/Icon';
-import { Link } from '../../primitives/Link';
 import { mediaAlt, mediaUrl } from '../../lib/media';
 import { cn } from '../../lib/cn';
 
@@ -49,13 +49,16 @@ export function CardOverlay({ item, className }: CardProps) {
         ) : null}
 
         {item.url && item.readMoreLabel ? (
-          <Link
+          // El enlace suelto va en claro porque aquí el fondo es la foto; el
+          // botón relleno ya trae su propio color de la variante.
+          <Button
             href={item.url}
-            className="text-primary-foreground flex items-center gap-3 text-sm font-bold"
+            variant={item.variant}
+            className={item.variant === 'link' ? 'text-primary-foreground' : undefined}
           >
             {item.readMoreLabel}
             <Icon name="arrowRight" size="sm" />
-          </Link>
+          </Button>
         ) : null}
       </div>
     </div>

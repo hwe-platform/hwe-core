@@ -1,6 +1,6 @@
 import { Image } from '../../primitives/Image';
+import { Button } from '../../primitives/Button';
 import { Icon } from '../../primitives/Icon';
-import { Link } from '../../primitives/Link';
 import { mediaAlt, mediaUrl } from '../../lib/media';
 import { cn } from '../../lib/cn';
 
@@ -53,13 +53,16 @@ export function CardStacked({ item, className }: CardProps) {
         ) : null}
 
         {item.url && item.readMoreLabel ? (
-          <Link
+          // Sobre el fondo de la tarjeta el enlace va en acento, que es como
+          // lo pinta «Actualités».
+          <Button
             href={item.url}
-            className="text-secondary flex items-center gap-3 text-sm font-bold"
+            variant={item.variant}
+            className={item.variant === 'link' ? 'text-secondary' : undefined}
           >
             {item.readMoreLabel}
             <Icon name="arrowRight" size="sm" />
-          </Link>
+          </Button>
         ) : null}
       </div>
     </div>

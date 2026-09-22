@@ -16,7 +16,7 @@ import { seoSchema, personalizationEntrySchema } from '../common.schema';
 export const blockLinkSchema = z.object({
   label: z.string(),
   url: z.string(),
-  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).default('primary'),
+  variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'link']).default('primary'),
   /**
    * Icono a la derecha del texto, del set de la primitiva `Icon`.
    *
@@ -301,6 +301,15 @@ export const cardGridBlockSchema = z.object({
         date: z.string().optional(),
         /** Texto del enlace. Sin él la tarjeta no pinta llamada a la acción. */
         readMoreLabel: z.string().optional(),
+        /**
+         * Tratamiento de la llamada a la acción de la tarjeta.
+         *
+         * Es un eje y no un valor fijo: el diseño de referencia usa las dos
+         * formas en secciones contiguas —botón relleno en «Nos Hébergements»,
+         * enlace suelto en «Les Alentours»— así que elegir una sería elegir
+         * por el cliente siguiente.
+         */
+        variant: z.enum(['primary', 'secondary', 'outline', 'ghost', 'link']).default('link'),
       }),
     )
     .default([]),

@@ -37,7 +37,7 @@ const linkFields: Field[] = [
     name: 'variant',
     type: 'select',
     defaultValue: 'primary',
-    options: ['primary', 'secondary', 'outline', 'ghost'],
+    options: ['primary', 'secondary', 'outline', 'ghost', 'link'],
   },
   {
     name: 'icon',
@@ -289,6 +289,13 @@ const CardGrid: Block = {
         { name: 'url', type: 'text' },
         { name: 'date', type: 'text' },
         { name: 'readMoreLabel', type: 'text', localized: true },
+        {
+          name: 'variant',
+          type: 'select',
+          defaultValue: 'link',
+          options: ['primary', 'secondary', 'outline', 'ghost', 'link'],
+          admin: { description: 'Botón relleno o enlace suelto, como en el diseño.' },
+        },
       ],
     },
     { name: 'ctas', type: 'array', fields: linkFields },

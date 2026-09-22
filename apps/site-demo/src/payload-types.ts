@@ -534,7 +534,7 @@ export interface Accommodation {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -581,7 +581,7 @@ export interface Accommodation {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -680,6 +680,10 @@ export interface Accommodation {
                   url?: string | null;
                   date?: string | null;
                   readMoreLabel?: string | null;
+                  /**
+                   * Botón relleno o enlace suelto, como en el diseño.
+                   */
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   id?: string | null;
                 }[]
               | null;
@@ -687,7 +691,7 @@ export interface Accommodation {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -725,7 +729,7 @@ export interface Accommodation {
             links: {
               label: string;
               url: string;
-              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
               /**
                * Icono a la derecha del texto. Opcional.
                */
@@ -990,7 +994,7 @@ export interface Page {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -1037,7 +1041,7 @@ export interface Page {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -1136,6 +1140,10 @@ export interface Page {
                   url?: string | null;
                   date?: string | null;
                   readMoreLabel?: string | null;
+                  /**
+                   * Botón relleno o enlace suelto, como en el diseño.
+                   */
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   id?: string | null;
                 }[]
               | null;
@@ -1143,7 +1151,7 @@ export interface Page {
               | {
                   label: string;
                   url: string;
-                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
                   /**
                    * Icono a la derecha del texto. Opcional.
                    */
@@ -1181,7 +1189,7 @@ export interface Page {
             links: {
               label: string;
               url: string;
-              variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+              variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link') | null;
               /**
                * Icono a la derecha del texto. Opcional.
                */
@@ -1625,6 +1633,7 @@ export interface AccommodationsSelect<T extends boolean = true> {
                     url?: T;
                     date?: T;
                     readMoreLabel?: T;
+                    variant?: T;
                     id?: T;
                   };
               ctas?:
@@ -1836,6 +1845,7 @@ export interface PagesSelect<T extends boolean = true> {
                     url?: T;
                     date?: T;
                     readMoreLabel?: T;
+                    variant?: T;
                     id?: T;
                   };
               ctas?:

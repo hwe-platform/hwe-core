@@ -237,6 +237,7 @@ const bloques = [
         subtitle: 'Cyclo Rando · Confort · Camping-car · Privilège', // App.tsx:670
         url: '/emplacements',
         readMoreLabel: 'Découvrir', // App.tsx:688
+        variant: 'primary', // botón relleno — App.tsx:687
       },
       {
         image: fotoAlojamientos,
@@ -244,6 +245,7 @@ const bloques = [
         subtitle: 'Mobile Home Confort 3 ch · Cottage Premium 3 ch', // App.tsx:671
         url: '/mobile-home-confort',
         readMoreLabel: 'Découvrir', // App.tsx:688
+        variant: 'primary', // botón relleno — App.tsx:687
       },
     ],
     ctas: [],

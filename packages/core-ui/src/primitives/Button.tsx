@@ -70,13 +70,30 @@ export type ButtonProps = ButtonAsButtonProps | ButtonAsAnchorProps;
  * <Button href="/alojamientos" variant="outline">Ver alojamientos</Button>
  * <Button aria-label="Cerrar" variant="ghost" size="sm"><Icon name="x" /></Button>
  */
+/**
+ * Si el contenido del botón incluye texto legible.
+ *
+ * Mira dentro de las listas porque un botón con icono recibe `{etiqueta}` y
+ * `<Icon />` como hermanos, y eso en JSX es un array: comprobar solo
+ * `typeof children === 'string'` daba el aviso de accesibilidad en botones que
+ * sí tienen texto. Un elemento suelto sigue contando como sin texto, que es
+ * justo el caso que el aviso quiere cazar.
+ */
+function tieneTexto(nodo: ReactNode): boolean {
+  if (typeof nodo === 'string') return nodo.trim().length > 0;
+  if (typeof nodo === 'number') return true;
+  if (Array.isArray(nodo)) return nodo.some(tieneTexto);
+
+  return false;
+}
+
 export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
   ({ className, variant, size, children, ...props }, ref) => {
     const classes = cn(buttonVariants({ variant, size }), className);
 
     if (process.env.NODE_ENV !== 'production') {
       const hasAriaLabel = Boolean(props['aria-label']);
-      const hasTextChildren = typeof children === 'string' && children.trim().length > 0;
+      const hasTextChildren = tieneTexto(children);
       if (!hasAriaLabel && !hasTextChildren) {
         // El guard de NODE_ENV elimina este aviso del bundle de producción, pero
         // ESLint es estático y no lo evalúa: sin la excepción, `no-console` falla

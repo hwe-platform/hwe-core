@@ -183,12 +183,54 @@ export const mediaTextBlockSchema = z
     }
   });
 
-/** Grid de iconos con label, para listar servicios o características. */
+/**
+ * Rejilla de iconos con etiqueta, para listar servicios o características.
+ *
+ * Cuatro apariciones en el diseño de referencia y dos ejes reales: cuántos
+ * caben en una fila y si cada uno va suelto o dentro de una tarjeta.
+ */
 export const iconGridBlockSchema = z.object({
   blockType: z.literal('icon-grid'),
   ...blockHeadingSchema,
+  /**
+   * Cuántos iconos caben en una fila en pantalla grande.
+   *
+   * **Número, no enumeración.** La Civelle ya usa tres valores —3 en «Pourquoi
+   * choisir», 5 en «Nos Engagements» y 6 en «Activités & Services»—, así que
+   * fijar la lista de lo visto se rompería con el primer cliente que quiera
+   * otro. El dominio es el de la retícula de Tailwind.
+   *
+   * La rampa responsive **se deriva de este número**, no es otro eje: hasta
+   * tres arranca en una columna y a partir de cuatro arranca en dos, que es lo
+   * que hace el export.
+   */
+  columns: z.number().int().min(1).max(12).default(3),
+  /**
+   * Si cada icono va suelto sobre el fondo o dentro de una tarjeta.
+   *
+   * Es de estilo y no estructural: cambia el envoltorio y la escala, no la
+   * anatomía —icono en marco circular, etiqueta y descripción opcional.
+   */
+  variant: z.enum(['bare', 'card']).default('bare'),
+  /**
+   * Párrafo de entrada entre el titular y la rejilla.
+   *
+   * Distinto de `subtitle`, que es el antetítulo —una línea corta de
+   * contexto sobre el titular—. Este va debajo y es texto corrido; en el
+   * diseño lo lleva «Activités & Services» y no lo llevan las otras tres.
+   */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /** Botón bajo la rejilla. Dos de las cuatro del diseño lo llevan. */
+  ctas: z.array(blockLinkSchema).default([]),
   items: z.array(
     z.object({
+      /**
+       * Nombre del icono. Lo resuelve el bloque contra el registro del site
+       * primero y contra el set de la primitiva `Icon` después, porque los
+       * SVG propios de un cliente no pueden viajar por Payload.
+       */
       icon: z.string(),
       label: z.string(),
       description: z.string().optional(),
@@ -197,17 +239,73 @@ export const iconGridBlockSchema = z.object({
 });
 
 /** Grid de tarjetas con imagen. */
+/**
+ * Rejilla de tarjetas con imagen.
+ *
+ * Cinco apariciones en el diseño de referencia y dos anatomías distintas: el
+ * texto sobre la imagen o debajo de ella. El array se llama `items` y no
+ * `cards` porque `blog` reutiliza la misma tarjeta, y dos nombres para el
+ * mismo concepto confunden.
+ */
 export const cardGridBlockSchema = z.object({
   blockType: z.literal('card-grid'),
   ...blockHeadingSchema,
-  cards: z.array(
-    z.object({
-      image: mediaRefSchema,
-      title: z.string(),
-      description: z.string().optional(),
-      url: z.string().optional(),
-    }),
-  ),
+  /** Párrafo de entrada entre el titular y la rejilla. */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /**
+   * Anatomía de la tarjeta. **Eje estructural**: el texto sobre la imagen y el
+   * texto debajo no comparten esqueleto —uno va en absoluto sobre un degradado
+   * y el otro en flujo normal—, así que van por mapa y no por `if`.
+   */
+  card: z.enum(['overlay', 'stacked']).default('stacked'),
+  /** Cuántas tarjetas caben en una fila. El diseño usa 3 y 4. */
+  columns: z.number().int().min(1).max(6).default(3),
+  /**
+   * Reparto asimétrico, en columnas de doce por tarjeta.
+   *
+   * Vacío deja la rejilla uniforme. Con valores, manda sobre `columns` y se
+   * recorre en ciclo: `[5, 7]` reproduce «Nos Hébergements», que es la única
+   * sección del diseño donde las tarjetas no miden lo mismo.
+   */
+  spans: z.array(z.number().int().min(1).max(11)).default([]),
+  /**
+   * De dónde salen las tarjetas.
+   *
+   * Hoy el bloque solo pinta `items`: el campo existe para que el editor
+   * configure la colección, y la resolución la hará el resolver del site.
+   * `core-ui` no consulta Payload —es una librería de UI— y por eso el dato
+   * llega ya resuelto.
+   */
+  source: z.enum(['manual', 'accommodations', 'entities', 'articles']).default('manual'),
+  /** Qué pedirle a la colección, cuando `source` no es manual. */
+  sourceConfig: z
+    .object({
+      category: z.string().optional(),
+      limit: z.number().int().positive().optional(),
+      featured: z.boolean().optional(),
+    })
+    .optional(),
+  items: z
+    .array(
+      z.object({
+        image: mediaRefSchema,
+        title: z.string(),
+        /** Segunda línea bajo el titular. */
+        subtitle: z.string().optional(),
+        /** Etiqueta corta sobre el titular: categoría, zona, tipo. */
+        tag: z.string().optional(),
+        url: z.string().optional(),
+        /** Fecha ya formateada. La da quien resuelve, no la tarjeta. */
+        date: z.string().optional(),
+        /** Texto del enlace. Sin él la tarjeta no pinta llamada a la acción. */
+        readMoreLabel: z.string().optional(),
+      }),
+    )
+    .default([]),
+  /** Enlace al final de la sección, bajo la rejilla. */
+  ctas: z.array(blockLinkSchema).default([]),
 });
 
 /** Texto libre. */

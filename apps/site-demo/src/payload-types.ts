@@ -361,6 +361,17 @@ export interface Accommodation {
               | 'user'
               | 'train'
               | 'plane'
+              | 'treePine'
+              | 'leaf'
+              | 'flame'
+              | 'bike'
+              | 'shoppingBag'
+              | 'refreshCcw'
+              | 'clock'
+              | 'accessibility'
+              | 'eauChauffee'
+              | 'espritFamilial'
+              | 'animationsEte'
             )
           | null;
         included?: boolean | null;
@@ -424,6 +435,17 @@ export interface Accommodation {
               | 'user'
               | 'train'
               | 'plane'
+              | 'treePine'
+              | 'leaf'
+              | 'flame'
+              | 'bike'
+              | 'shoppingBag'
+              | 'refreshCcw'
+              | 'clock'
+              | 'accessibility'
+              | 'eauChauffee'
+              | 'espritFamilial'
+              | 'animationsEte'
             )
           | null;
         label: string;
@@ -539,6 +561,34 @@ export interface Accommodation {
         | {
             title?: string | null;
             subtitle?: string | null;
+            /**
+             * Cuántos caben en una fila en pantalla grande. El diseño de referencia usa 3, 5 y 6. El tamaño de los iconos y la rampa responsive se derivan de este número.
+             */
+            columns?: number | null;
+            /**
+             * Iconos sueltos sobre el fondo, o cada uno en su tarjeta.
+             */
+            variant?: ('bare' | 'card') | null;
+            /**
+             * Párrafo de entrada entre el titular y la rejilla. Distinto del antetítulo, que va encima y es una línea corta.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
             items: {
               icon?:
                 | (
@@ -568,6 +618,17 @@ export interface Accommodation {
                     | 'user'
                     | 'train'
                     | 'plane'
+                    | 'treePine'
+                    | 'leaf'
+                    | 'flame'
+                    | 'bike'
+                    | 'shoppingBag'
+                    | 'refreshCcw'
+                    | 'clock'
+                    | 'accessibility'
+                    | 'eauChauffee'
+                    | 'espritFamilial'
+                    | 'animationsEte'
                   )
                 | null;
               label: string;
@@ -581,13 +642,59 @@ export interface Accommodation {
         | {
             title?: string | null;
             subtitle?: string | null;
-            cards: {
-              image: number | Media;
-              title: string;
-              description?: string | null;
-              url?: string | null;
-              id?: string | null;
-            }[];
+            /**
+             * Párrafo de entrada entre el titular y la rejilla.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * Texto sobre la imagen, o imagen arriba y texto debajo.
+             */
+            card: 'overlay' | 'stacked';
+            /**
+             * Cuántas tarjetas caben en una fila. El diseño usa 3 y 4.
+             */
+            columns?: number | null;
+            /**
+             * Reparto asimétrico en columnas de doce, una por tarjeta y en ciclo. Vacío deja la rejilla uniforme. El diseño usa 5 y 7 en «Nos Hébergements».
+             */
+            spans?: number[] | null;
+            /**
+             * De dónde salen las tarjetas. Hoy solo se pintan las manuales; la resolución de colecciones llega con el resolver del site.
+             */
+            source?: ('manual' | 'accommodations' | 'entities' | 'articles') | null;
+            sourceConfig?: {
+              category?: string | null;
+              limit?: number | null;
+              featured?: boolean | null;
+            };
+            items?:
+              | {
+                  image: number | Media;
+                  title: string;
+                  subtitle?: string | null;
+                  tag?: string | null;
+                  url?: string | null;
+                  date?: string | null;
+                  readMoreLabel?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'card-grid';
@@ -688,7 +795,18 @@ export interface Entity {
     | 'video'
     | 'user'
     | 'train'
-    | 'plane';
+    | 'plane'
+    | 'treePine'
+    | 'leaf'
+    | 'flame'
+    | 'bike'
+    | 'shoppingBag'
+    | 'refreshCcw'
+    | 'clock'
+    | 'accessibility'
+    | 'eauChauffee'
+    | 'espritFamilial'
+    | 'animationsEte';
   image: number | Media;
   gallery?: (number | Media)[] | null;
   /**
@@ -736,7 +854,18 @@ export interface Entity {
           | 'video'
           | 'user'
           | 'train'
-          | 'plane';
+          | 'plane'
+          | 'treePine'
+          | 'leaf'
+          | 'flame'
+          | 'bike'
+          | 'shoppingBag'
+          | 'refreshCcw'
+          | 'clock'
+          | 'accessibility'
+          | 'eauChauffee'
+          | 'espritFamilial'
+          | 'animationsEte';
         label: string;
         detail: string;
         id?: string | null;
@@ -888,6 +1017,34 @@ export interface Page {
         | {
             title?: string | null;
             subtitle?: string | null;
+            /**
+             * Cuántos caben en una fila en pantalla grande. El diseño de referencia usa 3, 5 y 6. El tamaño de los iconos y la rampa responsive se derivan de este número.
+             */
+            columns?: number | null;
+            /**
+             * Iconos sueltos sobre el fondo, o cada uno en su tarjeta.
+             */
+            variant?: ('bare' | 'card') | null;
+            /**
+             * Párrafo de entrada entre el titular y la rejilla. Distinto del antetítulo, que va encima y es una línea corta.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
             items: {
               icon?:
                 | (
@@ -917,6 +1074,17 @@ export interface Page {
                     | 'user'
                     | 'train'
                     | 'plane'
+                    | 'treePine'
+                    | 'leaf'
+                    | 'flame'
+                    | 'bike'
+                    | 'shoppingBag'
+                    | 'refreshCcw'
+                    | 'clock'
+                    | 'accessibility'
+                    | 'eauChauffee'
+                    | 'espritFamilial'
+                    | 'animationsEte'
                   )
                 | null;
               label: string;
@@ -930,13 +1098,59 @@ export interface Page {
         | {
             title?: string | null;
             subtitle?: string | null;
-            cards: {
-              image: number | Media;
-              title: string;
-              description?: string | null;
-              url?: string | null;
-              id?: string | null;
-            }[];
+            /**
+             * Párrafo de entrada entre el titular y la rejilla.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * Texto sobre la imagen, o imagen arriba y texto debajo.
+             */
+            card: 'overlay' | 'stacked';
+            /**
+             * Cuántas tarjetas caben en una fila. El diseño usa 3 y 4.
+             */
+            columns?: number | null;
+            /**
+             * Reparto asimétrico en columnas de doce, una por tarjeta y en ciclo. Vacío deja la rejilla uniforme. El diseño usa 5 y 7 en «Nos Hébergements».
+             */
+            spans?: number[] | null;
+            /**
+             * De dónde salen las tarjetas. Hoy solo se pintan las manuales; la resolución de colecciones llega con el resolver del site.
+             */
+            source?: ('manual' | 'accommodations' | 'entities' | 'articles') | null;
+            sourceConfig?: {
+              category?: string | null;
+              limit?: number | null;
+              featured?: boolean | null;
+            };
+            items?:
+              | {
+                  image: number | Media;
+                  title: string;
+                  subtitle?: string | null;
+                  tag?: string | null;
+                  url?: string | null;
+                  date?: string | null;
+                  readMoreLabel?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'card-grid';
@@ -1359,6 +1573,19 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              columns?: T;
+              variant?: T;
+              description?: T;
+              background?: T;
+              ctas?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
               items?:
                 | T
                 | {
@@ -1375,13 +1602,38 @@ export interface AccommodationsSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
-              cards?:
+              description?: T;
+              background?: T;
+              card?: T;
+              columns?: T;
+              spans?: T;
+              source?: T;
+              sourceConfig?:
+                | T
+                | {
+                    category?: T;
+                    limit?: T;
+                    featured?: T;
+                  };
+              items?:
                 | T
                 | {
                     image?: T;
                     title?: T;
-                    description?: T;
+                    subtitle?: T;
+                    tag?: T;
                     url?: T;
+                    date?: T;
+                    readMoreLabel?: T;
+                    id?: T;
+                  };
+              ctas?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
                     id?: T;
                   };
               id?: T;
@@ -1532,6 +1784,19 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
+              columns?: T;
+              variant?: T;
+              description?: T;
+              background?: T;
+              ctas?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
               items?:
                 | T
                 | {
@@ -1548,13 +1813,38 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               subtitle?: T;
-              cards?:
+              description?: T;
+              background?: T;
+              card?: T;
+              columns?: T;
+              spans?: T;
+              source?: T;
+              sourceConfig?:
+                | T
+                | {
+                    category?: T;
+                    limit?: T;
+                    featured?: T;
+                  };
+              items?:
                 | T
                 | {
                     image?: T;
                     title?: T;
-                    description?: T;
+                    subtitle?: T;
+                    tag?: T;
                     url?: T;
+                    date?: T;
+                    readMoreLabel?: T;
+                    id?: T;
+                  };
+              ctas?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
                     id?: T;
                   };
               id?: T;

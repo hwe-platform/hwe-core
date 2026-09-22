@@ -17,6 +17,21 @@ export type { BlockSlots, SlotRegistry, BlockComponentProps } from './renderer/t
 export { HeroBlock, heroSchema } from './blocks/hero';
 export type { HeroProps, HeroData, HeroLabels, Breadcrumb, HeroVariantProps } from './blocks/hero';
 
+export { BlockCtas, fondoDe } from './blocks/seccion';
+export type { BlockLink, BlockCtasProps } from './blocks/seccion';
+
+export { CardGridBlock, CardOverlay, CardStacked, cardGridBlockSchema } from './blocks/card-grid';
+export type { CardGridProps, CardGridData, CardGridItem, CardProps } from './blocks/card-grid';
+
+export { IconGridBlock, IconGridBare, IconGridCard, iconGridBlockSchema } from './blocks/icon-grid';
+export type {
+  IconGridProps,
+  IconGridData,
+  IconGridItem,
+  IconGridVariantProps,
+  IconRegistry,
+} from './blocks/icon-grid';
+
 export {
   MediaTextBlock,
   MediaImage,

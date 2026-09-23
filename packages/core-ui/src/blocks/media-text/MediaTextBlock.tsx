@@ -2,16 +2,14 @@ import { mediaTextBlockSchema } from './media-text.schema';
 import { MediaCarousel } from './MediaCarousel';
 import { MediaEmbed } from './MediaEmbed';
 import { MediaImage } from './MediaImage';
-import { Button } from '../../primitives/Button';
 import { Eyebrow } from '../../primitives/Eyebrow';
-import { Icon, ICON_NAMES } from '../../primitives/Icon';
 import { RichText } from '../../primitives/RichText';
+import { BlockCtas, fondoDe } from '../seccion';
 import { cn } from '../../lib/cn';
 import { normalizePayloadData } from '../../payload/normalize-payload-data';
 import { COLUMNAS_RETICULA, columnasDe } from './ratio';
 
 import type { ComponentType } from 'react';
-import type { IconName } from '../../primitives/Icon';
 import type {
   MediaSlotProps,
   MediaTextData,
@@ -30,18 +28,6 @@ const MEDIOS: Record<string, ComponentType<MediaSlotProps>> = {
   image: MediaImage,
   embed: MediaEmbed,
   carousel: MediaCarousel,
-};
-
-/**
- * Fondo de la sección.
- *
- * Las secciones alternan para separarse entre sí; `none` deja ver el color de
- * página, que es lo que hace una de las siete del diseño de referencia.
- */
-const FONDOS: Record<string, string> = {
-  default: 'bg-card',
-  muted: 'bg-muted/40',
-  none: '',
 };
 
 /** Rótulos por defecto, en el idioma del primer site. */
@@ -101,34 +87,7 @@ function Texto({
 
       {aside ? <div className="mt-8">{aside}</div> : null}
 
-      {data.ctas.length > 0 ? <Botones ctas={data.ctas} /> : null}
-    </div>
-  );
-}
-
-/**
- * Los botones de la sección.
- *
- * Fuera de `Texto` porque tienen lógica propia —validar el icono— y porque
- * juntos pasaban de las cincuenta líneas que permite `codigo.md`.
- */
-function Botones({ ctas }: { ctas: MediaTextData['ctas'] }) {
-  return (
-    <div className="mt-8 flex flex-wrap gap-4">
-      {ctas.map((cta) => {
-        // Un icono que el set no conoce no se pinta: el editor escribe el
-        // nombre a mano y no debe poder romper la página con una errata.
-        const icono = ICON_NAMES.includes(cta.icon as IconName)
-          ? (cta.icon as IconName)
-          : undefined;
-
-        return (
-          <Button key={`${cta.url}-${cta.label}`} href={cta.url} variant={cta.variant}>
-            {cta.label}
-            {icono ? <Icon name={icono} size="sm" /> : null}
-          </Button>
-        );
-      })}
+      <BlockCtas ctas={data.ctas} className="mt-8" />
     </div>
   );
 }
@@ -168,7 +127,7 @@ export function MediaTextBlock({ data, aside, sobreLaImagen, labels }: MediaText
   const columnasTexto = columnasDe(COLUMNAS_RETICULA - bloque.split);
 
   return (
-    <section className={cn('py-16 md:py-24 lg:py-32', FONDOS[bloque.background])}>
+    <section className={cn('py-16 md:py-24 lg:py-32', fondoDe(bloque.background))}>
       <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
         <div
           className={cn(

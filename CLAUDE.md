@@ -35,6 +35,18 @@ Estas reglas se aplican siempre, sin excepciones, en cada tarea:
      headers, iframes o sanitización
    - Si el Reviewer encuentra errores, corrígelos y repite solo el Reviewer
 
+   **Reviewer por bloque, no por historia.** Si la historia tiene varios
+   bloques o componentes independientes, lanza el Reviewer al terminar cada
+   uno — no al final con 20 ficheros de golpe. Una lista de 3 hallazgos se
+   corrige sin meter errores nuevos; una de 12 no. La pasada final de cierre
+   solo revisa lo que no se ve desde un bloque aislado.
+
+8. **Antes de implementar un bloque, verifica su spec.** Comprueba que
+   existe su archivo en `docs/specs/` con el formato de
+   `docs/specs/_template-bloque.md`. Si está vacío o no existe, rellénalo
+   desde la HU antes de escribir código. Si durante la implementación
+   algo cambia respecto a la spec, actualízala al terminar.
+
 Este repo forma parte del proyecto HWE. La documentación de referencia, las
 historias de usuario, los estándares y los archivos operativos viven en
 `docs/` — un git submodule que apunta a `hwe-tools`. Léelos directamente
@@ -68,8 +80,13 @@ git submodule update --remote docs
 
 ## Agentes
 
-El Reviewer es el único agente ejecutable como subagente de Claude Code.
-Vive en `.claude/agents/reviewer.md` con frontmatter YAML.
+El Reviewer y el Researcher son subagentes ejecutables de Claude Code.
+Viven en `.claude/agents/` con frontmatter YAML.
+
+- **Reviewer** — valida contra estándares. Lo dispara la regla 7.
+- **Researcher** (Haiku) — busca en el repo y devuelve resumen corto.
+  Invócalo cuando necesites localizar código sin cargar archivos enteros
+  en tu contexto.
 
 Los demás roles no se ejecutan como subagentes:
 

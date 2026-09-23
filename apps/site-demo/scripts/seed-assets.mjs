@@ -80,6 +80,33 @@ const ARCHIVOS = [
     tipo: 'image/png',
     alt: 'Nos Locations', // App.tsx:672
   },
+  // «Découvrez les alentours»: el export pinta cada foto con el título de su
+  // tarjeta de `alt` (`alt={dest.title}`, App.tsx:961), así que el texto
+  // alternativo es literal y no deducido.
+  {
+    origen: 'AccueilImages/3905d8f65b77c42d61c8f03efa56744d872db131.png',
+    destino: 'capbreton.png',
+    tipo: 'image/png',
+    alt: 'Capbreton', // App.tsx:955
+  },
+  {
+    origen: 'AccueilImages/54966417f791800c03035ed49176be8d447c5a50.png',
+    destino: 'surf-plages.png',
+    tipo: 'image/png',
+    alt: 'Surf & Plages', // App.tsx:956
+  },
+  {
+    origen: 'AccueilImages/4965a4264036c4060463ad110ac976c7929e2135.png',
+    destino: 'pays-basque.png',
+    tipo: 'image/png',
+    alt: 'Pays Basque', // App.tsx:957
+  },
+  {
+    origen: 'AccueilImages/94c5ba2a851bd7fcb4895cb2b96ab3af8333ef94.png',
+    destino: 'gastronomie.png',
+    tipo: 'image/png',
+    alt: 'Gastronomie', // App.tsx:958
+  },
 ];
 
 async function login() {

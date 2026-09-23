@@ -16,7 +16,9 @@ import { seoSchema, personalizationEntrySchema } from '../common.schema';
 export const blockLinkSchema = z.object({
   label: z.string(),
   url: z.string(),
-  variant: z.enum(['primary', 'secondary', 'outline', 'ghost']).default('primary'),
+  variant: z
+    .enum(['primary', 'secondary', 'outline', 'ghost', 'link', 'link-underline'])
+    .default('primary'),
   /**
    * Icono a la derecha del texto, del set de la primitiva `Icon`.
    *
@@ -183,12 +185,65 @@ export const mediaTextBlockSchema = z
     }
   });
 
-/** Grid de iconos con label, para listar servicios o características. */
+/**
+ * Rejilla de iconos con etiqueta, para listar servicios o características.
+ *
+ * Cuatro apariciones en el diseño de referencia y dos ejes reales: cuántos
+ * caben en una fila y si cada uno va suelto o dentro de una tarjeta.
+ */
 export const iconGridBlockSchema = z.object({
   blockType: z.literal('icon-grid'),
   ...blockHeadingSchema,
+  /**
+   * Color del titular de la sección.
+   *
+   * **Es un eje porque el diseño lo varía de verdad**: de las cuatro secciones
+   * de referencia, tres llevan el titular en el color de texto y «Pourquoi
+   * choisir» lo lleva en el de marca. No es una errata del export ni una
+   * preferencia del primer cliente: es la dimensión «cuánto pesa esta sección».
+   */
+  headingTone: z.enum(['default', 'brand']).default('default'),
+  /**
+   * Cuántos iconos caben en una fila en pantalla grande.
+   *
+   * **Número, no enumeración.** La Civelle ya usa tres valores —3 en «Pourquoi
+   * choisir», 5 en «Nos Engagements» y 6 en «Activités & Services»—, así que
+   * fijar la lista de lo visto se rompería con el primer cliente que quiera
+   * otro. El dominio es el de la retícula de Tailwind.
+   *
+   * La rampa responsive **se deriva de este número**, no es otro eje: hasta
+   * tres arranca en una columna y a partir de cuatro arranca en dos, que es lo
+   * que hace el export.
+   */
+  columns: z.number().int().min(1).max(12).default(3),
+  /**
+   * Si cada icono va suelto sobre el fondo o dentro de una tarjeta.
+   *
+   * **Eje estructural**: el icono suelto y el icono en tarjeta no comparten
+   * envoltorio, así que van por mapa —`IconGridBare` e `IconGridCard`— y no
+   * por `if`. Lo que comparten es el interior del item: marco circular,
+   * etiqueta y descripción opcional.
+   */
+  variant: z.enum(['bare', 'card']).default('bare'),
+  /**
+   * Párrafo de entrada entre el titular y la rejilla.
+   *
+   * Distinto de `subtitle`, que es el antetítulo —una línea corta de
+   * contexto sobre el titular—. Este va debajo y es texto corrido; en el
+   * diseño lo lleva «Activités & Services» y no lo llevan las otras tres.
+   */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /** Botón bajo la rejilla. Dos de las cuatro del diseño lo llevan. */
+  ctas: z.array(blockLinkSchema).default([]),
   items: z.array(
     z.object({
+      /**
+       * Nombre del icono. Lo resuelve el bloque contra el registro del site
+       * primero y contra el set de la primitiva `Icon` después, porque los
+       * SVG propios de un cliente no pueden viajar por Payload.
+       */
       icon: z.string(),
       label: z.string(),
       description: z.string().optional(),
@@ -197,17 +252,111 @@ export const iconGridBlockSchema = z.object({
 });
 
 /** Grid de tarjetas con imagen. */
+/**
+ * Una tarjeta con imagen.
+ *
+ * Compartida entre `card-grid` y `blog`: las dos pintan la misma anatomía,
+ * y un artículo resuelto no es más que una tarjeta con fecha. Tener dos formas
+ * para lo mismo obligaría a mantener dos tarjetas.
+ */
+const cardItemSchema = z.object({
+  image: mediaRefSchema,
+  title: z.string(),
+  /** Segunda línea bajo el titular. */
+  subtitle: z.string().optional(),
+  /** Etiqueta corta sobre el titular: categoría, zona, tipo. */
+  tag: z.string().optional(),
+  url: z.string().optional(),
+  /** Fecha ya formateada. La da quien resuelve, no la tarjeta. */
+  date: z.string().optional(),
+  /** Texto del enlace. Sin él la tarjeta no pinta llamada a la acción. */
+  readMoreLabel: z.string().optional(),
+  /**
+   * Tratamiento de la llamada a la acción.
+   *
+   * Es un eje y no un valor fijo: el diseño de referencia usa las dos formas
+   * en secciones contiguas —botón relleno en «Nos Hébergements», enlace
+   * suelto en «Les Alentours»— así que elegir una sería elegir por el cliente
+   * siguiente.
+   */
+  variant: z
+    .enum(['primary', 'secondary', 'outline', 'ghost', 'link', 'link-underline'])
+    .default('link'),
+});
+
+/**
+ * Rejilla de tarjetas con imagen.
+ *
+ * Cinco apariciones en el diseño de referencia y dos anatomías distintas: el
+ * texto sobre la imagen o debajo de ella. El array se llama `items` y no
+ * `cards` porque `blog` reutiliza la misma tarjeta, y dos nombres para el
+ * mismo concepto confunden.
+ */
 export const cardGridBlockSchema = z.object({
   blockType: z.literal('card-grid'),
   ...blockHeadingSchema,
-  cards: z.array(
-    z.object({
-      image: mediaRefSchema,
-      title: z.string(),
-      description: z.string().optional(),
-      url: z.string().optional(),
-    }),
-  ),
+  /** Párrafo de entrada entre el titular y la rejilla. */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /**
+   * Color del titular de la sección.
+   *
+   * **Es un eje porque el diseño lo varía de verdad**: de las cuatro secciones
+   * de referencia, tres llevan el titular en el color de texto y «Pourquoi
+   * choisir» lo lleva en el de marca. No es una errata del export ni una
+   * preferencia del primer cliente: es la dimensión «cuánto pesa esta sección».
+   */
+  headingTone: z.enum(['default', 'brand']).default('default'),
+  /**
+   * Anatomía de la tarjeta. **Eje estructural**: el texto sobre la imagen y el
+   * texto debajo no comparten esqueleto —uno va en absoluto sobre un degradado
+   * y el otro en flujo normal—, así que van por mapa y no por `if`.
+   */
+  card: z.enum(['overlay', 'stacked']).default('stacked'),
+  /**
+   * Escala de la tarjeta con texto sobre la imagen.
+   *
+   * **Eje y no derivación.** El diseño de referencia usa la grande donde hay
+   * dos tarjetas anchas y la pequeña donde hay cuatro, pero atar la escala al
+   * número de columnas convertiría en ley del sistema una correlación de un
+   * cliente: el siguiente que quiera cuatro tarjetas grandes tendría que
+   * sobrescribir el bloque. Es la misma razón por la que en el hero `align` y
+   * `titleMode` van sueltos de `variant`.
+   *
+   * Solo afecta a `card: overlay`; la apilada tiene una sola escala.
+   */
+  cardSize: z.enum(['default', 'compact']).default('default'),
+  /** Cuántas tarjetas caben en una fila. El diseño usa 3 y 4. */
+  columns: z.number().int().min(1).max(6).default(3),
+  /**
+   * Reparto asimétrico, en columnas de doce por tarjeta.
+   *
+   * Vacío deja la rejilla uniforme. Con valores, manda sobre `columns` y se
+   * recorre en ciclo: `[5, 7]` reproduce «Nos Hébergements», que es la única
+   * sección del diseño donde las tarjetas no miden lo mismo.
+   */
+  spans: z.array(z.number().int().min(1).max(11)).default([]),
+  /**
+   * De dónde salen las tarjetas.
+   *
+   * Hoy el bloque solo pinta `items`: el campo existe para que el editor
+   * configure la colección, y la resolución la hará el resolver del site.
+   * `core-ui` no consulta Payload —es una librería de UI— y por eso el dato
+   * llega ya resuelto.
+   */
+  source: z.enum(['manual', 'accommodations', 'entities', 'articles']).default('manual'),
+  /** Qué pedirle a la colección, cuando `source` no es manual. */
+  sourceConfig: z
+    .object({
+      category: z.string().optional(),
+      limit: z.number().int().positive().optional(),
+      featured: z.boolean().optional(),
+    })
+    .optional(),
+  items: z.array(cardItemSchema).default([]),
+  /** Enlace al final de la sección, bajo la rejilla. */
+  ctas: z.array(blockLinkSchema).default([]),
 });
 
 /** Texto libre. */
@@ -233,7 +382,62 @@ export const environmentGridBlockSchema = z.object({ blockType: z.literal('envir
 export const galleryBlockSchema = z.object({ blockType: z.literal('gallery') });
 export const mapBlockSchema = z.object({ blockType: z.literal('map') });
 export const instagramBlockSchema = z.object({ blockType: z.literal('instagram') });
-export const blogBlockSchema = z.object({ blockType: z.literal('blog') });
+/**
+ * Listado de artículos del blog.
+ *
+ * **El primer bloque de referencia**: no lleva contenido, lleva la consulta.
+ * El editor dice qué quiere —los últimos, los destacados, los de una
+ * categoría— y quien resuelve es el site, porque `core-ui` no habla con
+ * Payload. Los artículos ya resueltos llegan en `items`, con la misma forma
+ * que las tarjetas de `card-grid`: comparten anatomía y no hace falta una
+ * tarjeta aparte.
+ */
+export const blogBlockSchema = z.object({
+  blockType: z.literal('blog'),
+  ...blockHeadingSchema,
+  /** Párrafo de entrada entre el titular y las tarjetas. */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /**
+   * Color del titular de la sección.
+   *
+   * **Es un eje porque el diseño lo varía de verdad**: de las cuatro secciones
+   * de referencia, tres llevan el titular en el color de texto y «Pourquoi
+   * choisir» lo lleva en el de marca. No es una errata del export ni una
+   * preferencia del primer cliente: es la dimensión «cuánto pesa esta sección».
+   */
+  headingTone: z.enum(['default', 'brand']).default('default'),
+  /** Qué artículos se piden. */
+  source: z.enum(['latest', 'featured', 'byCategory']).default('latest'),
+  /** Categoría, cuando `source` es `byCategory`. */
+  category: z.string().optional(),
+  /** Cuántos se piden. Tres es lo que muestra el diseño de referencia. */
+  limit: z.number().int().positive().max(24).default(3),
+  /**
+   * Si la tarjeta lleva el resumen del artículo bajo el titular.
+   *
+   * Por defecto no, que es lo que hace el diseño de referencia: su tarjeta es
+   * píldora, fecha, titular y enlace. Pero un listado con sinopsis es una
+   * forma corriente de blog y `excerpt` existe precisamente para eso, así que
+   * la dimensión es real y no se decide por el primer cliente.
+   */
+  showExcerpt: z.boolean().default(false),
+  /** Si hay enlace al listado completo bajo las tarjetas. */
+  showMoreLink: z.boolean().default(false),
+  /** Destino de ese enlace. Sin él no se pinta aunque `showMoreLink` esté. */
+  showMoreUrl: z.string().optional(),
+  /** Texto de ese enlace. En el diseño, «Voir toutes les actualités». */
+  showMoreLabel: z.string().optional(),
+  /**
+   * Artículos ya resueltos, en forma de tarjeta.
+   *
+   * No lo rellena el editor: lo inyecta el site antes de renderizar. Por eso
+   * tiene valor por defecto — un bloque recién creado es válido y se queda
+   * vacío hasta que alguien lo resuelva.
+   */
+  items: z.array(cardItemSchema).default([]),
+});
 export const faqBlockSchema = z.object({ blockType: z.literal('faq') });
 export const embedBlockSchema = z.object({ blockType: z.literal('embed') });
 

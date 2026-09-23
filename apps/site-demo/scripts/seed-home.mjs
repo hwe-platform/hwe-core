@@ -108,8 +108,21 @@ const token = await login();
 const video = await media('hero-camping.mp4');
 const fotoEmplazamientos = await media('emplacements.png');
 const fotoPiscina = await media('piscine.png');
+const fotoAlojamientos = await media('locations.png');
+const fotoCapbreton = await media('capbreton.png');
+const fotoSurf = await media('surf-plages.png');
+const fotoPaysBasque = await media('pays-basque.png');
+const fotoGastronomia = await media('gastronomie.png');
 
-if (!video || !fotoEmplazamientos || !fotoPiscina) {
+const fotosDeLaRegion = [fotoCapbreton, fotoSurf, fotoPaysBasque, fotoGastronomia];
+
+if (
+  !video ||
+  !fotoEmplazamientos ||
+  !fotoPiscina ||
+  !fotoAlojamientos ||
+  fotosDeLaRegion.some((foto) => !foto)
+) {
   throw new Error('Faltan assets. Ejecuta antes: node scripts/seed-assets.mjs');
 }
 
@@ -185,6 +198,72 @@ const bloques = [
     ctas: [],
   },
   {
+    // «Pourquoi choisir La Civelle» — App.tsx:597-648.
+    // Tres iconos sueltos, sin tarjeta, sobre el fondo de sección.
+    blockType: 'icon-grid',
+    subtitle: 'Notre esprit', // App.tsx:601
+    title: 'Pourquoi choisir La Civelle ?', // App.tsx:604
+    headingTone: 'brand', // text-primary — App.tsx:607; las otras tres secciones van en text-foreground
+    background: 'default', // bg-card — App.tsx:597
+    columns: 3, // App.tsx:612
+    variant: 'bare',
+    items: [
+      {
+        icon: 'treePine', // App.tsx:616
+        label: 'Au cœur de la forêt landaise', // App.tsx:617
+        description:
+          "11 hectares de nature préservée pour un séjour ressourçant. Pins maritimes, senteurs sylvestres, calme absolu. Notre camping dans les Landes est classé parmi les meilleurs sites naturels de la Côte d'Argent.", // App.tsx:618
+      },
+      {
+        icon: 'waves', // App.tsx:621
+        label: "À 800 m des plages de l'Atlantique", // App.tsx:622
+        description:
+          "Rejoignez les plages de Capbreton à pied ou en vélo en moins de 10 minutes. Surf, baignade et farniente sur le sable fin de la Côte d'Argent à deux pas de votre emplacement ou de votre location.", // App.tsx:623
+      },
+      {
+        icon: 'espritFamilial', // SVG propio del cliente — App.tsx:625
+        label: 'Esprit familial & convivial', // App.tsx:626
+        description:
+          "Camping à taille humaine tenu par une équipe passionnée depuis plus de 30 ans. Restaurant, piscine chauffée, animations d'été — tout est réuni pour que chaque membre de la famille reparte avec de beaux souvenirs.", // App.tsx:627
+      },
+    ],
+    ctas: [],
+  },
+  {
+    // «Nos Hébergements» — App.tsx:650-698.
+    // El único reparto asimétrico del diseño: dos tarjetas a 5 y 7 de doce,
+    // con el texto sobre la imagen.
+    blockType: 'card-grid',
+    subtitle: 'Hébergements', // App.tsx:659
+    title: 'Nos Hébergements', // App.tsx:662
+    description:
+      "Du simple emplacement nature aux cottages premium, trouvez l'hébergement qui vous convient.", // App.tsx:665
+    background: 'muted', // bg-muted/40 — App.tsx:655
+    card: 'overlay',
+    columns: 2,
+    spans: [5, 7], // App.tsx:670-671
+    source: 'manual',
+    items: [
+      {
+        image: fotoEmplazamientos,
+        title: 'Nos Emplacements', // App.tsx:670
+        subtitle: 'Cyclo Rando · Confort · Camping-car · Privilège', // App.tsx:670
+        url: '/emplacements',
+        readMoreLabel: 'Découvrir', // App.tsx:688
+        variant: 'primary', // botón relleno — App.tsx:687
+      },
+      {
+        image: fotoAlojamientos,
+        title: 'Nos Locations', // App.tsx:671
+        subtitle: 'Mobile Home Confort 3 ch · Cottage Premium 3 ch', // App.tsx:671
+        url: '/mobile-home-confort',
+        readMoreLabel: 'Découvrir', // App.tsx:688
+        variant: 'primary', // botón relleno — App.tsx:687
+      },
+    ],
+    ctas: [],
+  },
+  {
     blockType: 'media-text',
     subtitle: 'Baignade & Détente', // App.tsx:839
     title: 'La Piscine', // App.tsx:842
@@ -203,6 +282,99 @@ const bloques = [
     ratio: 'landscape',
     // El CTA del diseño lleva flecha a la derecha (App.tsx:870).
     ctas: [{ label: 'En savoir plus', url: '/piscine', variant: 'primary', icon: 'arrowRight' }],
+  },
+  {
+    // «Activités & Services» — App.tsx:883-935.
+    // Seis iconos, cada uno en su tarjeta, y el botón de sección debajo.
+    blockType: 'icon-grid',
+    subtitle: 'Sur place', // App.tsx:887
+    title: 'Activités & Services', // App.tsx:890
+    description:
+      'Tout ce dont vous avez besoin pour des vacances réussies, sans quitter le camping.', // App.tsx:893
+    background: 'muted', // bg-muted/40 — App.tsx:883
+    columns: 6, // App.tsx:901
+    variant: 'card',
+    items: [
+      { icon: 'shoppingBag', label: 'Épicerie' }, // App.tsx:903
+      { icon: 'bike', label: 'Location de vélos' }, // App.tsx:904
+      { icon: 'refreshCcw', label: 'Laverie' }, // App.tsx:905
+      { icon: 'leaf', label: 'Loisirs nature' }, // App.tsx:906
+      { icon: 'flame', label: 'Barbecues' }, // App.tsx:907
+      { icon: 'animationsEte', label: "Animations d'été" }, // SVG propio — App.tsx:908
+    ],
+    ctas: [
+      {
+        label: 'Voir tous les services', // App.tsx:929
+        url: '/services',
+        variant: 'primary',
+        icon: 'arrowRight',
+      },
+    ],
+  },
+  {
+    // «Découvrez les alentours» — App.tsx:941-975.
+    // Cuatro tarjetas con el texto sobre la imagen, en la escala pequeña: la
+    // otra sección overlay del diseño, y la que prueba el eje `cardSize`.
+    blockType: 'card-grid',
+    subtitle: 'La région', // App.tsx:945
+    title: 'Découvrez les alentours', // App.tsx:948
+    headingTone: 'brand', // text-primary — App.tsx:947
+    description: 'Côte landaise, Pays Basque, surf et gastronomie à deux pas', // App.tsx:951
+    background: 'default', // bg-card — App.tsx:941
+    card: 'overlay',
+    cardSize: 'compact', // h-[320px] md:h-[420px] lg:h-[540px] — App.tsx:960
+    columns: 4, // App.tsx:954
+    spans: [],
+    source: 'manual',
+    items: [
+      {
+        image: fotoCapbreton,
+        title: 'Capbreton', // App.tsx:955
+        tag: 'Village & port', // App.tsx:955
+        url: '/capbreton',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link', // enlace suelto, sin caja — App.tsx:970
+      },
+      {
+        image: fotoSurf,
+        title: 'Surf & Plages', // App.tsx:956
+        tag: 'Atlantique', // App.tsx:956
+        url: '/surf-plages',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link',
+      },
+      {
+        image: fotoPaysBasque,
+        title: 'Pays Basque', // App.tsx:957
+        tag: 'Excursions', // App.tsx:957
+        url: '/pays-basque',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link',
+      },
+      {
+        image: fotoGastronomia,
+        title: 'Gastronomie', // App.tsx:958
+        tag: 'Marchés & saveurs', // App.tsx:958
+        url: '/gastronomie',
+        readMoreLabel: 'Découvrir', // App.tsx:970
+        variant: 'link',
+      },
+    ],
+    ctas: [],
+  },
+  {
+    // «Actualités» — App.tsx:985-1058.
+    // Bloque de referencia: no lleva los artículos, lleva la consulta. Los
+    // resuelve el site antes de pintar.
+    blockType: 'blog',
+    subtitle: 'Blog', // App.tsx:990
+    title: 'Actualités', // App.tsx:993
+    background: 'muted', // bg-muted/40 — App.tsx:985
+    source: 'latest',
+    limit: 3, // tres tarjetas — App.tsx:1000
+    showMoreLink: true,
+    showMoreUrl: '/actualites',
+    showMoreLabel: 'Voir toutes les actualités', // App.tsx:1054
   },
 ];
 

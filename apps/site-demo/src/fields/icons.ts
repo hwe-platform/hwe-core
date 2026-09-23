@@ -1,13 +1,23 @@
 import { ICON_NAMES } from '@hwe-platform/core-ui';
 
+import { NOMBRES_DE_ICONO_PROPIOS } from '../icons';
+
 import type { Field } from 'payload';
 
 /**
- * Opciones de un `select` de icono. Salen del set de la primitiva `Icon` de
- * core-ui, así que el editor no puede elegir un icono que el frontend no sepa
- * pintar — si se añade uno al set, aparece aquí solo.
+ * Opciones de un `select` de icono.
+ *
+ * Son los del set de la primitiva `Icon` de core-ui más los propios de este
+ * cliente, así que el editor no puede elegir uno que el frontend no sepa
+ * pintar — si se añade a cualquiera de los dos sitios, aparece aquí solo.
+ *
+ * Este fichero vive en el repo del site y no en plataforma, que es justo lo
+ * que permite ampliarlo sin tocar `core-ui`.
  */
-export const iconOptions = ICON_NAMES.map((name) => ({ label: name, value: name }));
+export const iconOptions = [...ICON_NAMES, ...NOMBRES_DE_ICONO_PROPIOS].map((name) => ({
+  label: name,
+  value: name,
+}));
 
 /** Opciones de {@link iconField}. */
 export type IconFieldOptions = {

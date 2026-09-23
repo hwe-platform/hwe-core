@@ -6,6 +6,7 @@ import { BlockRenderer, mediaUrl, resolveRoute } from '@hwe-platform/core-ui';
 import config from '../../../payload.config';
 import { blockRegistry } from '../../../block-registry';
 import { slotRegistry } from '../../../slot-registry';
+import { resolverBloques } from '../../../blocks/resolve';
 import { HeroBlock } from '../../../blocks/hero';
 import { DEFAULT_LOCALE, LOCALE_HEADER, isSiteLocale } from '../../../i18n';
 
@@ -185,7 +186,7 @@ export default async function CatchAllPage({ params }: Args) {
         siteName={siteName}
       />
       <BlockRenderer
-        blocks={blocksOf(resolved)}
+        blocks={await resolverBloques(payload, blocksOf(resolved), locale)}
         customRegistry={blockRegistry}
         slotRegistry={slotRegistry}
       />

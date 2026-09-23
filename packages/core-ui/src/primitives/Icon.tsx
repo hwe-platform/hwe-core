@@ -1,8 +1,12 @@
 import {
+  Accessibility,
   Bed,
+  Bike,
   Calendar,
   Car,
   Check,
+  Clock,
+  Flame,
   ChevronDown,
   ArrowRight,
   ChevronLeft,
@@ -10,14 +14,18 @@ import {
   CircleHelp,
   Heart,
   Mail,
+  Leaf,
   MapPin,
   Menu,
   PawPrint,
   Phone,
   Plane,
+  RefreshCcw,
   Search,
+  ShoppingBag,
   Star,
   Train,
+  TreePine,
   User,
   Users,
   Utensils,
@@ -68,6 +76,15 @@ const ICONS = {
   user: User,
   train: Train,
   plane: Plane,
+  // Rejillas de iconos del catálogo (HU-010): servicios, naturaleza y accesos
+  treePine: TreePine,
+  leaf: Leaf,
+  flame: Flame,
+  bike: Bike,
+  shoppingBag: ShoppingBag,
+  refreshCcw: RefreshCcw,
+  clock: Clock,
+  accessibility: Accessibility,
 } as const satisfies Record<string, LucideIcon>;
 
 /** Nombre de un icono del set predefinido. */
@@ -88,6 +105,8 @@ const iconVariants = cva('shrink-0', {
       sm: 'h-4 w-4',
       md: 'h-6 w-6',
       lg: 'h-8 w-8',
+      /** 40px — el icono dentro del marco circular grande de las rejillas. */
+      xl: 'h-10 w-10',
     },
   },
   defaultVariants: {
@@ -99,6 +118,12 @@ export type IconProps = VariantProps<typeof iconVariants> & {
   /** Nombre del icono, del set predefinido en `ICONS`. */
   name: IconName;
   className?: string;
+  /**
+   * Grosor del trazo. Lucide dibuja a 2 por defecto; el diseño usa 1.2 en los
+   * marcos circulares, y eso no se puede pedir por clase porque `stroke-width`
+   * es un atributo del SVG, no una utilidad de Tailwind.
+   */
+  strokeWidth?: number;
   /** Si el icono transmite información por sí solo (sin texto al lado), pasa una etiqueta. */
   'aria-label'?: string;
 };

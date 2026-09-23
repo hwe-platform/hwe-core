@@ -41,13 +41,9 @@ export type {
   IconRegistry,
 } from './blocks/icon-grid';
 
-export {
-  MediaTextBlock,
-  MediaImage,
-  MediaEmbed,
-  MediaCarousel,
-  mediaTextBlockSchema,
-} from './blocks/media-text';
+// `MediaCarousel` no está en esta lista, a propósito: ver el comentario en
+// `blocks/media-text/index.ts`.
+export { MediaTextBlock, MediaImage, MediaEmbed, mediaTextBlockSchema } from './blocks/media-text';
 export type {
   MediaTextProps,
   MediaTextData,
@@ -55,17 +51,24 @@ export type {
   MediaTextLabels,
 } from './blocks/media-text';
 
-// Carrusel (HU-011). Va fuera del barril de `primitives/` para que se lea de
-// dónde cuelga, pero **eso no le ahorra la hoja de Swiper a nadie**: este
-// fichero ya hace `export * from './primitives'` arriba y es la única entrada
-// del paquete (`exports` solo declara `"."`), así que quien importe
-// `@hwe-platform/core-ui` arrastra el CSS del carrusel —un `import 'swiper/css'`
-// es un efecto secundario que ningún bundler elimina—. Acotarlo de verdad pide
-// una subruta `./carousel` en el `exports` del paquete; está sin decidir.
-export { CarouselPrimitive, CarouselSlide, usePrefersReducedMotion } from './primitives/carousel';
+// El carrusel **no se exporta desde aquí**. Vive en su propia subruta,
+// `@hwe-platform/core-ui/carousel` (fichero `src/carousel.ts`) — ver su JSDoc
+// para el porqué: era la decisión que el tramo 1 de HU-011 dejó sin tomar, y
+// `payload generate:types` demostró que no era solo estética.
+
+export {
+  GalleryBlock,
+  GalleryFigure,
+  GalleryGrid,
+  GalleryMasonry,
+  GalleryCollage,
+  GalleryLightboxProvider,
+  useGalleryLightbox,
+  galleryBlockSchema,
+} from './blocks/gallery';
 export type {
-  CarouselEffect,
-  CarouselInstance,
-  CarouselLabels,
-  CarouselPrimitiveProps,
-} from './primitives/carousel';
+  GalleryProps,
+  GalleryData,
+  GalleryImage,
+  GalleryVariantProps,
+} from './blocks/gallery';

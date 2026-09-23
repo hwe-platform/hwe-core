@@ -1,6 +1,7 @@
 import { Blog } from './blog';
 import { CardGrid } from './card-grid';
 import { Cta } from './cta';
+import { Gallery } from './gallery';
 import { IconGrid } from './icon-grid';
 import { MediaText } from './media-text';
 import { RichText } from './rich-text';
@@ -17,7 +18,7 @@ import type { Block, Field } from 'payload';
  */
 
 /** Los bloques que el editor puede insertar hoy. */
-export const contentBlocks: Block[] = [MediaText, IconGrid, CardGrid, Blog, RichText, Cta];
+export const contentBlocks: Block[] = [MediaText, IconGrid, CardGrid, Blog, Gallery, RichText, Cta];
 
 /** Campo `blocks` listo para usar en `pages` y en la ficha de `accommodations`. */
 export const blocksField: Field = {

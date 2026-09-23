@@ -1,5 +1,6 @@
+import dynamic from 'next/dynamic';
+
 import { mediaTextBlockSchema } from './media-text.schema';
-import { MediaCarousel } from './MediaCarousel';
 import { MediaEmbed } from './MediaEmbed';
 import { MediaImage } from './MediaImage';
 import { Eyebrow } from '../../primitives/Eyebrow';
@@ -16,6 +17,17 @@ import type {
   MediaTextLabels,
   MediaTextSlots,
 } from './media-text.types';
+
+/**
+ * `MediaCarousel` bajo demanda — tira de `CarouselPrimitive`, que tira de
+ * Swiper. `media-text` es de los bloques más usados del catálogo, así que un
+ * `import` estático aquí cargaría Swiper en **cualquier** página con un solo
+ * bloque de imagen o de embed. Mismo patrón que `slider`/`slider-thumbs` en
+ * `GalleryBlock` (HU-011), y por el mismo motivo: un `export … from` estático
+ * en cualquier barril que cuelgue de `core-ui/src/index.ts` evalúa el módulo
+ * entero, así que tampoco se reexporta desde `blocks/media-text/index.ts`.
+ */
+const MediaCarousel = dynamic(() => import('./MediaCarousel').then((m) => m.MediaCarousel));
 
 /**
  * Tipo de medio → componente.

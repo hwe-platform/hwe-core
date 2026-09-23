@@ -1,5 +1,9 @@
+// `MediaCarousel` **no se reexporta aquí, a propósito**: tira de
+// `CarouselPrimitive` → Swiper, y este barril cuelga de
+// `core-ui/src/index.ts`. Un `export … from` estático evaluaría el módulo
+// entero aunque nadie pida ese nombre. Solo `MediaTextBlock` la toca, y lo
+// hace con `next/dynamic` — mismo patrón que `blocks/gallery/index.ts`.
 export { MediaTextBlock } from './MediaTextBlock';
-export { MediaCarousel } from './MediaCarousel';
 export { MediaEmbed } from './MediaEmbed';
 export { MediaImage } from './MediaImage';
 export { mediaTextBlockSchema } from './media-text.schema';

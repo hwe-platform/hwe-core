@@ -103,7 +103,28 @@ export type CabeceraProps = {
   description?: string;
   /** Color del titular. Por defecto, el color de texto. */
   tone?: string;
+  /**
+   * Nivel del titular. Gallery es el primer bloque que lo hace configurable
+   * (HU-011); el resto sigue en `<h2>` porque nunca lo necesitó.
+   *
+   * Por defecto 2, y nunca 1 — el `<h1>` es del hero o del título de página,
+   * y ningún bloque de sección debe poder competir con él.
+   */
+  level?: 2 | 3 | 4;
 };
+
+/** Etiqueta de titular por nivel. Tailwind no permite un tag dinámico sin tabla. */
+const ETIQUETAS: Record<2 | 3 | 4, 'h2' | 'h3' | 'h4'> = { 2: 'h2', 3: 'h3', 4: 'h4' };
+
+/**
+ * Clase del titular: su color, más el margen que solo hace falta si debajo
+ * viene un párrafo. Fuera del componente porque añadir `level` a `Cabecera`
+ * la subió de 10 a 11 en la regla `complexity` de `codigo.md`, sin que esta
+ * cuenta tenga ninguna decisión propia que justifique vivir ahí dentro.
+ */
+function claseTitular(tone: string, description: string | undefined): string {
+  return cn(TONOS[tone] ?? TONOS.default, description && 'mb-6');
+}
 
 /**
  * Antetítulo, titular y párrafo de entrada de una sección.
@@ -112,15 +133,21 @@ export type CabeceraProps = {
  * dentro de un bloque pasaba del límite de complejidad de `codigo.md`. Si no
  * hay ninguna, no pinta ni el contenedor.
  */
-export function Cabecera({ subtitle, title, description, tone = 'default' }: CabeceraProps) {
+export function Cabecera({
+  subtitle,
+  title,
+  description,
+  tone = 'default',
+  level = 2,
+}: CabeceraProps) {
   if (!subtitle && !title && !description) return null;
+
+  const Titular = ETIQUETAS[level];
 
   return (
     <div className="mb-10 md:mb-16 lg:mb-20">
       {subtitle ? <Eyebrow className="mb-4">{subtitle}</Eyebrow> : null}
-      {title ? (
-        <h2 className={cn(TONOS[tone] ?? TONOS.default, description && 'mb-6')}>{title}</h2>
-      ) : null}
+      {title ? <Titular className={claseTitular(tone, description)}>{title}</Titular> : null}
       {description ? (
         <p className="text-muted-foreground max-w-2xl text-xl font-medium">{description}</p>
       ) : null}

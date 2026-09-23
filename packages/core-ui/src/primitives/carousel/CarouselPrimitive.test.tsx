@@ -173,6 +173,50 @@ describe('CarouselPrimitive — valores por defecto', () => {
   });
 });
 
+describe('CarouselPrimitive — módulo Thumbs', () => {
+  it('activa el módulo con thumbs={null} — el montaje real de GallerySliderThumbs, antes de que la barra de miniaturas exista', () => {
+    // Regresión: Swiper fija sus módulos al construirse. Decidir si incluir
+    // Thumbs mirando `config.thumbs !== null` lo dejaba fuera para siempre en
+    // este caso exacto —`GallerySliderThumbs` monta así, con `miniaturas`
+    // todavía `null`—, y ya no había forma de añadirlo después: pulsar una
+    // miniatura nunca navegaba el carrusel principal, en ningún navegador.
+    // La cobertura de líneas no lo detectaba (la rama se ejecutaba igual),
+    // así que esta prueba comprueba el módulo en sí, no solo que el código
+    // corra: `swiper.thumbs` solo existe si Thumbs estuvo entre los módulos
+    // instalados al construirse.
+    let instancia: CarouselInstance | undefined;
+
+    render(
+      <CarouselPrimitive
+        thumbs={null}
+        onSwiper={(swiper) => {
+          instancia = swiper;
+        }}
+      >
+        {slides()}
+      </CarouselPrimitive>,
+    );
+
+    expect(typeof instancia?.thumbs?.init).toBe('function');
+  });
+
+  it('no activa el módulo si la prop thumbs no se pasa en absoluto', () => {
+    let instancia: CarouselInstance | undefined;
+
+    render(
+      <CarouselPrimitive
+        onSwiper={(swiper) => {
+          instancia = swiper;
+        }}
+      >
+        {slides()}
+      </CarouselPrimitive>,
+    );
+
+    expect(instancia?.thumbs).toBeUndefined();
+  });
+});
+
 describe('CarouselPrimitive — eventos', () => {
   it('avisa del cambio de slide con el índice real', () => {
     const alCambiar = vi.fn();

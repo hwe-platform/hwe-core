@@ -73,12 +73,22 @@ const AUTOPLAY_DELAY_MS = 3000;
  * Los tokens son los del contrato de la plataforma: el export de La Civelle
  * pinta las flechas de la galería con `bg-card/90` y `text-foreground`, y marca
  * la miniatura activa con el color de acento.
+ *
+ * El tamaño y el aro de los puntos no son del contrato del cliente —el
+ * `8px` por defecto de Swiper es demasiado pequeño para leerse sobre una foto
+ * clara, y sin ellos desaparecían literalmente en la demo de HU-011—; son un
+ * mínimo de legibilidad que no depende de qué cliente sea.
  */
 const TOKENS_DE_CONTROL = [
   '[--swiper-navigation-color:var(--color-foreground)]',
   '[--swiper-pagination-color:var(--color-primary)]',
   '[--swiper-pagination-bullet-inactive-color:var(--color-foreground)]',
-  '[--swiper-pagination-bullet-inactive-opacity:0.3]',
+  '[--swiper-pagination-bullet-inactive-opacity:0.5]',
+  '[--swiper-pagination-bullet-size:10px]',
+  // Un aro de contraste fijo, no atado a ningún token: hace falta tanto sobre
+  // una foto clara como sobre una oscura, así que no puede ser ni "negro" ni
+  // "blanco" — necesita las dos caras, y eso es lo que da un aro con las dos.
+  '[&_.swiper-pagination-bullet]:shadow-[0_0_0_1px_rgba(0,0,0,0.35),0_0_0_2px_rgba(255,255,255,0.5)]',
 ].join(' ');
 
 /** Qué módulos hacen falta, uno por capacidad pedida. */
@@ -91,6 +101,26 @@ type CapacidadesActivas = {
   thumbs: boolean;
   fade: boolean;
 };
+
+/**
+ * `true` si la instancia se va a gobernar por miniaturas — no si `thumbs` **ya
+ * tiene** una instancia con la que sincronizar.
+ *
+ * La distinción importa porque Swiper **fija sus módulos al construirse**:
+ * uno que no entra en `modules` en el primer render no se puede añadir
+ * después, aunque cambien las props. `GallerySliderThumbs` monta el carrusel
+ * principal con `thumbs={miniaturas}` mientras `miniaturas` sigue siendo
+ * `null` —la barra de abajo aún no ha montado su propio `onSwiper`—, así que
+ * decidir el módulo Thumbs por `thumbs !== null` lo dejaba fuera para
+ * siempre: el clic en una miniatura nunca llegaba a mover el carrusel
+ * principal, aunque todo lo demás (ARIA, cobertura, visual) se viera bien.
+ * Lo que importa es si la prop se pasó, con el valor que sea — Swiper ya trae
+ * su propio mecanismo (`needThumbsInit`) para enganchar la instancia real en
+ * cuanto llega, siempre que el módulo estuviera puesto desde el principio.
+ */
+function seUsaThumbs(props: CarouselPrimitiveProps): boolean {
+  return props.thumbs !== undefined;
+}
 
 /**
  * Los módulos de Swiper que se **activan** en esta instancia.
@@ -200,7 +230,7 @@ function conValoresPorDefecto(props: CarouselPrimitiveProps): ConfigCarrusel {
  * Vive fuera del componente para que lo que decide —qué se enciende y con qué
  * valor— se pueda leer de un tirón, sin el ruido del JSX alrededor.
  */
-function opcionesDe(config: ConfigCarrusel, menosMovimiento: boolean) {
+function opcionesDe(config: ConfigCarrusel, menosMovimiento: boolean, thumbsActivo: boolean) {
   // Una preferencia de accesibilidad gana a la configuración del bloque.
   const autoplayActivo = config.autoplay && !menosMovimiento;
   const esFundido = config.effect === 'fade';
@@ -212,7 +242,7 @@ function opcionesDe(config: ConfigCarrusel, menosMovimiento: boolean) {
       keyboard: config.keyboard,
       zoom: config.zoom,
       autoplay: autoplayActivo,
-      thumbs: config.thumbs !== null,
+      thumbs: thumbsActivo,
       fade: esFundido,
     }),
     navigation: config.navigation,
@@ -229,7 +259,10 @@ function opcionesDe(config: ConfigCarrusel, menosMovimiento: boolean) {
     spaceBetween: config.spaceBetween,
     initialSlide: config.initialSlide,
     speed: menosMovimiento ? VELOCIDAD_SIN_MOVIMIENTO_MS : VELOCIDAD_MS,
-    thumbs: config.thumbs ? { swiper: config.thumbs } : undefined,
+    // Con `thumbsActivo` va siempre un objeto, aunque `config.thumbs` siga
+    // siendo `null` — es la señal que el propio Swiper usa para enganchar la
+    // instancia real en cuanto llega (ver `seUsaThumbs`).
+    thumbs: thumbsActivo ? { swiper: config.thumbs } : undefined,
   };
 }
 
@@ -268,7 +301,7 @@ export function CarouselPrimitive(props: CarouselPrimitiveProps) {
       // `realIndex` y no `activeIndex`: en bucle Swiper clona slides por los
       // extremos, y `activeIndex` las cuenta. Quien escucha quiere la foto.
       onSlideChange={(swiper) => onSlideChange?.(swiper.realIndex)}
-      {...opcionesDe(config, menosMovimiento)}
+      {...opcionesDe(config, menosMovimiento, seUsaThumbs(props))}
     >
       {children}
     </Swiper>

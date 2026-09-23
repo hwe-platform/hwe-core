@@ -751,6 +751,89 @@ export interface Accommodation {
             blockType: 'blog';
           }
         | {
+            title?: string | null;
+            /**
+             * Párrafo de entrada entre el titular y la galería.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * slider y slider-thumbs usan el carrusel; grid, masonry y collage son CSS puro.
+             */
+            variant?: ('slider' | 'slider-thumbs' | 'grid' | 'masonry' | 'collage') | null;
+            images: {
+              image: number | Media;
+              /**
+               * Obligatorio. Gana sobre el alt del archivo — describe la foto en el contexto de esta galería.
+               */
+              alt: string;
+              caption?: string | null;
+              id?: string | null;
+            }[];
+            /**
+             * Columnas de la rejilla. Solo grid y masonry.
+             */
+            columns?: number | null;
+            /**
+             * Proporción del marco de cada imagen. auto respeta las dimensiones originales — es lo que hace masonry siempre, tenga o no este valor.
+             */
+            aspectRatio?: ('16/9' | '4/3' | '3/2' | '1/1' | 'auto') | null;
+            /**
+             * Abre un visor a pantalla completa al hacer click en una imagen.
+             */
+            lightbox?: boolean | null;
+            /**
+             * Avance automático. Solo slider y slider-thumbs.
+             */
+            autoplay?: boolean | null;
+            /**
+             * Milisegundos entre avances automáticos.
+             */
+            autoplayDelay?: number | null;
+            /**
+             * Vuelve al principio al llegar al final. Solo slider y slider-thumbs.
+             */
+            loop?: boolean | null;
+            /**
+             * Puntos de paginación bajo el carrusel. Solo slider.
+             */
+            showDots?: boolean | null;
+            /**
+             * Flechas de navegación. Solo slider y slider-thumbs.
+             */
+            showArrows?: boolean | null;
+            /**
+             * Transición entre slides. Solo slider.
+             */
+            effect?: ('slide' | 'fade') | null;
+            /**
+             * Cuántas slides se ven a la vez. Solo slider, para el multi-slide.
+             */
+            slidesPerView?: number | null;
+            /**
+             * Nivel del titular en la jerarquía de la página. Nunca h1.
+             */
+            headingLevel?: ('2' | '3' | '4') | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
             content: {
               root: {
                 type: string;
@@ -1258,6 +1341,89 @@ export interface Page {
             blockType: 'blog';
           }
         | {
+            title?: string | null;
+            /**
+             * Párrafo de entrada entre el titular y la galería.
+             */
+            description?: string | null;
+            /**
+             * Fondo de la sección. Las secciones suelen alternar.
+             */
+            background?: ('default' | 'muted' | 'none') | null;
+            /**
+             * slider y slider-thumbs usan el carrusel; grid, masonry y collage son CSS puro.
+             */
+            variant?: ('slider' | 'slider-thumbs' | 'grid' | 'masonry' | 'collage') | null;
+            images: {
+              image: number | Media;
+              /**
+               * Obligatorio. Gana sobre el alt del archivo — describe la foto en el contexto de esta galería.
+               */
+              alt: string;
+              caption?: string | null;
+              id?: string | null;
+            }[];
+            /**
+             * Columnas de la rejilla. Solo grid y masonry.
+             */
+            columns?: number | null;
+            /**
+             * Proporción del marco de cada imagen. auto respeta las dimensiones originales — es lo que hace masonry siempre, tenga o no este valor.
+             */
+            aspectRatio?: ('16/9' | '4/3' | '3/2' | '1/1' | 'auto') | null;
+            /**
+             * Abre un visor a pantalla completa al hacer click en una imagen.
+             */
+            lightbox?: boolean | null;
+            /**
+             * Avance automático. Solo slider y slider-thumbs.
+             */
+            autoplay?: boolean | null;
+            /**
+             * Milisegundos entre avances automáticos.
+             */
+            autoplayDelay?: number | null;
+            /**
+             * Vuelve al principio al llegar al final. Solo slider y slider-thumbs.
+             */
+            loop?: boolean | null;
+            /**
+             * Puntos de paginación bajo el carrusel. Solo slider.
+             */
+            showDots?: boolean | null;
+            /**
+             * Flechas de navegación. Solo slider y slider-thumbs.
+             */
+            showArrows?: boolean | null;
+            /**
+             * Transición entre slides. Solo slider.
+             */
+            effect?: ('slide' | 'fade') | null;
+            /**
+             * Cuántas slides se ven a la vez. Solo slider, para el multi-slide.
+             */
+            slidesPerView?: number | null;
+            /**
+             * Nivel del titular en la jerarquía de la página. Nunca h1.
+             */
+            headingLevel?: ('2' | '3' | '4') | null;
+            ctas?:
+              | {
+                  label: string;
+                  url: string;
+                  variant?: ('primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'link-underline') | null;
+                  /**
+                   * Icono a la derecha del texto. Opcional.
+                   */
+                  icon?: ('arrowRight' | 'chevronRight' | 'calendar' | 'phone' | 'mail') | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'gallery';
+          }
+        | {
             content: {
               root: {
                 type: string;
@@ -1763,6 +1929,44 @@ export interface AccommodationsSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        gallery?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              background?: T;
+              variant?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    alt?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              columns?: T;
+              aspectRatio?: T;
+              lightbox?: T;
+              autoplay?: T;
+              autoplayDelay?: T;
+              loop?: T;
+              showDots?: T;
+              showArrows?: T;
+              effect?: T;
+              slidesPerView?: T;
+              headingLevel?: T;
+              ctas?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
         'rich-text'?:
           | T
           | {
@@ -1993,6 +2197,44 @@ export interface PagesSelect<T extends boolean = true> {
               showMoreLink?: T;
               showMoreUrl?: T;
               showMoreLabel?: T;
+              id?: T;
+              blockName?: T;
+            };
+        gallery?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              background?: T;
+              variant?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    alt?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              columns?: T;
+              aspectRatio?: T;
+              lightbox?: T;
+              autoplay?: T;
+              autoplayDelay?: T;
+              loop?: T;
+              showDots?: T;
+              showArrows?: T;
+              effect?: T;
+              slidesPerView?: T;
+              headingLevel?: T;
+              ctas?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                    variant?: T;
+                    icon?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };

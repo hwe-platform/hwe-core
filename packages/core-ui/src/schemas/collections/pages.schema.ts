@@ -379,7 +379,90 @@ export const accommodationsGridBlockSchema = z.object({
   blockType: z.literal('accommodations-grid'),
 });
 export const environmentGridBlockSchema = z.object({ blockType: z.literal('environment-grid') });
-export const galleryBlockSchema = z.object({ blockType: z.literal('gallery') });
+/** Una imagen de la galería. */
+const galleryImageSchema = z.object({
+  /** Obligatoria: sin imagen no hay nada que mostrar en esa posición. */
+  image: mediaRefSchema,
+  /**
+   * Texto alternativo. **Obligatorio** — Zod rechaza la imagen sin él, en el
+   * boundary. `media` ya trae su propio `alt`, pero el del bloque gana cuando
+   * se rellena: el editor puede describir la foto para el contexto concreto
+   * de esta galería, no solo el genérico del archivo.
+   */
+  alt: z.string().min(1),
+  /** Pie de foto. Se renderiza como `<figcaption>` cuando está presente. */
+  caption: z.string().optional(),
+});
+
+/**
+ * Galería de imágenes con cinco variantes y lightbox.
+ *
+ * **Dos familias de variante.** `slider` y `slider-thumbs` usan
+ * `CarouselPrimitive` (Swiper); `grid`, `masonry` y `collage` son CSS puro y
+ * no cargan Swiper. Las cinco son estructurales — anatomías distintas,
+ * resueltas por mapa en `GalleryBlock`, no por un `if`.
+ */
+export const galleryBlockSchema = z.object({
+  blockType: z.literal('gallery'),
+  title: z.string().optional(),
+  /** Párrafo de entrada entre el titular y la galería. */
+  description: z.string().optional(),
+  /** Fondo de la sección. Las secciones alternan para separarse entre sí. */
+  background: z.enum(['default', 'muted', 'none']).default('default'),
+  /**
+   * Cómo se ve la galería. `slider` es la que cubre más casos generales —el
+   * mismo motivo por el que la guía del bloque antiguo la marca por
+   * defecto—, así que es el valor de partida cuando el editor no elige.
+   */
+  variant: z.enum(['slider', 'slider-thumbs', 'grid', 'masonry', 'collage']).default('slider'),
+  /** Las fotos de la galería. Al menos una — una galería vacía no es una galería. */
+  images: z.array(galleryImageSchema).min(1),
+  /**
+   * Columnas de la rejilla. **Solo `grid` y `masonry`** — las variantes de
+   * carrusel muestran una imagen (o unas pocas) a la vez, no una cuadrícula.
+   *
+   * Acotado a 2–4 y no al 1–12 de `icon-grid`: una galería de una sola
+   * columna no es una rejilla, y por encima de cuatro las fotos se quedan sin
+   * sitio para respirar. El dominio es el de la guía del bloque antiguo.
+   */
+  columns: z.number().int().min(2).max(4).default(3),
+  /**
+   * Proporción del marco de cada imagen. `auto` respeta las dimensiones
+   * propias de cada foto — el único valor con sentido real en `masonry`,
+   * donde la altura variable es el punto de la variante.
+   */
+  aspectRatio: z.enum(['16/9', '4/3', '3/2', '1/1', 'auto']).default('16/9'),
+  /** Si el click en una imagen abre el visor a pantalla completa. */
+  lightbox: z.boolean().default(true),
+  /** Avance automático. Solo `slider` y `slider-thumbs`. */
+  autoplay: z.boolean().default(false),
+  /** Milisegundos entre avances automáticos. Solo si `autoplay` está activo. */
+  autoplayDelay: z.number().int().positive().default(3000),
+  /** Vuelve al principio al llegar al final. Solo `slider` y `slider-thumbs`. */
+  loop: z.boolean().default(true),
+  /** Puntos de paginación bajo el carrusel. Solo `slider`. */
+  showDots: z.boolean().default(true),
+  /** Flechas de navegación. Solo `slider` y `slider-thumbs`. */
+  showArrows: z.boolean().default(true),
+  /** Transición entre slides. Solo `slider`. */
+  effect: z.enum(['slide', 'fade']).default('slide'),
+  /** Cuántas slides se ven a la vez. Solo `slider`, para el multi-slide. */
+  slidesPerView: z.number().int().positive().default(1),
+  /**
+   * Nivel del titular. Gallery puede anidarse bajo cualquier sección de la
+   * página, y el editor es quien sabe qué jerarquía le toca ahí. Nunca `'1'`
+   * — el dominio lo acota; el `<h1>` es del hero o del título de página.
+   *
+   * **String, como el resto de los selects del catálogo** —`background`,
+   * `variant`, `effect`…—, y no un número: Payload guarda sus `select` como
+   * enum de texto (ver cualquier migración: `CREATE TYPE … AS ENUM(...)`), y
+   * un dominio numérico aquí habría sido el único de todo el proyecto. El
+   * componente lo convierte a número al consumirlo.
+   */
+  headingLevel: z.enum(['2', '3', '4']).default('2'),
+  /** Botones bajo la galería. Mismo formato que el resto de bloques de sección. */
+  ctas: z.array(blockLinkSchema).default([]),
+});
 export const mapBlockSchema = z.object({ blockType: z.literal('map') });
 export const instagramBlockSchema = z.object({ blockType: z.literal('instagram') });
 /**

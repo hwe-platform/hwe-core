@@ -54,3 +54,18 @@ export type {
   MediaTextSlots,
   MediaTextLabels,
 } from './blocks/media-text';
+
+// Carrusel (HU-011). Va fuera del barril de `primitives/` para que se lea de
+// dónde cuelga, pero **eso no le ahorra la hoja de Swiper a nadie**: este
+// fichero ya hace `export * from './primitives'` arriba y es la única entrada
+// del paquete (`exports` solo declara `"."`), así que quien importe
+// `@hwe-platform/core-ui` arrastra el CSS del carrusel —un `import 'swiper/css'`
+// es un efecto secundario que ningún bundler elimina—. Acotarlo de verdad pide
+// una subruta `./carousel` en el `exports` del paquete; está sin decidir.
+export { CarouselPrimitive, CarouselSlide, usePrefersReducedMotion } from './primitives/carousel';
+export type {
+  CarouselEffect,
+  CarouselInstance,
+  CarouselLabels,
+  CarouselPrimitiveProps,
+} from './primitives/carousel';

@@ -11,6 +11,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./carousel": {
+      "types": "./dist/carousel.d.ts",
+      "import": "./dist/carousel.js"
     }
   },
   "files": [
@@ -37,6 +41,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.468.0",
+    "swiper": "^14.2.0",
     "zod": "^4.5.4"
   },
   "devDependencies": {

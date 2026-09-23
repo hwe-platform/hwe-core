@@ -23,6 +23,15 @@ function mediaTextBlock(overrides: Record<string, unknown> = {}) {
   };
 }
 
+/** Bloque gallery completo, para los tests que solo necesitan uno válido. */
+function galleryBlock(overrides: Record<string, unknown> = {}) {
+  return {
+    blockType: 'gallery',
+    images: [{ image: 'media-1', alt: 'Terrasse du mobile home' }],
+    ...overrides,
+  };
+}
+
 describe('pageBlockSchema', () => {
   it('valida por su blockType los bloques que siguen siendo stubs', () => {
     const blockTypes = [
@@ -30,7 +39,6 @@ describe('pageBlockSchema', () => {
       'services-grid',
       'accommodations-grid',
       'environment-grid',
-      'gallery',
       'map',
       'instagram',
       'blog',
@@ -53,6 +61,55 @@ describe('pageBlockSchema', () => {
     const result = pageBlockSchema.parse(mediaTextBlock());
 
     expect(result).toMatchObject({ media: 'image', split: 6, reverse: false, align: 'center' });
+  });
+});
+
+describe('galleryBlockSchema', () => {
+  it('exige al menos una imagen', () => {
+    expect(pageBlockSchema.safeParse({ blockType: 'gallery' }).success).toBe(false);
+    expect(pageBlockSchema.safeParse(galleryBlock({ images: [] })).success).toBe(false);
+    expect(pageBlockSchema.safeParse(galleryBlock()).success).toBe(true);
+  });
+
+  it('rechaza una imagen sin alt', () => {
+    const result = pageBlockSchema.safeParse(
+      galleryBlock({ images: [{ image: 'media-1', alt: '' }] }),
+    );
+
+    expect(result.success).toBe(false);
+  });
+
+  it('aplica los valores por defecto de sus ejes', () => {
+    const result = pageBlockSchema.parse(galleryBlock());
+
+    expect(result).toMatchObject({
+      background: 'default',
+      variant: 'slider',
+      columns: 3,
+      aspectRatio: '16/9',
+      lightbox: true,
+      autoplay: false,
+      autoplayDelay: 3000,
+      loop: true,
+      showDots: true,
+      showArrows: true,
+      effect: 'slide',
+      slidesPerView: 1,
+      headingLevel: '2',
+      ctas: [],
+    });
+  });
+
+  it('acota columns a 2–4', () => {
+    expect(pageBlockSchema.safeParse(galleryBlock({ columns: 1 })).success).toBe(false);
+    expect(pageBlockSchema.safeParse(galleryBlock({ columns: 5 })).success).toBe(false);
+    expect(pageBlockSchema.safeParse(galleryBlock({ columns: 4 })).success).toBe(true);
+  });
+
+  it('acota headingLevel a "2", "3" o "4"', () => {
+    expect(pageBlockSchema.safeParse(galleryBlock({ headingLevel: '1' })).success).toBe(false);
+    expect(pageBlockSchema.safeParse(galleryBlock({ headingLevel: '5' })).success).toBe(false);
+    expect(pageBlockSchema.safeParse(galleryBlock({ headingLevel: '3' })).success).toBe(true);
   });
 });
 

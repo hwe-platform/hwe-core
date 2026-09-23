@@ -84,39 +84,40 @@ describe('MediaTextBlock', () => {
 });
 
 describe('MediaTextBlock — tipos de medio', () => {
-  it('acepta los tres tipos de medio, cada uno con su propia anatomía', () => {
+  it('acepta los tres tipos de medio, cada uno con su propia anatomía', async () => {
     const { container: conImagen } = render(<MediaTextBlock data={base} />);
     const { container: conEmbed } = render(
       <MediaTextBlock data={{ ...base, media: 'embed', embedUrl: MAPA }} />,
     );
-    const { container: conCarrusel } = render(
-      <MediaTextBlock data={{ ...base, media: 'carousel', images: [imagen, imagen] }} />,
-    );
+    // `MediaCarousel` llega vía `next/dynamic` — la sección existe desde el
+    // primer render, el carrusel en sí llega después, igual que en Gallery.
+    render(<MediaTextBlock data={{ ...base, media: 'carousel', images: [imagen, imagen] }} />);
 
     expect(conImagen.querySelector('img')).toBeTruthy();
     expect(conEmbed.querySelector('iframe')).toBeTruthy();
-    expect(conCarrusel.querySelector('button[aria-label="Image suivante"]')).toBeTruthy();
+    expect(await screen.findByLabelText('Image suivante')).toBeTruthy();
   });
 
-  it('el carrusel avanza y da la vuelta', () => {
+  it('el carrusel avanza y da la vuelta', async () => {
     render(
       <MediaTextBlock data={{ ...base, media: 'carousel', images: [imagen, imagen, imagen] }} />,
     );
 
-    expect(screen.getByText('1 / 3')).toBeTruthy();
+    expect(await screen.findByText('1 / 3')).toBeTruthy();
     fireEvent.click(screen.getByLabelText('Image suivante'));
-    expect(screen.getByText('2 / 3')).toBeTruthy();
+    expect(await screen.findByText('2 / 3')).toBeTruthy();
     fireEvent.click(screen.getByLabelText('Image précédente'));
     fireEvent.click(screen.getByLabelText('Image précédente'));
-    expect(screen.getByText('3 / 3')).toBeTruthy();
+    expect(await screen.findByText('3 / 3')).toBeTruthy();
   });
 
-  it('no pinta flechas con una sola imagen', () => {
-    const { queryByLabelText } = render(
-      <MediaTextBlock data={{ ...base, media: 'carousel', images: [imagen] }} />,
-    );
+  it('no pinta flechas con una sola imagen', async () => {
+    render(<MediaTextBlock data={{ ...base, media: 'carousel', images: [imagen] }} />);
 
-    expect(queryByLabelText('Image suivante')).toBeNull();
+    // Espera a que el carrusel termine de cargar antes de comprobar su ausencia
+    // — si no, «no hay flechas todavía» y «no habrá flechas nunca» se confunden.
+    await screen.findByRole('region');
+    expect(screen.queryByLabelText('Image suivante')).toBeNull();
   });
 });
 
@@ -233,7 +234,7 @@ describe('MediaTextBlock — barreras y ejes de detalle', () => {
 });
 
 describe('MediaTextBlock — rótulos y datos crudos', () => {
-  it('los rótulos del carrusel se pueden sobrescribir por props', () => {
+  it('los rótulos del carrusel se pueden sobrescribir por props', async () => {
     render(
       <MediaTextBlock
         data={{ ...base, media: 'carousel', images: [imagen, imagen] }}
@@ -241,7 +242,7 @@ describe('MediaTextBlock — rótulos y datos crudos', () => {
       />,
     );
 
-    expect(screen.getByLabelText('Siguiente')).toBeTruthy();
+    expect(await screen.findByLabelText('Siguiente')).toBeTruthy();
     expect(screen.getByLabelText('Image précédente')).toBeTruthy();
   });
 

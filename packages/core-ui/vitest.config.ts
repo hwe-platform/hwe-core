@@ -16,7 +16,10 @@ export default defineConfig({
       // theme/token-contract.ts queda fuera: es una constante, no tiene lógica.
       include: [
         'src/schemas/**/*.ts',
-        'src/primitives/**/*.tsx',
+        // `.ts` además de `.tsx`, por lo mismo que en los bloques: en primitivas
+        // hay lógica que no es un componente —el hook de movimiento reducido de
+        // HU-011— y con solo `.tsx` se quedaba fuera del umbral en silencio.
+        'src/primitives/**/*.{ts,tsx}',
         'src/lib/**/*.ts',
         'src/payload/**/*.ts',
         'src/layout/**/*.tsx',

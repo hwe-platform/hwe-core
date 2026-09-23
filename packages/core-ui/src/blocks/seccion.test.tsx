@@ -40,6 +40,23 @@ describe('Cabecera', () => {
 
     expect(container.querySelector('h2')?.className).toContain('text-foreground');
   });
+
+  it('sin `level`, el titular es un h2', () => {
+    const { container } = render(<Cabecera title="Sur place" />);
+
+    expect(container.querySelector('h2')).toHaveTextContent('Sur place');
+  });
+
+  it('con `level`, el titular sube o baja en la jerarquía — nunca h1', () => {
+    // Gallery (HU-011) es el primer bloque que lo hace configurable: puede
+    // anidarse bajo cualquier sección, y el h1 es del hero, no de un bloque.
+    const { container: h3 } = render(<Cabecera title="Sur place" level={3} />);
+    expect(h3.querySelector('h3')).toHaveTextContent('Sur place');
+    expect(h3.querySelector('h1')).toBeNull();
+
+    const { container: h4 } = render(<Cabecera title="Sur place" level={4} />);
+    expect(h4.querySelector('h4')).toHaveTextContent('Sur place');
+  });
 });
 
 describe('BlockCtas', () => {

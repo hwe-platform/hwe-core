@@ -41,16 +41,34 @@ export type {
   IconRegistry,
 } from './blocks/icon-grid';
 
-export {
-  MediaTextBlock,
-  MediaImage,
-  MediaEmbed,
-  MediaCarousel,
-  mediaTextBlockSchema,
-} from './blocks/media-text';
+// `MediaCarousel` no está en esta lista, a propósito: ver el comentario en
+// `blocks/media-text/index.ts`.
+export { MediaTextBlock, MediaImage, MediaEmbed, mediaTextBlockSchema } from './blocks/media-text';
 export type {
   MediaTextProps,
   MediaTextData,
   MediaTextSlots,
   MediaTextLabels,
 } from './blocks/media-text';
+
+// El carrusel **no se exporta desde aquí**. Vive en su propia subruta,
+// `@hwe-platform/core-ui/carousel` (fichero `src/carousel.ts`) — ver su JSDoc
+// para el porqué: era la decisión que el tramo 1 de HU-011 dejó sin tomar, y
+// `payload generate:types` demostró que no era solo estética.
+
+export {
+  GalleryBlock,
+  GalleryFigure,
+  GalleryGrid,
+  GalleryMasonry,
+  GalleryCollage,
+  GalleryLightboxProvider,
+  useGalleryLightbox,
+  galleryBlockSchema,
+} from './blocks/gallery';
+export type {
+  GalleryProps,
+  GalleryData,
+  GalleryImage,
+  GalleryVariantProps,
+} from './blocks/gallery';
